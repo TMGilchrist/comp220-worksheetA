@@ -16,6 +16,7 @@ int main(int argc, char ** argsv)
 	//Create a window, note we have to free the pointer returned using the DestroyWindow Function
 	//https://wiki.libsdl.org/SDL_CreateWindow
 	SDL_Window* window = SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 640, SDL_WINDOW_SHOWN);
+
 	//Checks to see if the window has been created, the pointer will have a value of some kind
 	if (window == nullptr)
 	{
@@ -42,19 +43,21 @@ int main(int argc, char ** argsv)
 			switch (ev.type)
 			{
 				//QUIT Message, usually called when the window has been closed
-			case SDL_QUIT:
-				running = false;
-				break;
-				//KEYDOWN Message, called when a key has been pressed down
-			case SDL_KEYDOWN:
-				//Check the actual key code of the key that has been pressed
-				switch (ev.key.keysym.sym)
-				{
-					//Escape key
-				case SDLK_ESCAPE:
+				case SDL_QUIT:
 					running = false;
 					break;
-				}
+
+				//KEYDOWN Message, called when a key has been pressed down
+				case SDL_KEYDOWN:
+
+					//Check the actual key code of the key that has been pressed
+					switch (ev.key.keysym.sym)
+					{
+						//Escape key
+						case SDLK_ESCAPE:
+							running = false;
+							break;
+					}
 			}
 		}
 
