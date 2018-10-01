@@ -71,9 +71,9 @@ int main(int argc, char ** argsv)
 	// An array of 3 vectors which represents 3 vertices
 	static const GLfloat g_vertex_buffer_data[] = 
 	{
-	   -1.0f, -1.0f, 0.0f,
-	   1.0f, -1.0f, 0.0f,
-	   0.0f,  1.0f, 0.0f,
+	   -0.5f, -0.5f, 0.0f,
+	   0.5f, -0.5f, 0.0f,
+	   0.0f,  0.5f, 0.0f,
 	};
 
 
@@ -87,6 +87,8 @@ int main(int argc, char ** argsv)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
 	GLuint programID = LoadShaders("vertexShader.glsl", "fragmentShader.glsl");
+	GLuint colour1Location = glGetUniformLocation(programID, "triangleColour1");
+	GLuint colour2Location = glGetUniformLocation(programID, "triangleColour2");
 
 
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
@@ -145,6 +147,11 @@ int main(int argc, char ** argsv)
 			0,                  // stride
 			(void*)0            // array buffer offset
 		);
+
+
+		//Set triangle colour
+		glUniform4f(colour1Location, 0, 0, 1, 0);
+		glUniform4f(colour2Location, 1, 0, 0, 0);
 
 		// Draw the triangle
 		glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle

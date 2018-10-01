@@ -1,8 +1,14 @@
 #version 330 core
 
-out vec3 color;
+out vec4 colour;
+//in vec4 testColour;
+
+uniform vec4 triangleColour1; 
+uniform vec4 triangleColour2; 
+
 
 void main()
 {
-	color = vec3(1, 0, 0);
+	//colour = vec3(1, 0, 0);
+	colour = mix(triangleColour1, triangleColour2, 0.5);
 }
