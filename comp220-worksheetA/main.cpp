@@ -1,6 +1,5 @@
 #include "main.h"
 #include <iostream>
-//#include <SDL.h>
 
 
 int main(int argc, char ** argsv)
@@ -87,6 +86,8 @@ int main(int argc, char ** argsv)
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
+	GLuint programID = LoadShaders("vertexShader.glsl", "fragmentShader.glsl");
+
 
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
@@ -127,6 +128,9 @@ int main(int argc, char ** argsv)
 		glClear(GL_COLOR_BUFFER_BIT);
 
 
+		//Linking shaders
+		glUseProgram(programID);
+
 
 		// 1st attribute buffer : vertices
 		glEnableVertexAttribArray(0);
@@ -152,6 +156,7 @@ int main(int argc, char ** argsv)
 
 	}
 
+	glDeleteProgram(programID);
 	glDeleteBuffers(1, &vertexbuffer);
 	glDeleteVertexArrays(1, &VertexArrayID);
 
