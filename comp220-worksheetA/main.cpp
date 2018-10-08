@@ -91,9 +91,23 @@ int main(int argc, char ** argsv)
 	GLuint colour2Location = glGetUniformLocation(programID, "triangleColour2");
 
 
-	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+	//Translation and scale
+	glm::vec3 modelTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 modelScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	glm::mat4 modelMatrix = glm::translate(position);
+	//Rotation
+	glm::vec3 modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 xAxis = glm::vec3(1.0f, 0.0f, 0.0f);
+	glm::vec3 yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 zAxis = glm::vec3(0.0f, 0.0f, 1.0f);
+
+	//Transformation Matricies
+	glm::mat4 translationMatrix = glm::translate(modelTranslation);
+	glm::mat4 rotationMatrix = glm::rotate(modelRotation.x, xAxis) * glm::rotate(modelRotation.y, yAxis) * glm::rotate(modelRotation.z, zAxis);
+	glm::mat4 scaleMatrix = glm::scale(modelScale);
+
+	//Caluclate modelMatrix
+	glm::mat4 modelMatrix = rotationMatrix * scaleMatrix * translationMatrix;
 
 	GLuint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 
