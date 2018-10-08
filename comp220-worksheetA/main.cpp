@@ -91,6 +91,13 @@ int main(int argc, char ** argsv)
 	GLuint colour2Location = glGetUniformLocation(programID, "triangleColour2");
 
 
+	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	glm::mat4 modelMatrix = glm::translate(position);
+
+	GLuint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
+
+
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
 	bool running = true;
 
@@ -149,6 +156,9 @@ int main(int argc, char ** argsv)
 		);
 
 
+		//Apply transformations
+		glUniformMatrix4fv(modelMatrixLocation, 1, false, glm::value_ptr(modelMatrix));
+
 		//Set triangle colour
 		glUniform4f(colour1Location, 0, 0, 1, 0);
 		glUniform4f(colour2Location, 1, 0, 0, 0);
@@ -162,6 +172,11 @@ int main(int argc, char ** argsv)
 		SDL_GL_SwapWindow(window);
 
 	}
+
+
+	/*--------------------
+		   Cleanup
+	--------------------*/
 
 	glDeleteProgram(programID);
 	glDeleteBuffers(1, &vertexbuffer);
