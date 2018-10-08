@@ -91,6 +91,9 @@ int main(int argc, char ** argsv)
 	GLuint colour2Location = glGetUniformLocation(programID, "triangleColour2");
 
 
+	/* ModelMatrix setup. This should be moved into gameloop later 
+	   so that model can be moved in game. */
+
 	//Translation and scale
 	glm::vec3 modelTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 modelScale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -110,6 +113,20 @@ int main(int argc, char ** argsv)
 	glm::mat4 modelMatrix = rotationMatrix * scaleMatrix * translationMatrix;
 
 	GLuint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
+
+
+	//glm::mat4 ViewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f));
+
+	glm::vec3 upVector = glm::vec3(0, 1, 0);
+	glm::vec3 cameraPosition = glm::vec3(0, 0, 0);
+	glm::vec3 cameraTarget = glm::vec3(0, -2, 0);
+
+	glm::mat4 CameraMatrix = glm::lookAt
+	(
+		cameraPosition, // the position of your camera, in world space
+		cameraTarget,   // where you want to look at, in world space
+		upVector
+	);
 
 
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
