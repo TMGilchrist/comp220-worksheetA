@@ -8,38 +8,9 @@ int main(int argc, char ** argsv)
 	Window windowMain = Window("Shader Practice");
 	SDL_Window* window = windowMain.getWindow();
 
-	//Create OPEN_GL context
-	SDL_GLContext glContext = SDL_GL_CreateContext(window);
-	if (glContext == nullptr)
-	{
-		//Show error
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "CreateContext failed", SDL_GetError(), NULL);
-
-		SDL_DestroyWindow(window);
-		SDL_Quit();
-
-		return 1;
-	}
-
-	//Init GLEW
-	glewExperimental = GL_TRUE;
-	GLenum error = glewInit();
-	if (error != GLEW_OK)
-	{
-		//Show error
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "GLEW initilisation failed", (char*)glewGetErrorString(error), NULL);
-
-		SDL_DestroyWindow(window);
-		SDL_Quit();
-
-		return 1;
-	}
-
-
-	// Set our OpenGL version.
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	//Initalise Open_GL and GLEW. Get Open_GL context.
+	GLManager glManager = GLManager(window);
+	SDL_GLContext glContext = glManager.getGLContext();
 
 
 	//Vertex array
@@ -70,6 +41,7 @@ int main(int argc, char ** argsv)
 	GLuint colour2Location = glGetUniformLocation(programID, "triangleColour2");
 
 
+
 	/* ModelMatrix setup. This should be moved into gameloop later 
 	   so that model can be moved in game. */
 
@@ -93,15 +65,18 @@ int main(int argc, char ** argsv)
 
 	GLuint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 
-
+	//Create camera and calculate MVP matrix
 	Camera camera = Camera();
-
 	glm::mat4 MVP = camera.getProjectionMatrix() * camera.getViewMatrix() * modelMatrix;
 
 	GLuint MVPLocation = glGetUniformLocation(programID, "MVP");
 
 
-	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
+	/*----------------------
+	      Main Game Loop
+	------------------------*/
+
+	//Event loop, we will loop until running is set to false
 	bool running = true;
 
 	//SDL Event structure, this will be checked in the while loop

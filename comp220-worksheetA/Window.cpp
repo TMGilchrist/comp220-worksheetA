@@ -3,6 +3,12 @@
 
 	Window::Window()
 	{
+		initSDL();
+
+		//Create a window, note we have to free the pointer returned using the DestroyWindow Function
+		window = SDL_CreateWindow("SDL_Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, global::SCREEN_WIDTH, global::SCREEN_WIDTH, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+
+		verifyWindow();
 	}
 
 	Window::Window(const char* title)
