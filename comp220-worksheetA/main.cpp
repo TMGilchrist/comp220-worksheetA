@@ -114,19 +114,32 @@ int main(int argc, char ** argsv)
 
 	GLuint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 
-
-	//glm::mat4 ViewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f));
-
+	glm::vec3 cameraPosition = glm::vec3(8, 4, 6);
+	glm::vec3 cameraTarget = glm::vec3(0, 0, 0);
 	glm::vec3 upVector = glm::vec3(0, 1, 0);
-	glm::vec3 cameraPosition = glm::vec3(0, 0, 0);
-	glm::vec3 cameraTarget = glm::vec3(0, -2, 0);
 
-	glm::mat4 CameraMatrix = glm::lookAt
+	//glm::mat4 viewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
+	
+	float FoV = 60;
+
+	glm::mat4 projectionMatrix = glm::perspective
+	(
+		glm::radians(FoV), // The vertical Field of View, in radians: the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
+		4.0f / 3.0f,       // Aspect Ratio. Depends on the size of your window. Notice that 4/3 == 800/600 == 1280/960, sounds familiar ?
+		0.1f,              // Near clipping plane. Keep as big as possible, or you'll get precision issues.
+		100.0f             // Far clipping plane. Keep as little as possible.
+	);
+
+	glm::mat4 viewMatrix = glm::lookAt
 	(
 		cameraPosition, // the position of your camera, in world space
 		cameraTarget,   // where you want to look at, in world space
 		upVector
 	);
+
+	glm::mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
+
+	GLuint MVPLocation = glGetUniformLocation(programID, "MVP");
 
 
 	//Event loop, we will loop until running is set to false, usually if escape has been pressed or window is closed
@@ -188,7 +201,9 @@ int main(int argc, char ** argsv)
 
 
 		//Apply transformations
-		glUniformMatrix4fv(modelMatrixLocation, 1, false, glm::value_ptr(modelMatrix));
+		//glUniformMatrix4fv(modelMatrixLocation, 1, false, glm::value_ptr(modelMatrix));
+		//glUniformMatrix4fv(MVPLocation, 1, false, glm::value_ptr(MVP));
+		glUniformMatrix4fv(MVPLocation, 1, false, &MVP[0][0]);
 
 		//Set triangle colour
 		glUniform4f(colour1Location, 0, 0, 1, 0);
