@@ -4,30 +4,9 @@
 
 int main(int argc, char ** argsv)
 {
-	//SDL window init stuff. Move to seperate function/class
-
-	//Initialises the SDL Library, passing in SDL_INIT_VIDEO to only initialise the video subsystems
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		//Display an error message box
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL_Init failed", SDL_GetError(), NULL);
-		return 1;
-	}
-
-	//Create a window, note we have to free the pointer returned using the DestroyWindow Function
-	SDL_Window* window = SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 640, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-
-	//Checks to see if the window has been created, the pointer will have a value of some kind
-	if (window == nullptr)
-	{
-		//Show error
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL_CreateWindow failed", SDL_GetError(), NULL);
-
-		//Close the SDL Library
-		SDL_Quit();
-		return 1;
-	}
-
+	//Create SDL window
+	Window windowMain = Window("Shader Practice");
+	SDL_Window* window = windowMain.getWindow();
 
 	//Create OPEN_GL context
 	SDL_GLContext glContext = SDL_GL_CreateContext(window);
@@ -114,30 +93,10 @@ int main(int argc, char ** argsv)
 
 	GLuint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 
-	glm::vec3 cameraPosition = glm::vec3(8, 4, 6);
-	glm::vec3 cameraTarget = glm::vec3(0, 0, 0);
-	glm::vec3 upVector = glm::vec3(0, 1, 0);
 
-	//glm::mat4 viewMatrix = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, 0.0f)); 
-	
-	float FoV = 60;
+	Camera camera = Camera();
 
-	glm::mat4 projectionMatrix = glm::perspective
-	(
-		glm::radians(FoV), // The vertical Field of View, in radians: the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
-		4.0f / 3.0f,       // Aspect Ratio. Depends on the size of your window. Notice that 4/3 == 800/600 == 1280/960, sounds familiar ?
-		0.1f,              // Near clipping plane. Keep as big as possible, or you'll get precision issues.
-		100.0f             // Far clipping plane. Keep as little as possible.
-	);
-
-	glm::mat4 viewMatrix = glm::lookAt
-	(
-		cameraPosition, // the position of your camera, in world space
-		cameraTarget,   // where you want to look at, in world space
-		upVector
-	);
-
-	glm::mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
+	glm::mat4 MVP = camera.getProjectionMatrix() * camera.getViewMatrix() * modelMatrix;
 
 	GLuint MVPLocation = glGetUniformLocation(programID, "MVP");
 
@@ -200,21 +159,24 @@ int main(int argc, char ** argsv)
 		);
 
 
-		//Apply transformations
-		//glUniformMatrix4fv(modelMatrixLocation, 1, false, glm::value_ptr(modelMatrix));
-		//glUniformMatrix4fv(MVPLocation, 1, false, glm::value_ptr(MVP));
+		/*---------------------
+		Send Uniform Values
+		----------------------*/
+
+		//MVP matrix
 		glUniformMatrix4fv(MVPLocation, 1, false, &MVP[0][0]);
 
 		//Set triangle colour
 		glUniform4f(colour1Location, 0, 0, 1, 0);
 		glUniform4f(colour2Location, 1, 0, 0, 0);
 
+
 		// Draw the triangle
 		glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 		glDisableVertexAttribArray(0);
 
 
-		
+		//Refresh screen
 		SDL_GL_SwapWindow(window);
 
 	}

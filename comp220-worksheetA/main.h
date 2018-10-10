@@ -11,3 +11,5 @@
 #include <glm\gtc\type_ptr.hpp>
 
 #include "shader.h"
+#include "Window.h"
+#include "Camera.h"

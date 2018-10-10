@@ -156,12 +156,17 @@ xcopy /Y /D /I ..\Libraries\SDL2_image-2.0.3\lib\x64\*.dll "$(OutDir)\*.dll"</Co
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="globals.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentShader.glsl" />
