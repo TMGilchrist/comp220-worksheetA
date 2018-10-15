@@ -97,6 +97,7 @@ int main(int argc, char ** argsv)
 		0, 1, 4,
 	};
 
+
 	// This will identify our vertex buffer
 	GLuint vertexbuffer;
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
@@ -149,44 +150,53 @@ int main(int argc, char ** argsv)
 
 	GLuint MVPLocation = glGetUniformLocation(programID, "MVP");
 
+	InputManager input = InputManager();
+	CharacterController controller = CharacterController(input, camera);
 
 	/*----------------------
 	      Main Game Loop
 	------------------------*/
 
 	//Event loop, we will loop until running is set to false
-	bool running = true;
+	bool gameRunning = true;
 
 	//SDL Event structure, this will be checked in the while loop
-	SDL_Event ev;
+	SDL_Event event;
 
-	while (running)
+	while (gameRunning)
 	{
 		//Poll for the events which have happened in this frame
-		while (SDL_PollEvent(&ev))
+		while (SDL_PollEvent(&event))
 		{
 			//Switch case for every message we are intereted in
-			switch (ev.type)
+			switch (event.type)
 			{
 				//QUIT Message, usually called when the window has been closed
 				case SDL_QUIT:
-					running = false;
+					gameRunning = false;
 					break;
 
-				//KEYDOWN Message, called when a key has been pressed down
 				case SDL_KEYDOWN:
+					//Update inputManager
+					input.manageKeyboardEvents(event);
 
-					//Check the actual key code of the key that has been pressed
-					switch (ev.key.keysym.sym)
+					//Check individual keys by code
+					switch (event.key.keysym.sym)
 					{
-						//Escape key
 						case SDLK_ESCAPE:
-							running = false;
+							gameRunning = false;
 							break;
 					}
+
+				case SDL_KEYUP:
+					//Update inputManager
+					input.manageKeyboardEvents(event);
+					break;
 			}
 		}
 
+		controller.control();
+		glm::mat4 MVP = camera.getProjectionMatrix() * camera.getViewMatrix() * modelMatrix;
 
 		//OpenGL rendering
 		glClearColor(0.0, 0.0, 0.0, 1.0);

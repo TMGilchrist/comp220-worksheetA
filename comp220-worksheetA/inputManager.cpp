@@ -2,11 +2,11 @@
 
 
 
-inputManager::inputManager()
+InputManager::InputManager()
 {
 }
 
 
-inputManager::~inputManager()
+InputManager::~InputManager()
 {
 }

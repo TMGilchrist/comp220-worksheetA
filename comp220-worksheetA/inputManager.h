@@ -2,11 +2,11 @@
 #include <SDL.h>
 #include <map>
 
-class inputManager
+class InputManager
 {
 public:
-	inputManager();
-	~inputManager();
+	InputManager();
+	~InputManager();
 
 	//Populate map with events
 	void manageKeyboardEvents(SDL_Event event)

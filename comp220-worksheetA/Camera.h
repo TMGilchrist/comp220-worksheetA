@@ -27,6 +27,25 @@ public:
 		return projectionMatrix;
 	}
 
+	glm::vec3 getPosition() 
+	{
+		return position;
+	}
+
+	glm::vec3 getTarget() 
+	{
+		return target;
+	}
+
+	void setPosition(glm::vec3 Position) 
+	{
+		position = Position;
+	}
+
+	void setTarget(glm::vec3 Target) 
+	{
+		target = Target;
+	}
 
 private:
 	//Vertical field of view in degrees.

@@ -14,5 +14,7 @@
 #include "Window.h"
 #include "Camera.h"
 #include "GLManager.h"
+#include "inputManager.h"
+#include "characterController.h"
 
 #include "Vertex.h"
