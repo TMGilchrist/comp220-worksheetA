@@ -5,6 +5,7 @@
 #include <glm\gtx\transform.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include "globals.h"
+#include <iostream>
 
 class Camera
 {
@@ -37,6 +38,11 @@ public:
 		return target;
 	}
 
+	glm::vec3 getUpVector() 
+	{
+		return upVector;
+	}
+
 	void setPosition(glm::vec3 Position) 
 	{
 		position = Position;
@@ -65,6 +71,12 @@ private:
 
 	//Orientation of camera, (0, 1, 0) is normal.
 	glm::vec3 upVector;
+
+	//Actually opposite direction to camera facing
+	glm::vec3 zAxis = glm::normalize(position - target);
+
+	glm::vec3 xAxis;
+	glm::vec3 yAxis;
 
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;

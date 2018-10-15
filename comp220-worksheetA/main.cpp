@@ -36,19 +36,6 @@ int main(int argc, char ** argsv)
 		{-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f}
 	};
 
-	/*
-	//{x, y, z, r, g, b, a}
-	static const Vertex cube[] =
-	{
-		{1,1,1, 1.0f, 0.0f, 0.0f, 1.0f }, {-1, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f}, {-1, -1, 1, 1.0f, 0.0f, 0.0f, 1.0f}, {1, -1, 1, 1.0f, 0.0f, 0.0f, 1.0f},      // face #1
-		{1,1,1, 1.0f, 0.0f, 0.0f, 1.0f},  {1,-1,1, 1.0f, 0.0f, 0.0f, 1.0f},   {1,-1,-1, 1.0f, 0.0f, 0.0f, 1.0f},  {1,1,-1, 1.0f, 0.0f, 0.0f, 1.0f},      // face #2
-		{1,1,1, 1.0f, 0.0f, 0.0f, 1.0f},  {1,1,-1, 1.0f, 0.0f, 0.0f, 1.0f},   {-1,1,-1, 1.0f, 0.0f, 0.0f, 1.0f},  {-1,1,1, 1.0f, 0.0f, 0.0f, 1.0f},       // face #3
-	    {-1,-1,-1, 1.0f, 0.0f, 0.0f, 1.0f}, {-1,1,-1, 1.0f, 0.0f, 0.0f, 1.0f}, {1,1,-1, 1.0f, 0.0f, 0.0f, 1.0f},  {1,-1,-1, 1.0f, 0.0f, 0.0f, 1.0f},     // face #4
-	    {-1,-1,-1, 1.0f, 0.0f, 0.0f, 1.0f}, {-1,-1,1, 1.0f, 0.0f, 0.0f, 1.0f},  {-1,1,1, 1.0f, 0.0f, 0.0f, 1.0f}, {-1,1,-1, 1.0f, 0.0f, 0.0f, 1.0f},      // face #5
-	    {-1,-1,-1, 1.0f, 0.0f, 0.0f, 1.0f},  {1,-1,-1, 1.0f, 0.0f, 0.0f, 1.0f},  {1,-1,1, 1.0f, 0.0f, 0.0f, 1.0f}, {-1,-1,1, 1.0f, 0.0f, 0.0f, 1.0f}
-	};*/
-
-
 	//{x, y, z, r, g, b, a}
 	static const Vertex cube[] =
 	{
@@ -64,18 +51,18 @@ int main(int argc, char ** argsv)
 	{
 		//Top four vertices
 		{0, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f }, //0
-		{0, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //1
+		{0, 0, 1, 1.0f, 0.0f, 1.0f, 0.0f},  //1
 		{1, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //2
-		{1, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //3
+		{1, 1, 1, 1.0f, 1.0f, 0.0f, 0.0f},  //3
 
 		//Bottom four vertices
-		{0, 0, 0, 1.0f, 0.0f, 0.0f, 1.0f},  //4
-		{0, 1, 0, 1.0f, 0.0f, 0.0f, 1.0f},  //5
-		{1, 1, 0, 1.0f, 0.0f, 0.0f, 1.0f},  //6
+		{0, 0, 0, 1.0f, 0.0f, 1.0f, 0.0f},  //4
+		{0, 1, 0, 1.0f, 1.0f, 0.0f, 0.0f},  //5
+		{1, 1, 0, 1.0f, 0.0f, 1.0f, 0.0f},  //6
 		{1, 0, 0, 1.0f, 0.0f, 0.0f, 1.0f}   //7
 	};
 
-	//Define triangles
+	//Define triangles in the cube
 	static const int indices[] =
 	{
 		0, 1, 2,
@@ -114,6 +101,8 @@ int main(int argc, char ** argsv)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(Vertex), indices, GL_STATIC_DRAW);
 
+	//Enable backface culling. Not all faces are properly rotated :c
+	//glEnable(GL_CULL_FACE); 
 
 	GLuint programID = LoadShaders("vertexShader.glsl", "fragmentShader.glsl");
 	GLuint colour1Location = glGetUniformLocation(programID, "triangleColour1");
@@ -144,13 +133,18 @@ int main(int argc, char ** argsv)
 
 	GLuint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 
+
+
 	//Create camera and calculate MVP matrix
-	Camera camera = Camera();
-	glm::mat4 MVP = camera.getProjectionMatrix() * camera.getViewMatrix() * modelMatrix;
+	//Camera camera = Camera();
+	//glm::mat4 MVP = camera.getProjectionMatrix() * camera.getViewMatrix() * modelMatrix;
+
+	Camera* camera = new Camera();
+	glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * modelMatrix;
 
 	GLuint MVPLocation = glGetUniformLocation(programID, "MVP");
 
-	InputManager input = InputManager();
+	InputManager* input = new InputManager();
 	CharacterController controller = CharacterController(input, camera);
 
 	/*----------------------
@@ -178,7 +172,7 @@ int main(int argc, char ** argsv)
 
 				case SDL_KEYDOWN:
 					//Update inputManager
-					input.manageKeyboardEvents(event);
+					input->manageKeyboardEvents(event);
 
 					//Check individual keys by code
 					switch (event.key.keysym.sym)
@@ -190,13 +184,19 @@ int main(int argc, char ** argsv)
 
 				case SDL_KEYUP:
 					//Update inputManager
-					input.manageKeyboardEvents(event);
+					input->manageKeyboardEvents(event);
 					break;
 			}
 		}
 
+
+
 		controller.control();
-		glm::mat4 MVP = camera.getProjectionMatrix() * camera.getViewMatrix() * modelMatrix;
+
+		//std::cout << camera->getPosition().x << camera->getPosition().y << camera->getPosition().z;
+
+		glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * modelMatrix;
+
 
 		//OpenGL rendering
 		glClearColor(0.0, 0.0, 0.0, 1.0);
