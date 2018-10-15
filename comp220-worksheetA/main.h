@@ -14,3 +14,5 @@
 #include "Window.h"
 #include "Camera.h"
 #include "GLManager.h"
+
+#include "Vertex.h"
