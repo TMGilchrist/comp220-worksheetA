@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <GL/glew.h>
 #include <SDL_opengl.h>
+#include <gl/glew.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm\glm.hpp>

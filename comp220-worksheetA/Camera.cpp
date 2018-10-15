@@ -48,7 +48,7 @@ void Camera::setViewMatrix()
 	viewMatrix = glm::lookAt
 	(
 		position,
-		target, //position + target?
+		position + target, //position + target?
 		upVector
 	);
 }

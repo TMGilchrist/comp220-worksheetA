@@ -14,7 +14,6 @@ CharacterController::CharacterController(InputManager* Input, Camera* Camera)
 	cameraPosition = attachedCamera->getPosition();
 	cameraTarget = attachedCamera->getTarget();
 
-	movespeed = 0.05f;
 }
 
 
@@ -22,11 +21,11 @@ CharacterController::~CharacterController()
 {
 }
 
-void CharacterController::control()
+void CharacterController::control(float deltaTime)
 {
 	cameraPosition = attachedCamera->getPosition();
 	cameraTarget = attachedCamera->getTarget();
-
+	movespeed = 0.05f * deltaTime;
 
 	//Check inputs.
 	if (input->isPressed(SDLK_w))

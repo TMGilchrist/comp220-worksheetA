@@ -18,6 +18,11 @@ int main(int argc, char ** argsv)
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
+	
+	float deltaTime = 0.0f;	// Time between current frame and last frame
+	float lastFrame = 0.0f; // Time of last frame
+
+
 	// An array of 3 vectors which represents 3 vertices
 	//{x, y, z, r, g, b, a}
 	static const Vertex v[] =
@@ -190,8 +195,13 @@ int main(int argc, char ** argsv)
 		}
 
 
+		//Update deltatime
+		float currentFrame = SDL_GetTicks();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
 
-		controller.control();
+
+		controller.control(deltaTime);
 
 		//std::cout << camera->getPosition().x << camera->getPosition().y << camera->getPosition().z;
 
