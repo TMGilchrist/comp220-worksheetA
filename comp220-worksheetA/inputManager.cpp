@@ -36,8 +36,8 @@ void InputManager::mouseInput(float xPos, float yPos)
 	lastY = yPos;
 
 	//Store mouse position
-	xOffset *= mouseSensitivity;
-	yOffset *= mouseSensitivity;
+	xOffset = xPos * mouseSensitivity;
+	yOffset = yPos * mouseSensitivity;
 
 	/*
 	//Update yaw and pitch of camera

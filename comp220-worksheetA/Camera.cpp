@@ -51,7 +51,7 @@ void Camera::setViewMatrix()
 	viewMatrix = glm::lookAt
 	(
 		position,
-		position + target,
+		target, // + target,
 		upVector
 	);
 }
@@ -82,19 +82,25 @@ void Camera::calculateCameraRotation()
 {
 	//glm::vec3 targetPos;
 	glm::vec3 front;
+	glm::vec3 tempTarget;
+
 	front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
 	front.y = sin(glm::radians(pitch));
 	front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
-	target = glm::normalize(front);
 
-	//target = targetPos;
-	setViewMatrix();
+
+
+
 
 	//Might have to make a temp variable to then normalize into target
 	//glm::vec3 tempTarget;
 
-	//tempTarget.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	//tempTarget.y = sin(glm::radians(pitch));
-	//tempTarget.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	tempTarget.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	tempTarget.y = sin(glm::radians(pitch));
+	tempTarget.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
+	target = glm::normalize(tempTarget);
+
+	//target = targetPos;
+	setViewMatrix();
 }

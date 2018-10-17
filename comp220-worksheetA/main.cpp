@@ -188,8 +188,9 @@ int main(int argc, char ** argsv)
 
 				case SDL_MOUSEMOTION:
 					//Pass location to inputManager
-					std::cout << event.motion.x << " : " << event.motion.y;
+					//std::cout << event.motion.x << " : " << event.motion.y;
 					input->mouseInput(event.motion.xrel, event.motion.yrel);
+					std::cout << "  <" << event.motion.xrel << " : " << event.motion.yrel << ">  ";
 					controller.handleMouse();
 					break;
 				
