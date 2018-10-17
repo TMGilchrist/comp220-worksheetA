@@ -1,6 +1,8 @@
 #pragma once
 #include <SDL.h>
 #include <map>
+#include <iostream>
+
 #include "globals.h"
 #include "Camera.h"
 
@@ -63,5 +65,8 @@ private:
 
 	float xOffset;
 	float yOffset;
+
+	//If this is the first time mouse input has been detected
+	bool firstMouse;
 };
 

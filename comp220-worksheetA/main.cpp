@@ -7,6 +7,7 @@ int main(int argc, char ** argsv)
 	//Create SDL window
 	Window windowMain = Window("Shader Practice");
 	SDL_Window* window = windowMain.getWindow();
+	//SDL_SetWindowResizable(window, SDL_TRUE);
 
 	//Initalise Open_GL and GLEW. Get Open_GL context.
 	GLManager glManager = GLManager(window);
@@ -49,14 +50,14 @@ int main(int argc, char ** argsv)
 	{
 		//Top four vertices
 		{0, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f }, //0
-		{0, 0, 1, 1.0f, 0.0f, 1.0f, 0.0f},  //1
+		{0, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //1
 		{1, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //2
-		{1, 1, 1, 1.0f, 1.0f, 0.0f, 0.0f},  //3
+		{1, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //3
 
 		//Bottom four vertices
-		{0, 0, 0, 1.0f, 0.0f, 1.0f, 0.0f},  //4
-		{0, 1, 0, 1.0f, 1.0f, 0.0f, 0.0f},  //5
-		{1, 1, 0, 1.0f, 0.0f, 1.0f, 0.0f},  //6
+		{0, 0, 0, 1.0f, 0.0f, 0.0f, 1.0f},  //4
+		{0, 1, 0, 1.0f, 0.0f, 0.0f, 1.0f},  //5
+		{1, 1, 0, 1.0f, 0.0f, 0.0f, 1.0f},  //6
 		{1, 0, 0, 1.0f, 0.0f, 0.0f, 1.0f}   //7
 	};
 
@@ -187,9 +188,22 @@ int main(int argc, char ** argsv)
 
 				case SDL_MOUSEMOTION:
 					//Pass location to inputManager
-					input->mouseInput(window, event.motion.x, event.motion.y);
+					std::cout << event.motion.x << " : " << event.motion.y;
+					input->mouseInput(event.motion.xrel, event.motion.yrel);
+					controller.handleMouse();
+					break;
+				
+				case SDL_WINDOWEVENT:
+					//Check for window being resized
+					if (event.window.event == SDL_WINDOWEVENT_RESIZED) 
+					{
+						//Global screen size needs to be updated here
+						//SDL_GetWindowSize(window); //Needs to be passed a pointer for screen height and width to fill.
+					}
+					break;
 			}
 		}
+
 
 
 		//Update deltatime
@@ -201,9 +215,12 @@ int main(int argc, char ** argsv)
 		//Handle keyboard input
 		controller.control(deltaTime);
 
-		//Reset cursor to center of screen
-		SDL_WarpMouseInWindow(window, (global::SCREEN_WIDTH / 2), (global::SCREEN_HEIGHT / 2));
 
+		if (windowMain.getFlags() & SDL_WINDOW_MOUSE_FOCUS)
+		{
+			//Reset cursor to center of screen
+			SDL_WarpMouseInWindow(window, (global::SCREEN_WIDTH / 2), (global::SCREEN_HEIGHT / 2));
+		}
 
 		//std::cout << camera->getPosition().x << camera->getPosition().y << camera->getPosition().z;
 

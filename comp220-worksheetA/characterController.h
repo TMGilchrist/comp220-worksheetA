@@ -12,6 +12,7 @@ public:
 	~CharacterController();
 
 	void control(float deltaTime);
+	void handleMouse();
 
 private:
 	InputManager* input;

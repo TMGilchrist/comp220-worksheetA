@@ -9,6 +9,8 @@
 		window = SDL_CreateWindow("SDL_Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, global::SCREEN_WIDTH, global::SCREEN_WIDTH, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
 		verifyWindow();
+		SDL_SetWindowResizable(window, SDL_TRUE);
+		flags = SDL_GetWindowFlags(window);
 	}
 
 	Window::Window(const char* title)
@@ -19,6 +21,8 @@
 		window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, global::SCREEN_WIDTH, global::SCREEN_WIDTH, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
 		verifyWindow();
+		SDL_SetWindowResizable(window, SDL_TRUE);
+		flags = SDL_GetWindowFlags(window);
 	}
 
 	Window::~Window()

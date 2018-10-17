@@ -27,16 +27,6 @@ void CharacterController::control(float deltaTime)
 	cameraTarget = attachedCamera->getTarget();
 	movespeed = 0.05f * deltaTime;
 
-	//Update yaw and pitch of camera
-	attachedCamera->increaseYaw(input->getXOffset());
-	attachedCamera->increasePitch(input->getYOffset());
-
-	//Ensure new pitch is not outside constraints
-	attachedCamera->checkPitchConstraints();
-
-	//Calculate new rotation
-	attachedCamera->calculateCameraRotation();
-
 	//Check inputs.
 	if (input->isPressed(SDLK_w))
 	{
@@ -61,4 +51,17 @@ void CharacterController::control(float deltaTime)
 		attachedCamera->setPosition(cameraPosition + (glm::normalize(glm::cross(cameraTarget, attachedCamera->getUpVector())) * movespeed));
 		attachedCamera->setViewMatrix();
 	}
+}
+
+void CharacterController::handleMouse()
+{
+	//Update yaw and pitch of camera
+	attachedCamera->increaseYaw(input->getXOffset());
+	attachedCamera->increasePitch(input->getYOffset());
+
+	//Ensure new pitch is not outside constraints
+	attachedCamera->checkPitchConstraints();
+
+	//Calculate new rotation
+	attachedCamera->calculateCameraRotation();
 }

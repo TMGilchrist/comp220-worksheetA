@@ -20,8 +20,15 @@ public:
 		return window;
 	};
 
+	int getFlags() 
+	{
+		return flags;
+	}
+
 private:
 	SDL_Window* window;
+
+	int flags;
 
 
 };
