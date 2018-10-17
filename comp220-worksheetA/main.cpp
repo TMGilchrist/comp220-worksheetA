@@ -18,7 +18,11 @@ int main(int argc, char ** argsv)
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
+	//Mouse setup, can probably be moved to sdl init?
+	SDL_ShowCursor(0);
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 	
+	//Init deltaTime
 	float deltaTime = 0.0f;	// Time between current frame and last frame
 	float lastFrame = 0.0f; // Time of last frame
 
@@ -41,17 +45,6 @@ int main(int argc, char ** argsv)
 		{-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f}
 	};
 
-	//{x, y, z, r, g, b, a}
-	static const Vertex cube[] =
-	{
-		{0,1,1, 1.0f, 0.0f, 0.0f, 1.0f }, {0, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f}, {1, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f}, {1, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f},      // face #1
-		{0,1,1, 1.0f, 0.0f, 0.0f, 1.0f},  {0,1,0, 1.0f, 0.0f, 0.0f, 1.0f},   {0,0,0, 1.0f, 0.0f, 0.0f, 1.0f},  {0,0,1, 1.0f, 0.0f, 0.0f, 1.0f},      // face #2
-		{0,1,1, 1.0f, 0.0f, 0.0f, 1.0f},  {1,1,1, 1.0f, 0.0f, 0.0f, 1.0f},   {1,1,0, 1.0f, 0.0f, 0.0f, 1.0f},  {0,1,0, 1.0f, 0.0f, 0.0f, 1.0f},       // face #3
-		{1,1,1, 1.0f, 0.0f, 0.0f, 1.0f}, {1,0,1, 1.0f, 0.0f, 0.0f, 1.0f}, {1,0,0, 1.0f, 0.0f, 0.0f, 1.0f},  {1,1,0, 1.0f, 0.0f, 0.0f, 1.0f},     // face #4
-		{0,0,1, 1.0f, 0.0f, 0.0f, 1.0f}, {0,0,0, 1.0f, 0.0f, 0.0f, 1.0f},  {1,0,0, 1.0f, 0.0f, 0.0f, 1.0f}, {1,0,1, 1.0f, 0.0f, 0.0f, 1.0f},      // face #5
-		{0,0,0, 1.0f, 0.0f, 0.0f, 1.0f},  {0,1,0, 1.0f, 0.0f, 0.0f, 1.0f},  {1,1,0, 1.0f, 0.0f, 0.0f, 1.0f}, {1,0,0, 1.0f, 0.0f, 0.0f, 1.0f}
-	};
-
 	static const Vertex saneCube[]=
 	{
 		//Top four vertices
@@ -70,23 +63,23 @@ int main(int argc, char ** argsv)
 	//Define triangles in the cube
 	static const int indices[] =
 	{
-		0, 1, 2,
-		2, 0, 3,
+		1, 0 , 4,
+		4, 0, 5, 
 
-		1, 4, 7,
-		7, 2, 1,
+		7, 2, 1, 
+		7, 1, 4,
 
-		7, 2, 3,
-		3, 6, 7,
+		1, 2, 3,
+		1, 3, 0, 
 
-		0, 3, 6,
-		6, 5, 0,
+		5, 0, 3, 
+		5, 3, 6, 
 
-		5, 6, 7, 
-		7, 4, 5,
+		6, 3, 7, 
+		7, 3, 2, 
 
-		4, 5, 0, 
-		0, 1, 4,
+		7, 4, 5, 
+		7, 5, 6
 	};
 
 
@@ -107,7 +100,7 @@ int main(int argc, char ** argsv)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(Vertex), indices, GL_STATIC_DRAW);
 
 	//Enable backface culling. Not all faces are properly rotated :c
-	//glEnable(GL_CULL_FACE); 
+	glEnable(GL_CULL_FACE); 
 
 	GLuint programID = LoadShaders("vertexShader.glsl", "fragmentShader.glsl");
 	GLuint colour1Location = glGetUniformLocation(programID, "triangleColour1");
@@ -191,6 +184,10 @@ int main(int argc, char ** argsv)
 					//Update inputManager
 					input->manageKeyboardEvents(event);
 					break;
+
+				case SDL_MOUSEMOTION:
+					//Pass location to inputManager
+					input->mouseInput(window, event.motion.x, event.motion.y);
 			}
 		}
 
@@ -200,8 +197,13 @@ int main(int argc, char ** argsv)
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
-
+		
+		//Handle keyboard input
 		controller.control(deltaTime);
+
+		//Reset cursor to center of screen
+		SDL_WarpMouseInWindow(window, (global::SCREEN_WIDTH / 2), (global::SCREEN_HEIGHT / 2));
+
 
 		//std::cout << camera->getPosition().x << camera->getPosition().y << camera->getPosition().z;
 

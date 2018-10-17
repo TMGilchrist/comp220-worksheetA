@@ -11,14 +11,24 @@ class Camera
 {
 public:
 	Camera(float initFoV = 60, float initNearClip = 0.1, float initFarClip = 100);
-	Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, float initFoV=60, float initNearClip=0.1, float initFarClip=100);
+	Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, float initFoV = 60, float initNearClip = 0.1, float initFarClip = 100);
 
 	~Camera();
 
+	//Calculate view matrix
 	void setViewMatrix();
+
+	//Caluclate projection matrix
 	void setProjectionMatrix();
 
-	glm::mat4 getViewMatrix() 
+	//Keep camera inside pitch constraints
+	void checkPitchConstraints();
+
+	//Calculate the camera's rotation, based on mouse position
+	void calculateCameraRotation();
+
+
+	glm::mat4 getViewMatrix()
 	{
 		return viewMatrix;
 	}
@@ -28,29 +38,49 @@ public:
 		return projectionMatrix;
 	}
 
-	glm::vec3 getPosition() 
+	glm::vec3 getPosition()
 	{
 		return position;
 	}
 
-	glm::vec3 getTarget() 
+	glm::vec3 getTarget()
 	{
 		return target;
 	}
 
-	glm::vec3 getUpVector() 
+	glm::vec3 getUpVector()
 	{
 		return upVector;
 	}
 
-	void setPosition(glm::vec3 Position) 
+	void setPosition(glm::vec3 Position)
 	{
 		position = Position;
 	}
 
-	void setTarget(glm::vec3 Target) 
+	void setTarget(glm::vec3 Target)
 	{
 		target = Target;
+	}
+
+	void increasePitch(float Pitch) 
+	{
+		pitch += Pitch;
+	}
+
+	void increaseYaw(float Yaw)
+	{
+		yaw += Yaw;
+	}
+
+	void setPitch(float Pitch)
+	{
+		pitch = Pitch;
+	}
+
+	void setYaw(float Yaw) 
+	{
+		yaw = Yaw;
 	}
 
 private:
@@ -73,12 +103,17 @@ private:
 	glm::vec3 upVector;
 
 	//Actually opposite direction to camera facing
-	glm::vec3 zAxis = glm::normalize(position - target);
+	glm::vec3 zAxis;
 
 	glm::vec3 xAxis;
 	glm::vec3 yAxis;
 
+	//Matricies
 	glm::mat4 viewMatrix;
 	glm::mat4 projectionMatrix;
+
+	//Yaw and pitch
+	float pitch;
+	float yaw;
 };
 

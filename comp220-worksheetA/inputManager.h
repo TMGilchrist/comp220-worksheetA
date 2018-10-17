@@ -1,11 +1,15 @@
 #pragma once
 #include <SDL.h>
 #include <map>
+#include "globals.h"
+#include "Camera.h"
 
 class InputManager
 {
 public:
 	InputManager();
+	InputManager(Camera * Camera);
+
 	~InputManager();
 
 	//Populate map with events
@@ -13,6 +17,8 @@ public:
 	{
 		keyStates[event.key.keysym.sym] = event.key.state;
 	}
+
+	void mouseInput(float xPos, float yPos);
 
 	//Clear map of events
 	void clearEvents()
@@ -32,9 +38,30 @@ public:
 		return keyStates[key] == SDL_PRESSED;
 	}
 
+	float getYOffset() 
+	{
+		return yOffset;
+	}
+
+	float getXOffset() 
+	{
+		return xOffset;
+	}
 
 private:
 	//Map containing the key, and its state (pressed/released)
 	std::map<SDL_Keycode, Uint8> keyStates;
+	Camera* camera;
+
+	float mouseSensitivity;
+
+	float lastX;
+	float lastY;
+
+	//float xPos;
+	//float yPos;
+
+	float xOffset;
+	float yOffset;
 };
 

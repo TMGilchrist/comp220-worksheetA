@@ -5,15 +5,17 @@
 Camera::Camera(float initFoV, float initNearClip, float initFarClip) 
 {
 	//Initialise variables
-	position = glm::vec3(8, 6, 4);
+	position = glm::vec3(0, 3, -10);
 	target = glm::vec3(0, 0, 1);
 	upVector = glm::vec3(0, 1, 0);
 	FoV = initFoV;
 	nearClip = initNearClip;
 	farClip = initFarClip;
 
+	zAxis = glm::normalize(position - target);
 	xAxis = glm::normalize(glm::cross(upVector, zAxis));
 	yAxis = glm::cross(zAxis, xAxis);
+
 
 	//Generate matricies
 	setViewMatrix();
@@ -30,6 +32,7 @@ Camera::Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, floa
 	nearClip = initNearClip;
 	farClip = initFarClip;
 
+	zAxis = glm::normalize(position - target);
 	xAxis = glm::normalize(glm::cross(upVector, zAxis));
 	yAxis = glm::cross(zAxis, xAxis);
 
@@ -62,4 +65,28 @@ void Camera::setProjectionMatrix()
 		nearClip,              
 		farClip             
 	);
+}
+
+void Camera::checkPitchConstraints()
+{
+	//Constrain upwards view
+	if (pitch > 89.0f)
+		pitch = 89.0f;
+
+	//Constrain downwards view
+	if (pitch < -89.0f)
+		pitch = -89.0f;
+}
+
+void Camera::calculateCameraRotation()
+{
+	//Might have to make a temp variable to then normalize into target
+	glm::vec3 tempTarget;
+
+	tempTarget.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	tempTarget.y = sin(glm::radians(pitch));
+	tempTarget.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	target = glm::normalize(tempTarget);
+
+	setViewMatrix();
 }

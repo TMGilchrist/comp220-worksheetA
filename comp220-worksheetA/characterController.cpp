@@ -27,6 +27,16 @@ void CharacterController::control(float deltaTime)
 	cameraTarget = attachedCamera->getTarget();
 	movespeed = 0.05f * deltaTime;
 
+	//Update yaw and pitch of camera
+	attachedCamera->increaseYaw(input->getXOffset());
+	attachedCamera->increasePitch(input->getYOffset());
+
+	//Ensure new pitch is not outside constraints
+	attachedCamera->checkPitchConstraints();
+
+	//Calculate new rotation
+	attachedCamera->calculateCameraRotation();
+
 	//Check inputs.
 	if (input->isPressed(SDLK_w))
 	{
@@ -51,28 +61,4 @@ void CharacterController::control(float deltaTime)
 		attachedCamera->setPosition(cameraPosition + (glm::normalize(glm::cross(cameraTarget, attachedCamera->getUpVector())) * movespeed));
 		attachedCamera->setViewMatrix();
 	}
-
-	/*
-	//Check inputs.
-	if (input.isPressed(SDLK_w))
-	{	
-		std::cout << "W pressed";
-		attachedCamera.setPosition(cameraPosition + (movespeed * cameraTarget));
-		//attachedCamera.setPosition(glm::vec3(cameraPosition.x + 1, cameraPosition.y, cameraPosition.z));
-	}
-
-	if (input.isPressed(SDLK_a))
-	{		
-		attachedCamera.setPosition(cameraPosition - (glm::normalize(glm::cross(cameraTarget, attachedCamera.getUpVector())) * movespeed));
-	}
-
-	if (input.isPressed(SDLK_s))
-	{		
-		attachedCamera.setPosition(cameraPosition - (movespeed * cameraTarget));
-	}
-
-	if (input.isPressed(SDLK_d))
-	{		
-		attachedCamera.setPosition(cameraPosition + (glm::normalize(glm::cross(cameraTarget, attachedCamera.getUpVector())) * movespeed));
-	}*/
 }
