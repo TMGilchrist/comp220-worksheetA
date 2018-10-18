@@ -14,12 +14,13 @@ public:
 
 	~InputManager();
 
-	//Populate map with events
+	//Populate map with keyboard events
 	void manageKeyboardEvents(SDL_Event event)
 	{
 		keyStates[event.key.keysym.sym] = event.key.state;
 	}
 
+	//Handle mouse input (change camera yaw/pitch)
 	void mouseInput(float xPos, float yPos);
 
 	//Clear map of events
@@ -40,6 +41,7 @@ public:
 		return keyStates[key] == SDL_PRESSED;
 	}
 
+	
 	float getYOffset() 
 	{
 		return yOffset;
@@ -57,12 +59,11 @@ private:
 
 	float mouseSensitivity;
 
+	//Last position of the cursor, used to calculate offset, possibly redundant, see below.
 	float lastX;
 	float lastY;
 
-	//float xPos;
-	//float yPos;
-
+	//The cursor offsets (possibly redundant since SDL gives relative mouse offset?)
 	float xOffset;
 	float yOffset;
 

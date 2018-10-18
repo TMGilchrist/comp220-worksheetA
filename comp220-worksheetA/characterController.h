@@ -11,16 +11,21 @@ public:
 	CharacterController(InputManager* Input, Camera* Camera);
 	~CharacterController();
 
-	void control(float deltaTime);
+	//Handle effects of keyboard input
+	void handleKeyboard(float deltaTime);
+
+	//Handle effects of mouse input
 	void handleMouse();
 
 private:
 	InputManager* input;
 	Camera* attachedCamera; //Camera directly controlled
 
+	//Position and target of the attached camera
 	glm::vec3 cameraPosition;
 	glm::vec3 cameraTarget;
 
+	//How fast the player can move
 	float movespeed;
 };
 

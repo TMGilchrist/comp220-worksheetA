@@ -21,7 +21,7 @@ CharacterController::~CharacterController()
 {
 }
 
-void CharacterController::control(float deltaTime)
+void CharacterController::handleKeyboard(float deltaTime)
 {
 	cameraPosition = attachedCamera->getPosition();
 	cameraTarget = attachedCamera->getTarget();

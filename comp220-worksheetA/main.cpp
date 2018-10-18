@@ -1,19 +1,18 @@
 #include "main.h"
 #include <iostream>
 
+/*Probably want to make a Game class to keep main neat*/
 
 int main(int argc, char ** argsv)
 {
 	//Create SDL window
 	Window windowMain = Window("Shader Practice");
 	SDL_Window* window = windowMain.getWindow();
-	//SDL_SetWindowResizable(window, SDL_TRUE);
 
 	//Initalise Open_GL and GLEW. Get Open_GL context.
 	GLManager glManager = GLManager(window);
 	SDL_GLContext glContext = glManager.getGLContext();
-
-
+	
 	//Vertex array
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
@@ -51,14 +50,14 @@ int main(int argc, char ** argsv)
 		//Top four vertices
 		{0, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f }, //0
 		{0, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //1
-		{1, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //2
-		{1, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //3
+		{1, 0, 1, 0.0f, 1.0f, 0.0f, 1.0f},  //2
+		{1, 1, 1, 0.0f, 1.0f, 0.0f, 1.0f},  //3
 
 		//Bottom four vertices
-		{0, 0, 0, 1.0f, 0.0f, 0.0f, 1.0f},  //4
-		{0, 1, 0, 1.0f, 0.0f, 0.0f, 1.0f},  //5
-		{1, 1, 0, 1.0f, 0.0f, 0.0f, 1.0f},  //6
-		{1, 0, 0, 1.0f, 0.0f, 0.0f, 1.0f}   //7
+		{0, 0, 0, 0.0f, 0.0f, 1.0f, 1.0f},  //4
+		{0, 1, 0, 0.0f, 0.0f, 1.0f, 1.0f},  //5
+		{1, 1, 0, 0.0f, 0.0f, 1.0f, 1.0f},  //6
+		{1, 0, 0, 0.0f, 0.0f, 1.0f, 1.0f}   //7
 	};
 
 	//Define triangles in the cube
@@ -83,6 +82,8 @@ int main(int argc, char ** argsv)
 		7, 5, 6
 	};
 
+
+	/* The following buffer code should be moved to an Object or Model class so that each object can track it's own buffer. */
 
 	// This will identify our vertex buffer
 	GLuint vertexbuffer;
@@ -110,7 +111,8 @@ int main(int argc, char ** argsv)
 
 
 	/* ModelMatrix setup. This should be moved into gameloop later 
-	   so that model can be moved in game. */
+	   so that model can be moved in game. Also should encapuslate
+	   some of these in functions */
 
 	//Translation and scale
 	glm::vec3 modelTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -132,17 +134,13 @@ int main(int argc, char ** argsv)
 
 	GLuint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 
-
-
-	//Create camera and calculate MVP matrix
-	//Camera camera = Camera();
-	//glm::mat4 MVP = camera.getProjectionMatrix() * camera.getViewMatrix() * modelMatrix;
-
+	//Set up a camera and caluclate MVP
 	Camera* camera = new Camera();
 	glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * modelMatrix;
 
 	GLuint MVPLocation = glGetUniformLocation(programID, "MVP");
 
+	//Set up new inputManager and PlayerController
 	InputManager* input = new InputManager();
 	CharacterController controller = CharacterController(input, camera);
 
@@ -151,12 +149,12 @@ int main(int argc, char ** argsv)
 	------------------------*/
 
 	//Event loop, we will loop until running is set to false
-	bool gameRunning = true;
+	bool gameIsRunning = true;
 
 	//SDL Event structure, this will be checked in the while loop
 	SDL_Event event;
 
-	while (gameRunning)
+	while (gameIsRunning)
 	{
 		//Poll for the events which have happened in this frame
 		while (SDL_PollEvent(&event))
@@ -166,7 +164,7 @@ int main(int argc, char ** argsv)
 			{
 				//QUIT Message, usually called when the window has been closed
 				case SDL_QUIT:
-					gameRunning = false;
+					gameIsRunning = false;
 					break;
 
 				case SDL_KEYDOWN:
@@ -177,8 +175,17 @@ int main(int argc, char ** argsv)
 					switch (event.key.keysym.sym)
 					{
 						case SDLK_ESCAPE:
-							gameRunning = false;
+							gameIsRunning = false;
 							break;
+
+						case SDLK_F1:
+							windowMain.toggleMaximised();
+							break;
+
+						case SDLK_F2:
+							windowMain.toggleFullScreen();
+							break;
+
 					}
 
 				case SDL_KEYUP:
@@ -188,9 +195,9 @@ int main(int argc, char ** argsv)
 
 				case SDL_MOUSEMOTION:
 					//Pass location to inputManager
-					//std::cout << event.motion.x << " : " << event.motion.y;
 					input->mouseInput(event.motion.xrel, event.motion.yrel);
-					std::cout << "  <" << event.motion.xrel << " : " << event.motion.yrel << ">  ";
+
+					//std::cout << "  <" << event.motion.xrel << " : " << event.motion.yrel << ">  ";
 					controller.handleMouse();
 					break;
 				
@@ -198,8 +205,7 @@ int main(int argc, char ** argsv)
 					//Check for window being resized
 					if (event.window.event == SDL_WINDOWEVENT_RESIZED) 
 					{
-						//Global screen size needs to be updated here
-						//SDL_GetWindowSize(window); //Needs to be passed a pointer for screen height and width to fill.
+						//Update size of screen variables <- needed for mouse calculations
 					}
 					break;
 			}
@@ -214,16 +220,8 @@ int main(int argc, char ** argsv)
 
 		
 		//Handle keyboard input
-		controller.control(deltaTime);
+		controller.handleKeyboard(deltaTime);
 
-
-		if (windowMain.getFlags() & SDL_WINDOW_MOUSE_FOCUS)
-		{
-			//Reset cursor to center of screen
-			SDL_WarpMouseInWindow(window, (global::SCREEN_WIDTH / 2), (global::SCREEN_HEIGHT / 2));
-		}
-
-		//std::cout << camera->getPosition().x << camera->getPosition().y << camera->getPosition().z;
 
 		glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * modelMatrix;
 

@@ -10,8 +10,8 @@
 class Camera
 {
 public:
-	Camera(float initFoV = 60, float initNearClip = 0.1, float initFarClip = 100);
-	Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, float initFoV = 60, float initNearClip = 0.1, float initFarClip = 100);
+	Camera(float initFoV = 60, float initNearClip = 0.1, float initFarClip = 1000);
+	Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, float initFoV = 60, float initNearClip = 0.1, float initFarClip = 1000);
 
 	~Camera();
 
@@ -27,6 +27,21 @@ public:
 	//Calculate the camera's rotation, based on mouse position
 	void calculateCameraRotation();
 
+
+	//Specialised setters to increase pitch and yaw instead of just replacing with new values
+	void increasePitch(float Pitch)
+	{
+		pitch += Pitch;
+	}
+
+	void increaseYaw(float Yaw)
+	{
+		yaw += Yaw;
+	}
+
+	/*---------------------
+	  Getters and Setters
+	---------------------*/
 
 	glm::mat4 getViewMatrix()
 	{
@@ -61,16 +76,6 @@ public:
 	void setTarget(glm::vec3 Target)
 	{
 		target = Target;
-	}
-
-	void increasePitch(float Pitch) 
-	{
-		pitch += Pitch;
-	}
-
-	void increaseYaw(float Yaw)
-	{
-		yaw += Yaw;
 	}
 
 	void setPitch(float Pitch)

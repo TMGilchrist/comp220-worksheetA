@@ -39,13 +39,6 @@ void InputManager::mouseInput(float xPos, float yPos)
 	xOffset = xPos * mouseSensitivity;
 	yOffset = yPos * mouseSensitivity;
 
-	/*
-	//Update yaw and pitch of camera
-	camera->increaseYaw(xOffset);
-	camera->increasePitch(yOffset);
-
-	//Ensure new pitch is not outside constraints
-	camera->checkPitchConstraints();*/
 }
 
 
