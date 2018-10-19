@@ -19,7 +19,7 @@ Camera::Camera(float initFoV, float initNearClip, float initFarClip)
 
 	//Generate matricies
 	setViewMatrix();
-	setProjectionMatrix();
+	setProjectionMatrix(global::SCREEN_WIDTH, global::SCREEN_HEIGHT); //Doesn't actually work as intended, should really get current window size
 }
 
 Camera::Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, float initFoV, float initNearClip, float initFarClip)
@@ -38,7 +38,7 @@ Camera::Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, floa
 
 	//Generate matricies
 	setViewMatrix();
-	setProjectionMatrix();
+	setProjectionMatrix(global::SCREEN_WIDTH, global::SCREEN_HEIGHT); //Doesn't actually work as intended, should really get current window size
 }
 
 
@@ -59,12 +59,12 @@ void Camera::setViewMatrix()
 	);
 }
 
-void Camera::setProjectionMatrix()
+void Camera::setProjectionMatrix(int screenWidth, int screenHeight)
 {
 	projectionMatrix = glm::perspective
 	(
 		glm::radians(FoV),
-		(float)global::SCREEN_WIDTH / (float)global::SCREEN_HEIGHT,   // Aspect Ratio
+		(float)screenWidth / (float)screenHeight, // Aspect Ratio
 		nearClip,              
 		farClip             
 	);

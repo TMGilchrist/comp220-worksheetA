@@ -20,7 +20,7 @@ public:
 	void setViewMatrix();
 
 	//Caluclate projection matrix
-	void setProjectionMatrix();
+	void setProjectionMatrix(int screenWidth, int screenHeight);
 
 	//Keep camera inside pitch constraints
 	void checkPitchConstraints();
@@ -89,7 +89,20 @@ public:
 		yaw = Yaw;
 	}
 
+	void setWindowHeight(int Height) 
+	{
+		windowHeight = Height;
+	}
+
+	void setWindowWidth(int Width) 
+	{
+		windowWidth = Width;
+	}
+
 private:
+	int windowHeight;
+	int windowWidth;
+
 	//Vertical field of view in degrees.
 	float FoV;
 

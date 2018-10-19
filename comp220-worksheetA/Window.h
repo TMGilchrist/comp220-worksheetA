@@ -36,6 +36,16 @@ public:
 		return flags;
 	}
 
+	int getHeight() 
+	{
+		return height;
+	}
+
+	int getWidth() 
+	{
+		return width;
+	}
+
 private:
 	//The application window
 	SDL_Window* window;

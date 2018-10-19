@@ -134,8 +134,11 @@ int main(int argc, char ** argsv)
 
 	GLuint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 
-	//Set up a camera and caluclate MVP
+	//Set up a camera and init the projection matrix with window size
 	Camera* camera = new Camera();
+	camera->setProjectionMatrix(windowMain.getWidth(), windowMain.getHeight());
+
+	//Caluclate MVP
 	glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * modelMatrix;
 
 	GLuint MVPLocation = glGetUniformLocation(programID, "MVP");
@@ -178,12 +181,11 @@ int main(int argc, char ** argsv)
 							gameIsRunning = false;
 							break;
 
-						case SDLK_F1:
-							windowMain.toggleMaximised();
-							break;
-
 						case SDLK_F2:
 							windowMain.toggleFullScreen();
+
+							//Recalculate projection matrix with new screen size
+							camera->setProjectionMatrix(windowMain.getWidth(), windowMain.getHeight());
 							break;
 
 					}
