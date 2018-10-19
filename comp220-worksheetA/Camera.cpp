@@ -64,7 +64,7 @@ void Camera::setProjectionMatrix()
 	projectionMatrix = glm::perspective
 	(
 		glm::radians(FoV),
-		(float)global::SCREEN_HEIGHT / (float)global::SCREEN_WIDTH,   // Aspect Ratio
+		(float)global::SCREEN_WIDTH / (float)global::SCREEN_HEIGHT,   // Aspect Ratio
 		nearClip,              
 		farClip             
 	);
