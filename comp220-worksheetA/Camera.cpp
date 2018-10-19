@@ -2,7 +2,7 @@
 
 
 
-Camera::Camera(float initFoV, float initNearClip, float initFarClip) 
+Camera::Camera(float initFoV, float initNearClip, float initFarClip)
 {
 	//Initialise variables
 	position = glm::vec3(0, 6, -10);

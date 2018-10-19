@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include <string>
+#include <SDL_opengl.h>
 #include "globals.h"
 
 class Window

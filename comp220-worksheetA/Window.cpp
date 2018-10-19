@@ -9,8 +9,8 @@
 		window = SDL_CreateWindow("SDL_Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, global::SCREEN_WIDTH, global::SCREEN_WIDTH, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
 		verifyWindow();
-		//SDL_SetWindowResizable(window, SDL_TRUE);
-		//height = window.height
+		SDL_SetWindowResizable(window, SDL_TRUE);
+		SDL_GetWindowSize(window, &width, &height);
 
 		flags = SDL_GetWindowFlags(window);
 		isFullscreen = false;
@@ -26,6 +26,7 @@
 
 		verifyWindow();
 		SDL_SetWindowResizable(window, SDL_TRUE);
+		SDL_GetWindowSize(window, &width, &height);
 
 		flags = SDL_GetWindowFlags(window);
 		isFullscreen = false;
@@ -41,6 +42,7 @@
 
 		verifyWindow();
 		SDL_SetWindowResizable(window, SDL_TRUE);
+		SDL_GetWindowSize(window, &width, &height);
 
 		flags = SDL_GetWindowFlags(window);
 		isFullscreen = false;
@@ -88,6 +90,8 @@
 		if (isFullscreen == false) 
 		{
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+			SDL_GetWindowSize(window, &width, &height);
+			glViewport(0, 0, width, height);
 			isFullscreen = true;
 		}
 
@@ -95,6 +99,8 @@
 		else 
 		{
 			SDL_SetWindowFullscreen(window, 0);
+			SDL_GetWindowSize(window, &width, &height);
+			glViewport(0, 0, width, height);
 			isFullscreen = false;
 		}
 	}

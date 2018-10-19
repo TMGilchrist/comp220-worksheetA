@@ -6,6 +6,7 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include "globals.h"
 #include <iostream>
+#include "Window.h"
 
 class Camera
 {
