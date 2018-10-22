@@ -29,7 +29,7 @@ int main(int argc, char ** argsv)
 
 	// An array of 3 vectors which represents 3 vertices
 	//{x, y, z, r, g, b, a}
-	static const Vertex v[] =
+	static const Vertex triangle[] =
 	{
 		{-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
 		{0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f},
@@ -41,8 +41,8 @@ int main(int argc, char ** argsv)
 	{
 		{-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f},
 		{0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f},
-		{0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f},
-		{-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f}
+		{0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f},
+		{-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f}
 	};
 
 	//{x, y, z, r, g, b, a, tu, tv}
@@ -83,15 +83,21 @@ int main(int argc, char ** argsv)
 		7, 5, 6
 	};
 
+	static const int squareIndices[] =
+	{
+		0,1,2,
+		2,0,3
+	};
 
 	/* The following buffer code should be moved to an Object or Model class so that each object can track it's own buffer. */
 
+	/*
 	// This will identify our vertex buffer
-	GLuint vertexbuffer;
-	// Generate 1 buffer, put the resulting identifier in vertexbuffer
-	glGenBuffers(1, &vertexbuffer);
-	// The following commands will talk about our 'vertexbuffer' buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	GLuint vertexBuffer;
+	// Generate 1 buffer, put the resulting identifier in vertexBuffer
+	glGenBuffers(1, &vertexBuffer);
+	// The following commands will talk about our 'vertexBuffer' buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(Vertex), saneCube, GL_STATIC_DRAW);
 
@@ -100,10 +106,32 @@ int main(int argc, char ** argsv)
 	glGenBuffers(1, &elementBuffer);
 	//Bind element buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(Vertex), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(Vertex), indices, GL_STATIC_DRAW);*/
+
+	// This will identify our vertex buffer
+	GLuint vertexBuffer;
+	// Generate 1 buffer, put the resulting identifier in vertexBuffer
+	glGenBuffers(1, &vertexBuffer);
+	// The following commands will talk about our 'vertexBuffer' buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	// Give our vertices to OpenGL.
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(Vertex), square, GL_STATIC_DRAW);
+
+	//Create element buffer
+	GLuint elementBuffer;
+	glGenBuffers(1, &elementBuffer);
+	//Bind element buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(Vertex), squareIndices, GL_STATIC_DRAW);
 
 	//Enable backface culling. Not all faces are properly rotated :c
-	glEnable(GL_CULL_FACE); 
+	//glEnable(GL_CULL_FACE); 
+
+
+	//unsigned int numberOfVerts = 0;
+	//unsigned int numberOfIndices = 0;
+
+	//loadModelFromFile("", vertexBuffer, elementBuffer, numberOfVerts, numberOfIndices);
 
 
 	GLuint textureID = loadTextureFromFile("checkerboard.png");
@@ -250,7 +278,7 @@ int main(int argc, char ** argsv)
 		//glActiveTexture(GL_Texture1);
 		//glBindTexture(GL_TEXTURE_2D, anotherTextureID);
 
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 
 
@@ -311,11 +339,13 @@ int main(int argc, char ** argsv)
 		//glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
 		//Draw square
-		//glDrawArrays(GL_TRIANGLES, 0, 4);
-
-		//Draw Square
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glDisableVertexAttribArray(0);
+
+		//Draw Cube
+		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		//glDisableVertexAttribArray(0);
 
 
 		//Refresh screen
@@ -329,7 +359,7 @@ int main(int argc, char ** argsv)
 	--------------------*/
 
 	glDeleteProgram(programID);
-	glDeleteBuffers(1, &vertexbuffer);
+	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteVertexArrays(1, &VertexArrayID);
 
 	glDeleteBuffers(1, &elementBuffer);

@@ -18,7 +18,7 @@ void main()
 	//gl_Position = modelMatrix * vec4(vertexPosition, 1.0f);
 
 	vertexColourOut = vertexColour;
-	vertexTextureCoordsOut = VertexTextureCoords;
+	vertexTextureCoordsOut = vertexTextureCoords;
 
 	gl_Position = MVP * vec4(vertexPosition, 1.0f);
 
