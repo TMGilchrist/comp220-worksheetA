@@ -19,3 +19,4 @@
 #include "characterController.h"
 
 #include "Vertex.h"
+#include "Texture.h"

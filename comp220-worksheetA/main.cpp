@@ -45,19 +45,20 @@ int main(int argc, char ** argsv)
 		{-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f}
 	};
 
+	//{x, y, z, r, g, b, a, tu, tv}
 	static const Vertex saneCube[]=
 	{
 		//Top four vertices
-		{0, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f}, //0
-		{0, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //1
-		{1, 0, 1, 0.0f, 1.0f, 0.0f, 1.0f},  //2
-		{1, 1, 1, 0.0f, 1.0f, 0.0f, 1.0f},  //3
+		{0, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f}, //0
+		{0, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f},  //1
+		{1, 0, 1, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f},  //2
+		{1, 1, 1, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f},  //3
 
 		//Bottom four vertices
-		{0, 0, 0, 0.0f, 0.0f, 1.0f, 1.0f},  //4
-		{0, 1, 0, 0.0f, 0.0f, 1.0f, 1.0f},  //5
-		{1, 1, 0, 0.0f, 0.0f, 1.0f, 1.0f},  //6
-		{1, 0, 0, 0.0f, 0.0f, 1.0f, 1.0f}   //7
+		{0, 0, 0, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f},  //4
+		{0, 1, 0, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f},  //5
+		{1, 1, 0, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f},  //6
+		{1, 0, 0, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f}   //7
 	};
 
 	//Define triangles in the cube
@@ -104,9 +105,15 @@ int main(int argc, char ** argsv)
 	//Enable backface culling. Not all faces are properly rotated :c
 	glEnable(GL_CULL_FACE); 
 
-	GLuint programID = LoadShaders("vertexShader.glsl", "fragmentShader.glsl");
+
+	GLuint textureID = loadTextureFromFile("checkerboard.png");
+	GLuint programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
+	//GLuint programID = LoadShaders("vertexShader.glsl", "fragmentShader.glsl");
+
 	GLuint colour1Location = glGetUniformLocation(programID, "triangleColour1");
 	GLuint colour2Location = glGetUniformLocation(programID, "triangleColour2");
+
+	GLuint textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
 
 
 
@@ -236,6 +243,12 @@ int main(int argc, char ** argsv)
 		//Linking shaders
 		glUseProgram(programID);
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+
+		//if we want another texture do the following:
+		//glActiveTexture(GL_Texture1);
+		//glBindTexture(GL_TEXTURE_2D, anotherTextureID);
 
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
@@ -292,7 +305,7 @@ int main(int argc, char ** argsv)
 		//Set triangle colour
 		glUniform4f(colour1Location, 0, 0, 1, 0);
 		glUniform4f(colour2Location, 1, 0, 0, 0);
-
+		glUniform1i(textureUniformLocation, 0);
 
 		// Draw the triangle
 		//glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
@@ -318,6 +331,9 @@ int main(int argc, char ** argsv)
 	glDeleteProgram(programID);
 	glDeleteBuffers(1, &vertexbuffer);
 	glDeleteVertexArrays(1, &VertexArrayID);
+
+	glDeleteBuffers(1, &elementBuffer);
+	glDeleteTextures(1, &textureID);
 
 	//Delete context
 	SDL_GL_DeleteContext(glContext);
