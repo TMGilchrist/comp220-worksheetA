@@ -109,7 +109,7 @@ xcopy /Y /D /I ..\Libraries\SDL2_image-2.0.1\lib\x64\*.dll "</Command>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Libraries\glm;..\Libraries\SDL2_image-2.0.1\include;..\Libraries\glew-2.1.0\include;..\Libraries\SDL2-2.0.6\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Libraries\glm;..\Libraries\SDL2_image-2.0.3\include;..\Libraries\glew-2.1.0\include;..\Libraries\SDL2-2.0.6\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -162,6 +162,7 @@ xcopy /Y /D /I ..\Libraries\SDL2_image-2.0.3\lib\x64\*.dll "$(OutDir)\*.dll"</Co
     <ClCompile Include="inputManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +173,7 @@ xcopy /Y /D /I ..\Libraries\SDL2_image-2.0.3\lib\x64\*.dll "$(OutDir)\*.dll"</Co
     <ClInclude Include="inputManager.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

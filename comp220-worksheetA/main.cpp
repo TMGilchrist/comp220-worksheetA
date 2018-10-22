@@ -39,16 +39,16 @@ int main(int argc, char ** argsv)
 	//Define square verticies
 	static const Vertex square[] =
 	{
-		{-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
-		{0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f},
-		{0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f},
-		{-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f}
+		{-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f},
+		{0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f},
+		{0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f},
+		{-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f}
 	};
 
 	static const Vertex saneCube[]=
 	{
 		//Top four vertices
-		{0, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f }, //0
+		{0, 1, 1, 1.0f, 0.0f, 0.0f, 1.0f}, //0
 		{0, 0, 1, 1.0f, 0.0f, 0.0f, 1.0f},  //1
 		{1, 0, 1, 0.0f, 1.0f, 0.0f, 1.0f},  //2
 		{1, 1, 1, 0.0f, 1.0f, 0.0f, 1.0f},  //3
@@ -240,6 +240,11 @@ int main(int argc, char ** argsv)
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 
+
+		/*---------------------
+		Set vertex Atrributes
+		---------------------*/
+
 		//1st attribute buffer : vertices
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer
@@ -264,6 +269,18 @@ int main(int argc, char ** argsv)
 			(void*)(3 * sizeof(float))
 		);
 
+		//3rd attribute buffer : UV coordinates
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer
+		(
+			2,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(Vertex),
+			(void*)(7 * sizeof(float))
+		);
+
 
 		/*---------------------
 		Send Uniform Values
@@ -280,8 +297,8 @@ int main(int argc, char ** argsv)
 		// Draw the triangle
 		//glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 
-		//Draw cube
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		//Draw square
+		//glDrawArrays(GL_TRIANGLES, 0, 4);
 
 		//Draw Square
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
