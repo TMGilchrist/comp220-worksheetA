@@ -89,10 +89,9 @@ void Camera::calculateCameraRotation()
 	glm::vec3 degreeTarget;
 
 	
-	front.x = glm::degrees(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
-	front.y = glm::degrees(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-	front.z = glm::degrees(sin(glm::radians(pitch)));
-
+	front.x = cos(glm::radians(yaw)) * sin(glm::radians(pitch));
+	front.y = cos(glm::radians(pitch));
+	front.z = sin(glm::radians(yaw)) * sin(glm::radians(pitch)); 
 	   
 	tempTarget.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 	tempTarget.y = sin(glm::radians(pitch));
@@ -102,7 +101,7 @@ void Camera::calculateCameraRotation()
 	degreeTarget.y = sin(yaw) * cos(pitch);
 	degreeTarget.z = sin(pitch);
 
-	target = glm::normalize(tempTarget);
+	target = glm::normalize(front);
 	//target = front;
 
 	//target = targetPos;

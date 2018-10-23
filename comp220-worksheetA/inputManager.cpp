@@ -1,7 +1,16 @@
 #include "inputManager.h"
 
 
-InputManager::InputManager() {}
+InputManager::InputManager() 
+{
+	//Init last mouse position to center of screen
+	lastX = global::SCREEN_WIDTH / 2;
+	lastY = global::SCREEN_HEIGHT / 2;
+
+	mouseSensitivity = 0.01f;
+
+	firstMouse = true;
+}
 
 InputManager::InputManager(Camera * Camera)
 {
