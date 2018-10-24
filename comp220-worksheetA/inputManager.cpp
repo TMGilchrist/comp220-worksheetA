@@ -7,7 +7,7 @@ InputManager::InputManager()
 	lastX = global::SCREEN_WIDTH / 2;
 	lastY = global::SCREEN_HEIGHT / 2;
 
-	mouseSensitivity = 0.01f;
+	mouseSensitivity = 0.05f;
 
 	firstMouse = true;
 }
@@ -18,7 +18,7 @@ InputManager::InputManager(Camera * Camera)
 	lastX = global::SCREEN_WIDTH / 2;
 	lastY = global::SCREEN_HEIGHT / 2;
 
-	mouseSensitivity = 0.01f;
+	mouseSensitivity = 0.05f;
 
 	camera = Camera;
 	firstMouse = true;
@@ -30,7 +30,7 @@ InputManager::~InputManager()
 
 void InputManager::mouseInput(float xPos, float yPos)
 {
-	if (firstMouse) // this bool variable is initially set to true
+	/*if (firstMouse) // this bool variable is initially set to true
 	{
 		lastX = xPos;
 		lastY = yPos;
@@ -42,11 +42,13 @@ void InputManager::mouseInput(float xPos, float yPos)
 	xOffset = xPos - lastX;
 	yOffset = lastY - yPos;
 	lastX = xPos;
-	lastY = yPos;
+	lastY = yPos;*/
 
 	//Store mouse position
 	xOffset = xPos * mouseSensitivity;
 	yOffset = yPos * mouseSensitivity;
+
+	//std::cout << xOffset << " : " << yOffset << "\n"; //X values are working here
 
 }
 
