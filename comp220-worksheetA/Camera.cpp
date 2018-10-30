@@ -16,6 +16,8 @@ Camera::Camera(float initFoV, float initNearClip, float initFarClip)
 	xAxis = glm::normalize(glm::cross(upVector, zAxis));
 	yAxis = glm::cross(zAxis, xAxis);
 
+	//pitch = 0; // Why does initing pitch=0 make it weird??
+	yaw = 0;
 
 	//Generate matricies
 	setViewMatrix();
@@ -36,6 +38,9 @@ Camera::Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, floa
 	xAxis = glm::normalize(glm::cross(upVector, zAxis));
 	yAxis = glm::cross(zAxis, xAxis);
 
+	//pitch = 0;
+	yaw = 0;
+
 	//Generate matricies
 	setViewMatrix();
 	setProjectionMatrix(global::SCREEN_WIDTH, global::SCREEN_HEIGHT); //Doesn't actually work as intended, should really get current window size
@@ -48,8 +53,8 @@ Camera::~Camera()
 
 void Camera::setViewMatrix()
 {
-	std::cout << "Position" << position.x << ", " << position.y << ", " << position.z << ", " << "\n";
-	std::cout << "Target" << target.x << ", " << target.y << ", " << target.z << ", " << "\n";
+	//std::cout << "Position" << position.x << ", " << position.y << ", " << position.z << ", " << "\n";
+	//std::cout << "Target" << target.x << ", " << target.y << ", " << target.z << ", " << "\n";
 
 	viewMatrix = glm::lookAt
 	(
@@ -88,11 +93,10 @@ void Camera::calculateCameraRotation()
 	glm::vec3 tempTarget;
 	glm::vec3 degreeTarget;
 
-	
-	front.x = glm::degrees(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
-	front.y = glm::degrees(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-	front.z = glm::degrees(sin(glm::radians(pitch)));
-
+	std::cout << yaw << "\n";
+	front.x = cos(glm::radians(yaw)) * sin(glm::radians(pitch));
+	front.y = cos(glm::radians(pitch)) * -1; // * -1 to inverse pitch for mouse movement
+	front.z = sin(glm::radians(yaw)) * sin(glm::radians(pitch)); 
 	   
 	tempTarget.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 	tempTarget.y = sin(glm::radians(pitch));
@@ -102,7 +106,7 @@ void Camera::calculateCameraRotation()
 	degreeTarget.y = sin(yaw) * cos(pitch);
 	degreeTarget.z = sin(pitch);
 
-	target = glm::normalize(tempTarget);
+	target = glm::normalize(front);
 	//target = front;
 
 	//target = targetPos;
