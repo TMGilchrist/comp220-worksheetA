@@ -59,15 +59,8 @@ private:
 
 	float mouseSensitivity;
 
-	//Last position of the cursor, used to calculate offset, possibly redundant, see below.
-	float lastX;
-	float lastY;
-
 	//The cursor offsets (possibly redundant since SDL gives relative mouse offset?)
 	float xOffset;
 	float yOffset;
-
-	//If this is the first time mouse input has been detected
-	bool firstMouse;
 };
 

@@ -59,8 +59,6 @@ void CharacterController::handleMouse()
 	attachedCamera->increaseYaw(input->getXOffset());
 	attachedCamera->increasePitch(input->getYOffset());
 
-	//std::cout << input->getXOffset()<< " : " << input->getYOffset() << "\n"; x values still working here
-
 	//Ensure new pitch is not outside constraints
 	attachedCamera->checkPitchConstraints();
 
