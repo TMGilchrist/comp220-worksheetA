@@ -16,7 +16,7 @@ Camera::Camera(float initFoV, float initNearClip, float initFarClip)
 	xAxis = glm::normalize(glm::cross(upVector, zAxis));
 	yAxis = glm::cross(zAxis, xAxis);
 
-	//pitch = 0; // Why does initing pitch=0 make it weird??
+	pitch = 0;//-89; // Why does initing pitch=0 make it weird?? -> at pitch 0, rendering flips over?
 	yaw = 0;
 
 	//Generate matricies
@@ -38,7 +38,7 @@ Camera::Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, floa
 	xAxis = glm::normalize(glm::cross(upVector, zAxis));
 	yAxis = glm::cross(zAxis, xAxis);
 
-	//pitch = 0;
+	pitch = 0; // why does init pitch=0 do weird things?
 	yaw = 0;
 
 	//Generate matricies
@@ -53,13 +53,10 @@ Camera::~Camera()
 
 void Camera::setViewMatrix()
 {
-	//std::cout << "Position" << position.x << ", " << position.y << ", " << position.z << ", " << "\n";
-	//std::cout << "Target" << target.x << ", " << target.y << ", " << target.z << ", " << "\n";
-
 	viewMatrix = glm::lookAt
 	(
 		position,
-		position + target, // + target,
+		position + target,
 		upVector
 	);
 }
@@ -88,27 +85,18 @@ void Camera::checkPitchConstraints()
 
 void Camera::calculateCameraRotation()
 {
-	//glm::vec3 targetPos;
 	glm::vec3 front;
-	glm::vec3 tempTarget;
-	glm::vec3 degreeTarget;
+	glm::vec3 direction;
 
-	std::cout << yaw << "\n";
+	std::cout << "yaw : " << yaw << ", " << "Pitch : " << pitch << "\n";
 	front.x = cos(glm::radians(yaw)) * sin(glm::radians(pitch));
 	front.y = cos(glm::radians(pitch)) * -1; // * -1 to inverse pitch for mouse movement
 	front.z = sin(glm::radians(yaw)) * sin(glm::radians(pitch)); 
-	   
-	tempTarget.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	tempTarget.y = sin(glm::radians(pitch));
-	tempTarget.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
-	degreeTarget.x = cos(yaw) * cos(pitch);
-	degreeTarget.y = sin(yaw) * cos(pitch);
-	degreeTarget.z = sin(pitch);
+	direction.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+	direction.y = sin(glm::radians(pitch)) * -1; // * -1 to inverse pitch for mouse movement
+	direction.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
 
-	target = glm::normalize(front);
-	//target = front;
-
-	//target = targetPos;
+	target = glm::normalize(direction);
 	setViewMatrix();
 }
