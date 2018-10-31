@@ -20,4 +20,5 @@
 
 #include "Vertex.h"
 #include "Texture.h"
+#include "Object.h"
 //#include "Model.h"

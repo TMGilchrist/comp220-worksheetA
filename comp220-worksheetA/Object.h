@@ -9,17 +9,20 @@ public:
 	Object();
 	~Object();
 
-	Object(Vertex VertexData[], int Indices[]);
+	//Object(Vertex VertexData[], int Indices[]);
 
-	void InitBuffers();
+	void Init();
+	void FillBufferData(const Vertex VertexData[], int NumOfVertices, const int Indices[], int NumOfIndices);
 	void CalculateModelMatrix();
 	void SetVertexAttributes();
+	void CleanUp();
 
 	void Update();
 
 private:
 	GLuint vertexBuffer;
 	GLuint elementBuffer;
+	GLuint vertexAttributes;
 
 	glm::mat4 modelMatrix;
 
@@ -30,6 +33,9 @@ private:
 
 	static const Vertex vertexData[];
 	static const int indices[];
+
+	int numOfVertices;
+	int numOfIndices;
 
 };
 

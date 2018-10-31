@@ -93,6 +93,7 @@ int main(int argc, char ** argsv)
 
 	/* The following buffer code should be moved to an Object or Model class so that each object can track it's own buffer. */
 
+	/*
 	//Cube	
 	// This will identify our vertex buffer
 	GLuint vertexBuffer;
@@ -109,6 +110,7 @@ int main(int argc, char ** argsv)
 	//Bind element buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(Vertex), indices, GL_STATIC_DRAW);
+	*/
 
 	/*
 	//Square
@@ -128,6 +130,10 @@ int main(int argc, char ** argsv)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(Vertex), squareIndices, GL_STATIC_DRAW);
 	*/
+
+	Object newObject = Object();
+	newObject.Init();
+	newObject.FillBufferData(saneCube, 8, indices, 36);
 
 	//Enable backface culling. Not all faces are properly rotated :c
 	glEnable(GL_CULL_FACE); 
@@ -284,8 +290,8 @@ int main(int argc, char ** argsv)
 		//glActiveTexture(GL_Texture1);
 		//glBindTexture(GL_TEXTURE_2D, anotherTextureID);
 
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+		//glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 
 
 		/*---------------------
@@ -366,9 +372,9 @@ int main(int argc, char ** argsv)
 	--------------------*/
 
 	glDeleteProgram(programID);
-	glDeleteBuffers(1, &vertexBuffer);
+	//glDeleteBuffers(1, &vertexBuffer);
 
-	glDeleteBuffers(1, &elementBuffer);
+	//glDeleteBuffers(1, &elementBuffer);
 	glDeleteTextures(1, &textureID);
 
 	//Delete context
