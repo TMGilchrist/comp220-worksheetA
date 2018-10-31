@@ -1,3 +1,14 @@
+Questions for Brian:
+ - Passing location/uniform variables across classes/where should they be
+ - Where to call drawElements from, each object? If so, why doesn't that work?
+ - Passing programID around? Does it need to be done? If so, where?
+
+Things to Do:
+ - Object.cpp, make transormation matrices/vectors nicer + initalise them.
+ - Make a game class to do everything main does atm and make main just call game.
+ - Find out why view jumps the first time the mouse is moved.
+
+
 https://gamedev.stackexchange.com/questions/50752/moving-the-camera-as-in-a-first-person-shooter
 
 On Branch Worksheet_B
