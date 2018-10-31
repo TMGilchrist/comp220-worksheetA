@@ -13,11 +13,6 @@ int main(int argc, char ** argsv)
 	GLManager glManager = GLManager(window);
 	SDL_GLContext glContext = glManager.getGLContext();
 	
-	//Vertex array
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
-
 	//Mouse setup, can probably be moved to sdl init?
 	SDL_ShowCursor(0);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -26,6 +21,10 @@ int main(int argc, char ** argsv)
 	float deltaTime = 0.0f;	// Time between current frame and last frame
 	float lastFrame = 0.0f; // Time of last frame
 
+
+	/*-----------------
+	  Vertex Arrays
+	-----------------*/
 
 	// An array of 3 vectors which represents 3 vertices
 	//{x, y, z, r, g, b, a}
@@ -37,6 +36,7 @@ int main(int argc, char ** argsv)
 	};
 
 	//Define square verticies
+	//{x, y, z, r, g, b, a, tu, tv}
 	static const Vertex square[] =
 	{
 		{-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f},
@@ -45,6 +45,7 @@ int main(int argc, char ** argsv)
 		{-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f}
 	};
 
+	//Cube
 	//{x, y, z, r, g, b, a, tu, tv}
 	static const Vertex saneCube[]=
 	{
@@ -89,9 +90,10 @@ int main(int argc, char ** argsv)
 		2,0,3
 	};
 
+
 	/* The following buffer code should be moved to an Object or Model class so that each object can track it's own buffer. */
 
-	/*
+	//Cube	
 	// This will identify our vertex buffer
 	GLuint vertexBuffer;
 	// Generate 1 buffer, put the resulting identifier in vertexBuffer
@@ -106,8 +108,10 @@ int main(int argc, char ** argsv)
 	glGenBuffers(1, &elementBuffer);
 	//Bind element buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(Vertex), indices, GL_STATIC_DRAW);*/
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 36 * sizeof(Vertex), indices, GL_STATIC_DRAW);
 
+	/*
+	//Square
 	// This will identify our vertex buffer
 	GLuint vertexBuffer;
 	// Generate 1 buffer, put the resulting identifier in vertexBuffer
@@ -123,9 +127,10 @@ int main(int argc, char ** argsv)
 	//Bind element buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(Vertex), squareIndices, GL_STATIC_DRAW);
+	*/
 
 	//Enable backface culling. Not all faces are properly rotated :c
-	//glEnable(GL_CULL_FACE); 
+	glEnable(GL_CULL_FACE); 
 
 
 	//unsigned int numberOfVerts = 0;
@@ -136,7 +141,7 @@ int main(int argc, char ** argsv)
 
 	GLuint textureID = loadTextureFromFile("checkerboard.png");
 	GLuint programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
-	//GLuint programID = LoadShaders("vertexShader.glsl", "fragmentShader.glsl");
+	//GLuint programID = LoadShaders("vertexShader.glsl", "fragmentShader.glsl"); //NonTexturedShaders
 
 	GLuint colour1Location = glGetUniformLocation(programID, "triangleColour1");
 	GLuint colour2Location = glGetUniformLocation(programID, "triangleColour2");
@@ -145,9 +150,8 @@ int main(int argc, char ** argsv)
 
 
 
-	/* ModelMatrix setup. This should be moved into gameloop later 
-	   so that model can be moved in game. Also should encapuslate
-	   some of these in functions */
+	/* ModelMatrix setup. This should be moved into Object class later. 
+	   Also should encapuslate some of these in functions */
 
 	//Translation and scale
 	glm::vec3 modelTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -181,6 +185,7 @@ int main(int argc, char ** argsv)
 	//Set up new inputManager and PlayerController
 	InputManager* input = new InputManager();
 	CharacterController controller = CharacterController(input, camera);
+
 
 	/*----------------------
 	      Main Game Loop
@@ -268,6 +273,7 @@ int main(int argc, char ** argsv)
 		glClear(GL_COLOR_BUFFER_BIT);
 
 
+
 		//Linking shaders
 		glUseProgram(programID);
 
@@ -335,17 +341,18 @@ int main(int argc, char ** argsv)
 		glUniform4f(colour2Location, 1, 0, 0, 0);
 		glUniform1i(textureUniformLocation, 0);
 
-		// Draw the triangle
-		//glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+
+		/*----------------
+		Drawing Objects
+		------------------*/
 
 		//Draw square
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glDisableVertexAttribArray(0);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDisableVertexAttribArray(0);
 
 		//Draw Cube
-		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		//glDisableVertexAttribArray(0);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glDisableVertexAttribArray(0);
 
 
 		//Refresh screen
@@ -360,7 +367,6 @@ int main(int argc, char ** argsv)
 
 	glDeleteProgram(programID);
 	glDeleteBuffers(1, &vertexBuffer);
-	glDeleteVertexArrays(1, &VertexArrayID);
 
 	glDeleteBuffers(1, &elementBuffer);
 	glDeleteTextures(1, &textureID);
