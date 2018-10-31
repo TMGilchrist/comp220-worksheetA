@@ -91,7 +91,6 @@ int main(int argc, char ** argsv)
 	};
 
 
-	/* The following buffer code should be moved to an Object or Model class so that each object can track it's own buffer. */
 
 	/*
 	//Cube	
