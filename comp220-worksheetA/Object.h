@@ -1,7 +1,13 @@
 #pragma once
 #include <GL/glew.h>
 #include <glm\glm.hpp>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm\gtx\transform.hpp>
+
 #include "Vertex.h"
+#include "Texture.h"
+
 
 class Object
 {
@@ -42,13 +48,31 @@ public:
 	*/
 	void CleanUp();
 
+	/**
+	Bind the model's texture
+	*/
+	void BindTexure();
+
 	/***/
 	void Update();
 
+
+	/**
+	Load texture from filepath.
+	*/
+	void setTextureID(std::string TextureFile) 
+	{
+		textureID = loadTextureFromFile(TextureFile);
+	}
+
+
+	glm::mat4 getModelMatrix() 
+	{
+		return modelMatrix;
+	}
 private:
 	GLuint vertexBuffer;
 	GLuint elementBuffer;
-
 	GLuint vertexAttributes;
 
 	glm::mat4 modelMatrix;
@@ -58,11 +82,25 @@ private:
 	glm::mat4 rotationMatrix;
 	glm::mat4 scaleMatrix;
 
+	//Translation and scale vectors
+	glm::vec3 modelTranslation;
+	glm::vec3 modelScale;
+
+	//Rotation vecotrs
+	glm::vec3 modelRotation;
+	glm::vec3 xAxis;
+	glm::vec3 yAxis;
+	glm::vec3 zAxis;
+
+	//Mesh Data
 	static const Vertex vertexData[];
 	static const int indices[];
 
 	int numOfVertices;
 	int numOfIndices;
+
+	//Texture
+	GLuint textureID;
 
 };
 

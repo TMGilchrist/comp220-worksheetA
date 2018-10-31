@@ -4,7 +4,15 @@
 
 Object::Object()
 {
+	//Translation and scale
+	modelTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+	modelScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
+	//Rotation
+	modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	xAxis = glm::vec3(1.0f, 0.0f, 0.0f);
+	yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+	zAxis = glm::vec3(0.0f, 0.0f, 1.0f);
 }
 
 
@@ -46,6 +54,11 @@ void Object::FillBufferData(const Vertex VertexData[], int NumOfVertices, const 
 
 void Object::CalculateModelMatrix()
 {
+	//Calculate Transformation Matricies
+	translationMatrix = glm::translate(modelTranslation);
+	rotationMatrix = glm::rotate(modelRotation.x, xAxis) * glm::rotate(modelRotation.y, yAxis) * glm::rotate(modelRotation.z, zAxis);
+	scaleMatrix = glm::scale(modelScale);
+
 	modelMatrix = rotationMatrix * scaleMatrix * translationMatrix;
 }
 
@@ -88,6 +101,10 @@ void Object::SetVertexAttributes()
 		sizeof(Vertex),
 		(void*)(7 * sizeof(float))
 	);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+	//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
 void Object::CleanUp()
@@ -95,4 +112,12 @@ void Object::CleanUp()
 	glDeleteVertexArrays(1, &vertexAttributes);
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteBuffers(1, &elementBuffer);
+}
+
+void Object::BindTexure()
+{
+	//glUseProgram(programID); //Ask why this isn't needed...
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 }
