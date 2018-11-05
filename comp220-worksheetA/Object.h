@@ -1,6 +1,7 @@
 #pragma once
 #include <GL/glew.h>
 #include <glm\glm.hpp>
+#include <vector>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm\gtx\transform.hpp>
@@ -31,7 +32,7 @@ public:
 	@param NumOfIndices : Number of indices in mesh
 
 	*/
-	void FillBufferData(const Vertex VertexData[], int NumOfVertices, const int Indices[], int NumOfIndices);
+	void FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices);
 	
 	/**
 	Calculate the model matrix from the transform matrices
@@ -52,6 +53,8 @@ public:
 	Bind the model's texture
 	*/
 	void BindTexure();
+
+	void Render();
 
 	/***/
 	void Update();
@@ -93,8 +96,11 @@ private:
 	glm::vec3 zAxis;
 
 	//Mesh Data
+	//static const Vertex vertexData[];
+	//static const int indices[];
+
 	static const Vertex vertexData[];
-	static const int indices[];
+	static unsigned int indices[];
 
 	int numOfVertices;
 	int numOfIndices;
@@ -104,3 +110,16 @@ private:
 
 };
 
+class MeshCollection
+{
+public:
+	MeshCollection();
+	~MeshCollection();
+
+	void addMesh(Object *pMesh);
+
+	void render();
+	void destroy();
+private:
+	std::vector<Object*> m_Meshes;
+};

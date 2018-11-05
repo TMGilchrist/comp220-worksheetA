@@ -36,7 +36,7 @@ void Object::Init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 }
 
-void Object::FillBufferData(const Vertex VertexData[], int NumOfVertices, const int Indices[], int NumOfIndices)
+void Object::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, NumOfVertices * sizeof(Vertex), VertexData, GL_STATIC_DRAW);
@@ -105,6 +105,7 @@ void Object::SetVertexAttributes()
 	//glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 	//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	//Render();
 }
 
 void Object::CleanUp()
@@ -120,4 +121,61 @@ void Object::BindTexure()
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
+}
+
+void Object::Render()
+{
+	glBindVertexArray(vertexAttributes);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+
+	glDrawElements(GL_TRIANGLES, numOfIndices, GL_UNSIGNED_INT, (void*)0);
+
+}
+
+
+//-----------------------------------------
+//-----------------------------------------
+
+MeshCollection::MeshCollection()
+{
+}
+
+MeshCollection::~MeshCollection()
+{
+	destroy();
+}
+
+void MeshCollection::addMesh(Object * pMesh)
+{
+	m_Meshes.push_back(pMesh);
+}
+
+void MeshCollection::render()
+{
+	for (Object *pMesh : m_Meshes)
+	{
+		pMesh->Render();
+	}
+}
+
+void MeshCollection::destroy()
+{
+	auto iter = m_Meshes.begin();
+	while (iter != m_Meshes.end())
+	{
+		if (*iter)
+		{
+			(*iter)->CleanUp();
+			delete (*iter);
+			(*iter) = nullptr;
+			iter = m_Meshes.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+
+	m_Meshes.clear();
 }

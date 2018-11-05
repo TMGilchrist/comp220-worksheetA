@@ -41,7 +41,7 @@ namespace GeometryModels
 	};
 
 	//Cube Indices
-	static const int cubeIndices[] =
+	static unsigned int cubeIndices[] =
 	{
 		1, 0 , 4,
 		4, 0, 5,
@@ -63,7 +63,7 @@ namespace GeometryModels
 	};
 
 	//Square Indices
-	static const int squareIndices[] =
+	static unsigned int squareIndices[] =
 	{
 		0,1,2,
 		2,0,3
