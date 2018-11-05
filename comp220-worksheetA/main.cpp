@@ -178,6 +178,7 @@ int main(int argc, char ** argsv)
 
 		//Draw Cube
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
 		//glDisableVertexAttribArray(0); Having this stops the attribute array in Object.cpp from working...?
 
 
