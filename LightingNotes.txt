@@ -1,0 +1,176 @@
+ --------------------------------------------------------------------------------
+ **Ambient Lighting**
+ --------------------------------------------------------------------------------
+ 
+Add text files: 
+ blinnPhongVert.glsl
+ blinnPhoneFragment.glsl
+
+ copy vert and frag code into new shaders
+
+Switch LoadShaders() to new shaders in main.
+
+In Frag shader:
+ uniform vec4 ambientLightColour;
+ uniform vec4 ambientMaterialColour;
+ 
+ colour = (ambientLightColour*ambientMaterialColour);
+ 
+Now need to init uniform colours -> could add constants to the frag shader for default values.
+
+
+In Main.cpp:
+ ambientMaterialColourLocation = getUniformLocation(programID, "ambientMaterialColour");
+ ambientLightColourLocation = getUniformLocation(programID, "ambientLightColour");
+ 
+ vec4 ambientMaterialColour = vec4(initValue);
+ vec4 ambientLightColour = vec4(initValue);
+ 
+ //SendValuesACross
+ glUniform4fv(ambientLightColourLocation, 1, value_ptr(ambientLightColour));
+ glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(ambientMaterialColour));
+ 
+ 
+ --------------------------------------------------------------------------------
+ **Diffuse Lighting**
+ --------------------------------------------------------------------------------
+ 
+In Vertex.h:
+ float xNormal, yNormal, zNormal;
+ 
+ 
+In VertexAttributes (Object.cpp for me, Mesh.cpp in example code):
+
+ EnableVertexAttribArray(3);
+ VertexAttribPointer(3, 3, float, false, sizeOf(vertex), (void*)(9 * sizeof(float)))
+ 
+
+In Model.cpp:
+ (under currentTextureCoords)
+ 
+ aiVector3D currentNormal = aiVector3D(0, 0, 0)
+ 
+ if currentMesh -> has normals
+ {
+	currentNormal = currentMesh->mNOrmals[v];
+ }
+ 
+ Vertex currentVertex = {add currentNormal.x, currentNormal.y, currentNormal.z};
+ 
+ //repeat in LoadMeshFromScene
+ 
+ 
+In VertShader:
+ layout(location3) in vec3 vertexNormal;
+ out vec3 vertexNormalOut;
+ 
+ Note: Send matrices for model matrix, view matrix, projection matrix to vert shader as uniform mat4 ****
+ 
+ mat4 mvpMatrix = projection * view * model;
+ vec4 mvpPosition = mvp * vec4(vertexPosition, 1)
+ 
+ //Get the xyz of result and normalize it
+ vertexNormalOut = normalize((modelMatrix * vec4(vertexNormal, 0)).xyz);
+  
+ glPosition = vmpPosition
+ 
+In FragmentShader:
+ in vec3 VertexNormalOut;
+ uniform vec3 lightDirection;
+ uniform vec4 diffuseLightColour = vec4(0.5, 0.5, 0.5, 1);
+ uniform vec4 diffuseMaterialColour = vec4 (0.8, 0.8, 0.8, 1.0);
+ 
+ //Reverse light direction to get vector from surface back towards the light source
+ //Clamp to avoid visual errors
+ float diffuseIntensity = clamp(dot(VertexNormalOutnormal, -lightDirection), 0, 1);
+ 
+ colour = (ambientLightColour*ambientMaterialColour) + (diffuseLightColour * diffuseIntensity * diffuseMaterialColour);
+ 
+In Main.cpp:
+ vec4 diffuseMaterialColour = vec4(initValue);
+ vec4 diffuseLightColour = vec4(initValue);
+ vec3 lightDirection = vec3(0, 0, -1);
+ 
+ diffuseMaterialColourLocation = getUniformLocation(programID, "diffuseMaterialColour");
+ diffuseLightColourLocation = getUniformLocation(programID, "diffuseLightColour");
+ lightDirectionLocation = getUniformLocation(programID, "lightDirection");
+ 
+ 
+ //Send values across
+ glUniform4fv(diffuseLightColourLocation, 1, value_ptr(diffuseLightColour));
+ glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(diffuseMaterialColour));
+ glUniform3fv(lightDirectionLocation, 1, value_ptr(lightDirection));
+  
+ 
+  --------------------------------------------------------------------------------
+ **Specular Lighting**
+ --------------------------------------------------------------------------------
+ 
+in VertexShader:
+ out vec4 worldSpaceVertex;
+
+ worldSpaceVertex = modelMatrix * vec4(vertexPosition, 1);
+  
+in FragmentShader:
+ in vec4 worldSpaceVertex;
+ uniform vec3 cameraPosition;
+ 
+ uniform vec4 specularLightColour = vec4(1);
+ uniform vec4 specularMaterialColour = vec4(1);
+ uniform float specularPower = 25.0f 
+  
+ vec3 viewDirection = normalize(worldSpaceVertex.xyz - cameraPosition); //Normalize most things -> possibly -lightDirection as well.
+ vec3 halfWay = normalize(-lightDirection + viewDirection);
+ 
+ float specularIntensity = pow(clamp(dot(vertexNormalOut, halfWay), 0, 1), specularPower);
+ 
+  colour = (ambientLightColour*ambientMaterialColour) + 
+		   (diffuseLightColour * diffuseIntensity * diffuseMaterialColour) + 
+		   (specularLightColour * specularIntensity * specularMaterialColour);
+ 
+ 
+In Main.cpp:
+ vec4 specularMaterialColour = vec4(initValue);
+ vec4 specularLightColour = vec4(initValue); 
+ vec3 cameraPosition = vec4(initValue);
+ float specularPower = vec4(initValue);
+ 
+ specularMaterialColourLocation = getUniformLocation(programID, "specularMaterialColour");
+ specularLightColourLocation = getUniformLocation(programID, "specularLightColour");
+ cameraPositionLocation = getUniformLocation(programID, "cameraPosition");
+ specularPowerLocation = getUniformLocation(programID, "specularPower");
+ 
+ //Send values across
+ glUniform4fv(specularLightColourLocation, 1, value_ptr(diffuseLightColour));
+ glUniform4fv(specularMaterialColourLocation, 1, value_ptr(diffuseMaterialColour));
+ glUniform3fv(cameraPositionLocation, 1, value_ptr(diffuseMaterialColour)); 
+ glUniform1fv(specularPowerLocationLocation, 1, value_ptr(diffuseLightColour));
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
