@@ -36,9 +36,9 @@ int main(int argc, char ** argsv)
 
 
 	//Load Mesh
-	MeshCollection * tankMesh = new MeshCollection();
-	loadMeshFromFile("Resources\Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
-
+	MeshCollection* tankMesh = new MeshCollection();
+	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
+	//tankMesh.
 
 	GLuint programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
 
@@ -164,7 +164,9 @@ int main(int argc, char ** argsv)
 		------------------*/
 
 		//Draw Cube
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		//newObject.Render();
+		tankMesh->render();
 
 		//Refresh screen
 		SDL_GL_SwapWindow(window);

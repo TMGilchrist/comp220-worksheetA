@@ -13,6 +13,9 @@ Object::Object()
 	xAxis = glm::vec3(1.0f, 0.0f, 0.0f);
 	yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
 	zAxis = glm::vec3(0.0f, 0.0f, 1.0f);
+
+	numOfIndices = 0;
+	numOfVertices = 0;
 }
 
 
@@ -42,7 +45,7 @@ void Object::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsign
 	glBufferData(GL_ARRAY_BUFFER, NumOfVertices * sizeof(Vertex), VertexData, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, NumOfIndices * sizeof(Vertex), Indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, NumOfIndices * sizeof(unsigned int), Indices, GL_STATIC_DRAW);
 
 	numOfIndices = NumOfIndices;
 	numOfVertices = NumOfVertices;
@@ -146,30 +149,35 @@ MeshCollection::~MeshCollection()
 	destroy();
 }
 
-void MeshCollection::addMesh(Object * pMesh)
+void MeshCollection::addMesh(Object * mesh)
 {
-	m_Meshes.push_back(pMesh);
+	mesh->Init();
+	mesh->setTextureID("Resources/Tank1DF");
+	mesh->BindTexure();
+	mesh->CalculateModelMatrix();
+
+	meshes.push_back(mesh);
 }
 
 void MeshCollection::render()
 {
-	for (Object *pMesh : m_Meshes)
+	for (Object *mesh : meshes)
 	{
-		pMesh->Render();
+		mesh->Render();
 	}
 }
 
 void MeshCollection::destroy()
 {
-	auto iter = m_Meshes.begin();
-	while (iter != m_Meshes.end())
+	auto iter = meshes.begin();
+	while (iter != meshes.end())
 	{
 		if (*iter)
 		{
 			(*iter)->CleanUp();
 			delete (*iter);
 			(*iter) = nullptr;
-			iter = m_Meshes.erase(iter);
+			iter = meshes.erase(iter);
 		}
 		else
 		{
@@ -177,5 +185,5 @@ void MeshCollection::destroy()
 		}
 	}
 
-	m_Meshes.clear();
+	meshes.clear();
 }

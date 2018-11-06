@@ -116,10 +116,10 @@ public:
 	MeshCollection();
 	~MeshCollection();
 
-	void addMesh(Object *pMesh);
+	void addMesh(Object *mesh);
 
 	void render();
 	void destroy();
 private:
-	std::vector<Object*> m_Meshes;
+	std::vector<Object*> meshes;
 };
