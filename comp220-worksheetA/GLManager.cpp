@@ -1,4 +1,5 @@
 #include "GLManager.h"
+#include <iostream>
 
 
 
@@ -8,9 +9,9 @@ GLManager::GLManager(SDL_Window* Window)
 	window = Window;
 
 	//Setup Open_GL and GLEW
+	setGLVersion();
 	CreateGLContext();
 	initGLEW();
-	setGLVersion();
 }
 
 
@@ -51,6 +52,11 @@ int GLManager::initGLEW()
 
 		return 1;
 	}
+
+	//Output gl version
+	SDL_GL_MakeCurrent(window, glContext);
+	char * glVersion = (char*)glGetString(GL_VERSION);
+	std::cout << "GL Version " << glVersion << std::endl;
 
 	return 0;
 }
