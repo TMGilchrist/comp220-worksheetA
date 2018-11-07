@@ -5,7 +5,7 @@
 Object::Object()
 {
 	//Translation and scale
-	modelTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
+	modelTranslation = glm::vec3(0.0f, 0.0f, -50.0f);
 	modelScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	//Rotation
@@ -39,7 +39,7 @@ void Object::Init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 }
 
-void Object::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices)
+void Object::FillBufferData(Vertex * VertexData, int NumOfVertices, unsigned int * Indices, int NumOfIndices)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, NumOfVertices * sizeof(Vertex), VertexData, GL_STATIC_DRAW);
@@ -151,10 +151,10 @@ MeshCollection::~MeshCollection()
 
 void MeshCollection::addMesh(Object * mesh)
 {
-	mesh->Init();
-	mesh->setTextureID("Resources/Tank1DF");
-	mesh->BindTexure();
-	mesh->CalculateModelMatrix();
+	//mesh->Init();
+	//mesh->setTextureID("Tank1DF.PNG");
+	//mesh->BindTexure();
+	//mesh->CalculateModelMatrix();
 
 	meshes.push_back(mesh);
 }

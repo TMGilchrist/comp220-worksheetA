@@ -13,5 +13,6 @@ out vec4 colour;
 
 void main()
 {
-	colour = texture(textureSampler, vertexTextureCoordsOut);
+	//colour = texture(textureSampler, vertexTextureCoordsOut);
+	colour = vec4(1.0f);
 }

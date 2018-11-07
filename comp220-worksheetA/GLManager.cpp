@@ -1,5 +1,5 @@
 #include "GLManager.h"
-
+#include <iostream>
 
 
 GLManager::GLManager(SDL_Window* Window)
@@ -8,9 +8,10 @@ GLManager::GLManager(SDL_Window* Window)
 	window = Window;
 
 	//Setup Open_GL and GLEW
+	setGLVersion();
 	CreateGLContext();
 	initGLEW();
-	setGLVersion();
+	
 }
 
 
@@ -51,6 +52,12 @@ int GLManager::initGLEW()
 
 		return 1;
 	}
+	SDL_GL_MakeCurrent(window, glContext);
+	char * glVersion = (char*)glGetString(GL_VERSION);
+	//glewGetString()
+	std::cout << "GL Version " << glVersion << std::endl;
+	//std::cout << "GL VERSION " << (char*)glGetString(GL_VERSION) << std::endl;
+	//std::cout << "GL Vendor " << (char*)glGetString(GL_VENDOR) << std::endl;
 
 	return 0;
 }
@@ -58,7 +65,10 @@ int GLManager::initGLEW()
 void GLManager::setGLVersion()
 {
 	// Set our OpenGL version.
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+
+
 }

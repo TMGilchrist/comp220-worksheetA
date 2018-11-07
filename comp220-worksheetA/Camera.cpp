@@ -5,8 +5,8 @@
 Camera::Camera(float initFoV, float initNearClip, float initFarClip)
 {
 	//Initialise variables
-	position = glm::vec3(0, 6, -10);
-	target = glm::vec3(0, 0, 1);
+	position = glm::vec3(0, 0, 10);
+	target = glm::vec3(0, 0, 0);
 	upVector = glm::vec3(0, 1, 0);
 	FoV = initFoV;
 	nearClip = initNearClip;
@@ -53,10 +53,13 @@ Camera::~Camera()
 
 void Camera::setViewMatrix()
 {
+	position = glm::vec3(0, 0, 10);
+	target = glm::vec3(0, 0, 0);
+	upVector = glm::vec3(0, 1, 0);
 	viewMatrix = glm::lookAt
 	(
 		position,
-		position + target,
+		target,
 		upVector
 	);
 }

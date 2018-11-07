@@ -32,7 +32,7 @@ public:
 	@param NumOfIndices : Number of indices in mesh
 
 	*/
-	void FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices);
+	void FillBufferData(Vertex* VertexData, int NumOfVertices, unsigned int* Indices, int NumOfIndices);
 	
 	/**
 	Calculate the model matrix from the transform matrices
