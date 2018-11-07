@@ -24,12 +24,10 @@ int main(int argc, char ** argsv)
 
 	//Testing an object. A lot of these functions should be handled by the init.
 	Object newObject = Object();
-	/*
 	newObject.Init();
 	newObject.setTextureID("checkerboard.png");
 	newObject.BindTexure();
 	newObject.FillBufferData(GeometryModels::cube, 8, GeometryModels::cubeIndices, 36);
-	*/
 	newObject.CalculateModelMatrix();
 
 
@@ -39,7 +37,7 @@ int main(int argc, char ** argsv)
 
 	//Load Mesh
 	MeshCollection* tankMesh = new MeshCollection();
-	loadMeshFromFile("Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
+	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
 	//tankMesh.
 
 	GLuint programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
@@ -134,8 +132,8 @@ int main(int argc, char ** argsv)
 
 
 		//OpenGL rendering
-		glClearColor(1.0, 0.0, 0.0, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+		glClearColor(0.0, 0.0, 0.0, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 
 
