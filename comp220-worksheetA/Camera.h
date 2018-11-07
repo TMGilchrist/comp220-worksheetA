@@ -11,30 +11,69 @@
 class Camera
 {
 public:
+	/**
+	Create new camera with default values
+	
+	@param float initFoV: The field of view.
+	@param float initNearClip: The near clipping plane (should not be smaller than 0.1).
+	@param float initFarClip: The far clipping plane (should not be too large).
+	*/
 	Camera(float initFoV = 60, float initNearClip = 0.1, float initFarClip = 1000);
+
+	/**
+	Create new camera with custom starting location.
+	
+	@param vec3 &Position: Starting position of camera.
+	@param vec3 &Target: Starting facing of camera.
+	@param vec3 &UpVector: Orientation of camera (0, -1, 0 for upside down).
+
+	@param float initFoV: The field of view.
+	@param float initNearClip: The near clipping plane (should not be smaller than 0.1).
+	@param float initFarClip: The far clipping plane (should not be too large).
+	*/
 	Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, float initFoV = 60, float initNearClip = 0.1, float initFarClip = 1000);
 
 	~Camera();
 
-	//Calculate view matrix
+	/**
+	Calculate view matrix
+	*/
 	void setViewMatrix();
 
-	//Caluclate projection matrix
+	/**
+	Caluclate projection matrix
+
+	@param int screenWidth: Width of screen, used to calculate aspect ratio.
+	@param int screenHeight: Height of screen, used to calculate aspect ratio.
+	*/
 	void setProjectionMatrix(int screenWidth, int screenHeight);
 
-	//Keep camera inside pitch constraints
+	/**
+	Keep camera inside pitch constraints
+	*/
 	void checkPitchConstraints();
 
-	//Calculate the camera's rotation, based on mouse position
+	/**
+	Calculate the camera's rotation, based on mouse position
+	*/
 	void calculateCameraRotation();
 
 
-	//Specialised setters to increase pitch and yaw instead of just replacing with new values
+	/**
+	Specialised setter to increase pitch instead of just replacing with new value.
+
+	@param float pitch: The amount to change the pitch by.
+	*/
 	void increasePitch(float Pitch)
 	{
 		pitch += Pitch;
 	}
 
+	/**
+	Specialised setter to increase yaw instead of just replacing with new value.
+
+	@param float yaw: The amount to change the yaw by.
+	*/
 	void increaseYaw(float Yaw)
 	{
 		yaw += Yaw;

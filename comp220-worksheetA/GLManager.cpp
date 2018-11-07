@@ -7,16 +7,19 @@ GLManager::GLManager(SDL_Window* Window)
 {
 	//Get application window
 	window = Window;
-
-	//Setup Open_GL and GLEW
-	setGLVersion();
-	CreateGLContext();
-	initGLEW();
 }
 
 
 GLManager::~GLManager()
 {
+}
+
+void GLManager::Init()
+{
+	//Setup Open_GL and GLEW
+	setGLVersion();
+	CreateGLContext();
+	initGLEW();
 }
 
 int GLManager::CreateGLContext()

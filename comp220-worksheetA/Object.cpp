@@ -104,11 +104,6 @@ void Object::SetVertexAttributes()
 		sizeof(Vertex),
 		(void*)(7 * sizeof(float))
 	);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-	//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//Render();
 }
 
 void Object::CleanUp()
@@ -124,6 +119,10 @@ void Object::BindTexure()
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	//if we want another texture do the following:
+	//glActiveTexture(GL_Texture1);
+	//glBindTexture(GL_TEXTURE_2D, anotherTextureID);
 }
 
 void Object::Render()
@@ -133,6 +132,8 @@ void Object::Render()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 
 	glDrawElements(GL_TRIANGLES, numOfIndices, GL_UNSIGNED_INT, (void*)0);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 
 }
 
@@ -151,11 +152,6 @@ MeshCollection::~MeshCollection()
 
 void MeshCollection::addMesh(Object * mesh)
 {
-	//mesh->Init();
-	//mesh->setTextureID("Resources/Tank1DF");
-	//mesh->BindTexure();
-	//mesh->CalculateModelMatrix();
-
 	meshes.push_back(mesh);
 }
 

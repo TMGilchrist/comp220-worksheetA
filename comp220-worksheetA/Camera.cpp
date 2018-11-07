@@ -16,7 +16,7 @@ Camera::Camera(float initFoV, float initNearClip, float initFarClip)
 	xAxis = glm::normalize(glm::cross(upVector, zAxis));
 	yAxis = glm::cross(zAxis, xAxis);
 
-	pitch = 0;//-89; // Why does initing pitch=0 make it weird?? -> at pitch 0, rendering flips over?
+	pitch = 0;
 	yaw = 0;
 
 	//Generate matricies
@@ -38,7 +38,7 @@ Camera::Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, floa
 	xAxis = glm::normalize(glm::cross(upVector, zAxis));
 	yAxis = glm::cross(zAxis, xAxis);
 
-	pitch = 0; // why does init pitch=0 do weird things?
+	pitch = 0;
 	yaw = 0;
 
 	//Generate matricies
@@ -53,6 +53,7 @@ Camera::~Camera()
 
 void Camera::setViewMatrix()
 {
+	//Generate the vew matrix
 	viewMatrix = glm::lookAt
 	(
 		position,
@@ -63,6 +64,7 @@ void Camera::setViewMatrix()
 
 void Camera::setProjectionMatrix(int screenWidth, int screenHeight)
 {
+	//Generate projection matrix
 	projectionMatrix = glm::perspective
 	(
 		glm::radians(FoV),
@@ -85,13 +87,7 @@ void Camera::checkPitchConstraints()
 
 void Camera::calculateCameraRotation()
 {
-	glm::vec3 front;
 	glm::vec3 direction;
-
-	std::cout << "yaw : " << yaw << ", " << "Pitch : " << pitch << "\n";
-	front.x = cos(glm::radians(yaw)) * sin(glm::radians(pitch));
-	front.y = cos(glm::radians(pitch)) * -1; // * -1 to inverse pitch for mouse movement
-	front.z = sin(glm::radians(yaw)) * sin(glm::radians(pitch)); 
 
 	direction.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
 	direction.y = sin(glm::radians(pitch)) * -1; // * -1 to inverse pitch for mouse movement
