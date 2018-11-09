@@ -3,6 +3,10 @@
 
 
 
+GLManager::GLManager()
+{
+}
+
 GLManager::GLManager(SDL_Window* Window)
 {
 	//Get application window

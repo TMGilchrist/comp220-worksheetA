@@ -6,6 +6,11 @@
 class GLManager
 {
 public:
+
+	/**
+	Default constructor for the GLManager. Doesn't set a window.*/
+	GLManager();
+
 	/**
 	Create a manager to handle openGL and GLEW setup. 
 
@@ -29,14 +34,20 @@ public:
 	*/
 	int initGLEW();
 
+
+
 	/**
 	Set the version information for Open_GL
 	*/
 	void setGLVersion();
 
+	void setWindow(SDL_Window* Window) 
+	{
+		window = Window;
+	}
+
 	/**
 	Return the openGL context for the application
-
 	@return SDL_GLContext GLContext: the context created for this application 
 	*/
 	SDL_GLContext getGLContext()

@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 
 #include <SDL.h>
 #include <GL/glew.h>
@@ -23,6 +24,39 @@
 #include "Mesh.h"
 #include "GeometryModels.h"
 #include "Model.h"
-#include "GameObject.h"
 
-#include "Game.h"
+class Game
+{
+public:
+	Game();
+	~Game();
+
+	void Init();
+	void Setup();
+	void GameLoop();
+	void Cleanup();
+
+
+private:
+	WindowManager windowMain;
+	SDL_Window* window;
+
+	GLManager glManager;
+	SDL_GLContext glContext;
+
+	float deltaTime;
+	float lastFrame;
+
+	GLuint programID;
+	GLuint MVPLocation;
+	Camera* camera;
+
+	InputManager* input;
+	CharacterController controller;
+
+	Mesh newObject;
+	MeshCollection* tankMesh;
+
+
+};
+

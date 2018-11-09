@@ -73,6 +73,7 @@ public:
 	{
 		return modelMatrix;
 	}
+
 private:
 	GLuint vertexBuffer;
 	GLuint elementBuffer;
@@ -89,7 +90,7 @@ private:
 	glm::vec3 modelTranslation;
 	glm::vec3 modelScale;
 
-	//Rotation vecotrs
+	//Rotation vectors
 	glm::vec3 modelRotation;
 	glm::vec3 xAxis;
 	glm::vec3 yAxis;
