@@ -10,13 +10,13 @@
 #include "Texture.h"
 
 
-class Object
+class Mesh
 {
 public:
-	Object();
-	~Object();
+	Mesh();
+	~Mesh();
 
-	//Object(Vertex VertexData[], int Indices[]);
+	//Mesh(Vertex VertexData[], int Indices[]);
 
 	/**
 	Set up buffer and vertex attribute array
@@ -116,10 +116,10 @@ public:
 	MeshCollection();
 	~MeshCollection();
 
-	void addMesh(Object *mesh);
+	void addMesh(Mesh *mesh);
 
 	void render();
 	void destroy();
 private:
-	std::vector<Object*> meshes;
+	std::vector<Mesh*> meshes;
 };

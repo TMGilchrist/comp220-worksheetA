@@ -2,7 +2,7 @@
 
 
 
-Camera::Camera(float initFoV, float initNearClip, float initFarClip)
+Camera::Camera(float initFoV, float initNearClip, float initFarClip, float PitchConstraintUp, float PitchConstraintDown)
 {
 	//Initialise variables
 	position = glm::vec3(0, 6, -10);
@@ -18,13 +18,15 @@ Camera::Camera(float initFoV, float initNearClip, float initFarClip)
 
 	pitch = 0;
 	yaw = 0;
+	pitchConstraintUp = PitchConstraintUp;
+	pitchConstraintDown = PitchConstraintDown;
 
 	//Generate matricies
 	setViewMatrix();
 	setProjectionMatrix(global::SCREEN_WIDTH, global::SCREEN_HEIGHT); //Doesn't actually work as intended, should really get current window size
 }
 
-Camera::Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, float initFoV, float initNearClip, float initFarClip)
+Camera::Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, float initFoV, float initNearClip, float initFarClip, float PitchConstraintUp, float PitchConstraintDown)
 {
 	//Initialise variables
 	position = Position;
@@ -40,6 +42,8 @@ Camera::Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, floa
 
 	pitch = 0;
 	yaw = 0;
+	pitchConstraintUp = PitchConstraintUp;
+	pitchConstraintDown = PitchConstraintDown;
 
 	//Generate matricies
 	setViewMatrix();
@@ -87,12 +91,15 @@ void Camera::checkPitchConstraints()
 
 void Camera::calculateCameraRotation()
 {
+	//The direction the camera should face
 	glm::vec3 direction;
 
+	//Convert pitch and yaw into direction vector
 	direction.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
 	direction.y = sin(glm::radians(pitch)) * -1; // * -1 to inverse pitch for mouse movement
 	direction.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
 
+	//Normalise vector and recalculate viewMatrix
 	target = glm::normalize(direction);
 	setViewMatrix();
 }

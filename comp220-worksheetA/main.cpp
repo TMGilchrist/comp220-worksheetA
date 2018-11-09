@@ -24,7 +24,7 @@ int main(int argc, char ** argsv)
 
 
 	//Testing an object. A lot of these functions should be handled by the init.
-	Object newObject = Object();
+	Mesh newObject = Mesh();
 	newObject.Init();
 	//newObject.setTextureID("checkerboard.png");
 	newObject.setTextureID("Resources/Tank1DF.PNG");
@@ -40,7 +40,6 @@ int main(int argc, char ** argsv)
 	//Load Mesh
 	MeshCollection* tankMesh = new MeshCollection();
 	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
-	//tankMesh.
 
 	GLuint programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
 

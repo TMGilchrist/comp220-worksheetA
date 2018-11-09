@@ -79,7 +79,7 @@ bool loadMeshFromFile(const std::string & filename, MeshCollection * pMeshCollec
 	for (int i = 0; i < scene->mNumMeshes; i++)
 	{
 		aiMesh* currentMesh = scene->mMeshes[i];
-		Object* pMesh = new Object();
+		Mesh* pMesh = new Mesh();
 		pMesh->Init();
 
 		for (int v = 0; v < currentMesh->mNumVertices; v++)
