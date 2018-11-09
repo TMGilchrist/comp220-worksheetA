@@ -6,18 +6,39 @@
 class GLManager
 {
 public:
+	/**
+	Create a manager to handle openGL and GLEW setup. 
+
+	@param SDL_WINDOW* window: The SDL window to use during setup.
+	*/
 	GLManager(SDL_Window* window);
 	~GLManager();
 
-	//Create a new Open_GL context
+	/**
+	Set openGl version, create a context and initialise GLEW.
+	*/
+	void Init();
+
+	/**
+	Create a new Open_GL context
+	*/
 	int CreateGLContext();
 
-	//Initialise GLEW
+	/**
+	Initialise GLEW
+	*/
 	int initGLEW();
 
-	//Set the version information for Open_GL
+	/**
+	Set the version information for Open_GL
+	*/
 	void setGLVersion();
 
+	/**
+	Return the openGL context for the application
+
+	@return SDL_GLContext GLContext: the context created for this application 
+	*/
 	SDL_GLContext getGLContext()
 	{
 		return glContext;

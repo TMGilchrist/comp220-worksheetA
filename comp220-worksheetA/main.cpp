@@ -11,6 +11,7 @@ int main(int argc, char ** argsv)
 
 	//Initalise Open_GL and GLEW. Get Open_GL context.
 	GLManager glManager = GLManager(window);
+	glManager.Init();
 	SDL_GLContext glContext = glManager.getGLContext();
 	
 	//Mouse setup, can probably be moved to sdl init?
@@ -25,29 +26,26 @@ int main(int argc, char ** argsv)
 	//Testing an object. A lot of these functions should be handled by the init.
 	Object newObject = Object();
 	newObject.Init();
-	newObject.setTextureID("checkerboard.png");
+	//newObject.setTextureID("checkerboard.png");
+	newObject.setTextureID("Resources/Tank1DF.PNG");
 	newObject.BindTexure();
 	newObject.FillBufferData(GeometryModels::cube, 8, GeometryModels::cubeIndices, 36);
 	newObject.CalculateModelMatrix();
 
 
 	//Enable backface culling. Not all faces are properly rotated :c
-	glEnable(GL_CULL_FACE); 
+	//glEnable(GL_CULL_FACE); 
 
 
-	//unsigned int numberOfVerts = 0;
-	//unsigned int numberOfIndices = 0;
-	//loadModelFromFile("", vertexBuffer, elementBuffer, numberOfVerts, numberOfIndices);
-
+	//Load Mesh
+	MeshCollection* tankMesh = new MeshCollection();
+	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
+	//tankMesh.
 
 	GLuint programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
 
-	GLuint colour1Location = glGetUniformLocation(programID, "triangleColour1");
-	GLuint colour2Location = glGetUniformLocation(programID, "triangleColour2");
 
-	GLuint textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
-
-
+	GLuint textureUniformLocation = glGetUniformLocation(programID, "textureSampler");	
 	GLuint modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
 
 	//Set up a camera and init the projection matrix with window size
@@ -55,8 +53,7 @@ int main(int argc, char ** argsv)
 	camera->setProjectionMatrix(windowMain.getWidth(), windowMain.getHeight());
 
 	//Caluclate MVP
-	glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * newObject.getModelMatrix();//modelMatrix;
-
+	glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * newObject.getModelMatrix(); //modelMatrix;
 	GLuint MVPLocation = glGetUniformLocation(programID, "MVP");
 
 
@@ -138,22 +135,11 @@ int main(int argc, char ** argsv)
 
 		//OpenGL rendering
 		glClearColor(0.0, 0.0, 0.0, 1.0);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-
-
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+			   
 		//Linking shaders
 		glUseProgram(programID);
-
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, textureID);
-
-
-		//if we want another texture do the following:
-		//glActiveTexture(GL_Texture1);
-		//glBindTexture(GL_TEXTURE_2D, anotherTextureID);
-
-
+			   
 
 		/*---------------------
 		Send Uniform Values
@@ -162,28 +148,17 @@ int main(int argc, char ** argsv)
 		//MVP matrix
 		glUniformMatrix4fv(MVPLocation, 1, false, &MVP[0][0]);
 
-		//Set triangle colour
-		glUniform4f(colour1Location, 0, 0, 1, 0);
-		glUniform4f(colour2Location, 1, 0, 0, 0);
-		glUniform1i(textureUniformLocation, 0);
 
 
 		/*----------------
 		Drawing Objects
 		------------------*/
 
-		//Draw square
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		//glDisableVertexAttribArray(0);
-
-		//Draw Cube
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		//glDisableVertexAttribArray(0); Having this stops the attribute array in Object.cpp from working...?
-
+		//newObject.Render();
+		tankMesh->render();
 
 		//Refresh screen
 		SDL_GL_SwapWindow(window);
-
 	}
 
 

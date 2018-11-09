@@ -13,6 +13,9 @@ Object::Object()
 	xAxis = glm::vec3(1.0f, 0.0f, 0.0f);
 	yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
 	zAxis = glm::vec3(0.0f, 0.0f, 1.0f);
+
+	numOfIndices = 0;
+	numOfVertices = 0;
 }
 
 
@@ -36,13 +39,13 @@ void Object::Init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 }
 
-void Object::FillBufferData(const Vertex VertexData[], int NumOfVertices, const int Indices[], int NumOfIndices)
+void Object::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, NumOfVertices * sizeof(Vertex), VertexData, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, NumOfIndices * sizeof(Vertex), Indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, NumOfIndices * sizeof(unsigned int), Indices, GL_STATIC_DRAW);
 
 	numOfIndices = NumOfIndices;
 	numOfVertices = NumOfVertices;
@@ -101,10 +104,6 @@ void Object::SetVertexAttributes()
 		sizeof(Vertex),
 		(void*)(7 * sizeof(float))
 	);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-	//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
 void Object::CleanUp()
@@ -120,4 +119,67 @@ void Object::BindTexure()
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	//if we want another texture do the following:
+	//glActiveTexture(GL_Texture1);
+	//glBindTexture(GL_TEXTURE_2D, anotherTextureID);
+}
+
+void Object::Render()
+{
+	glBindVertexArray(vertexAttributes);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
+
+	glDrawElements(GL_TRIANGLES, numOfIndices, GL_UNSIGNED_INT, (void*)0);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+
+}
+
+
+//-----------------------------------------
+//-----------------------------------------
+
+MeshCollection::MeshCollection()
+{
+}
+
+MeshCollection::~MeshCollection()
+{
+	destroy();
+}
+
+void MeshCollection::addMesh(Object * mesh)
+{
+	meshes.push_back(mesh);
+}
+
+void MeshCollection::render()
+{
+	for (Object *mesh : meshes)
+	{
+		mesh->Render();
+	}
+}
+
+void MeshCollection::destroy()
+{
+	auto iter = meshes.begin();
+	while (iter != meshes.end())
+	{
+		if (*iter)
+		{
+			(*iter)->CleanUp();
+			delete (*iter);
+			(*iter) = nullptr;
+			iter = meshes.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+
+	meshes.clear();
 }
