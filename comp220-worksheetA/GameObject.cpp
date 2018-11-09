@@ -33,7 +33,9 @@ void GameObject::Update()
 	rotationMatrix = glm::rotate(modelRotation.x, xAxis) * glm::rotate(modelRotation.y, yAxis) * glm::rotate(modelRotation.z, zAxis);
 	scaleMatrix = glm::scale(modelScale);
 
+	//Calculate model matrix
 	modelMatrix = rotationMatrix * scaleMatrix * translationMatrix;
 
+	//Render model
 	mesh->render();
 }

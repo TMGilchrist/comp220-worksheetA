@@ -29,17 +29,22 @@ public:
 		mesh = objectMesh;
 	}
 
+	/**
+	Set the object's translation. Use to move the object around.
+	*/
 	void setTranslation(glm::vec3 Translation) 
 	{
 		modelTranslation = Translation;
 	}
 
+	
 	glm::mat4 getModelMatrix() 
 	{
 		return modelMatrix;
 	}
 
 private:
+	//Mesh collection for the object's model.
 	MeshCollection* mesh;
 
 	//Model Matrix of the object

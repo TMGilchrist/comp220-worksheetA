@@ -32,9 +32,24 @@ public:
 	Game();
 	~Game();
 
+	/**
+	Initialise sdl and openGL components and deltaTime.
+	*/
 	void Init();
+
+	/**
+	Setup game components. Create objects and populate the objects vector. Initialise camera, input manager and controller.
+	*/
 	void Setup();
+
+	/**
+	The main game loop. Runs until escape is pressed or the window is closed.
+	*/
 	void GameLoop();
+
+	/**
+	Cleanup components
+	*/
 	void Cleanup();
 
 
@@ -45,6 +60,7 @@ private:
 	GLManager glManager;
 	SDL_GLContext glContext;
 
+	//Delta time and the time last frame
 	float deltaTime;
 	float lastFrame;
 
@@ -55,7 +71,6 @@ private:
 	InputManager* input;
 	CharacterController controller;
 
-	Mesh newObject;
 	MeshCollection* tankMesh;
 
 	//Uniform locations

@@ -8,8 +8,6 @@ uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
-//uniform mat4 MVP;
-
 out vec4 vertexColourOut;
 out vec2 vertexTextureCoordsOut;
 
@@ -19,6 +17,7 @@ void main()
 	vertexColourOut = vertexColour;
 	vertexTextureCoordsOut = vertexTextureCoords;
 
+	//Calculate MVP and position
 	mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
 	gl_Position = MVP * vec4(vertexPosition, 1.0f);
 }

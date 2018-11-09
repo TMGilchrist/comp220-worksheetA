@@ -34,11 +34,6 @@ void Game::Init()
 
 void Game::Setup()
 {
-
-	//Mouse setup, can probably be moved to sdl init?
-	SDL_ShowCursor(0);
-	SDL_SetRelativeMouseMode(SDL_TRUE);
-
 	//Init deltaTime
 	float deltaTime = 0.0f;	// Time between current frame and last frame
 	float lastFrame = 0.0f; // Time of last frame
@@ -92,11 +87,6 @@ void Game::Setup()
 	//Set up a camera and init the projection matrix with window size
 	camera = new Camera();
 	camera->setProjectionMatrix(windowMain->getWidth(), windowMain->getHeight());
-
-	//Caluclate MVP
-	//glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * newObject.getModelMatrix(); //modelMatrix;
-
-
 
 	//Set up new inputManager and PlayerController
 	input = new InputManager();
@@ -179,8 +169,7 @@ void Game::GameLoop()
 			}
 		}
 
-
-
+		
 		//Update deltatime
 		float currentFrame = SDL_GetTicks();
 		deltaTime = currentFrame - lastFrame;
@@ -188,9 +177,6 @@ void Game::GameLoop()
 
 		//Handle keyboard input
 		controller.handleKeyboard(deltaTime);
-
-
-		//glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * newObject.getModelMatrix();// modelMatrix;
 
 
 		//OpenGL rendering
@@ -207,13 +193,11 @@ void Game::GameLoop()
 
 		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 		glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
-		//glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(tank1->getModelMatrix()));
 
 
 		/*----------------
 		Check vector of game objects
 		----------------*/
-		//tank1->Update();
 
 		for (GameObject* object : objects)
 		{
@@ -250,6 +234,7 @@ void Game::Cleanup()
 			(*iter) = nullptr;
 			iter = objects.erase(iter);
 		}
+
 		else
 		{
 			iter++;
@@ -257,7 +242,6 @@ void Game::Cleanup()
 	}
 
 	objects.clear();
-
 
 	//Delete context
 	SDL_GL_DeleteContext(glContext);
