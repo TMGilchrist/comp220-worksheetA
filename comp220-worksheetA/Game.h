@@ -24,6 +24,7 @@
 #include "Mesh.h"
 #include "GeometryModels.h"
 #include "Model.h"
+#include "GameObject.h"
 
 class Game
 {
@@ -38,7 +39,7 @@ public:
 
 
 private:
-	WindowManager windowMain;
+	WindowManager* windowMain;
 	SDL_Window* window;
 
 	GLManager glManager;
@@ -57,6 +58,13 @@ private:
 	Mesh newObject;
 	MeshCollection* tankMesh;
 
+	//Uniform locations
+	GLuint textureUniformLocation;
+	GLuint modelMatrixLocation;
+	GLuint viewMatrixLocation;
+	GLuint projectionMatrixLocation;
 
+	//Vector of game objects
+	std::vector<GameObject*> objects;
 };
 

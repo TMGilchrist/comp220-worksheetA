@@ -17,7 +17,7 @@ Camera::Camera(float initFoV, float initNearClip, float initFarClip, float Pitch
 	yAxis = glm::cross(zAxis, xAxis);
 
 	pitch = 0;
-	yaw = 0;
+	yaw = 90;
 	pitchConstraintUp = PitchConstraintUp;
 	pitchConstraintDown = PitchConstraintDown;
 
@@ -41,7 +41,7 @@ Camera::Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, floa
 	yAxis = glm::cross(zAxis, xAxis);
 
 	pitch = 0;
-	yaw = 0;
+	yaw = 90;
 	pitchConstraintUp = PitchConstraintUp;
 	pitchConstraintDown = PitchConstraintDown;
 

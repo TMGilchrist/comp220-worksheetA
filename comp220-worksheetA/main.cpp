@@ -4,7 +4,7 @@
 /*Probably want to make a Game class to keep main neat*/
 
 
-int main(int argc, char ** argsv)
+int main1(int argc, char ** argsv)
 {
 	//Create SDL window
 	WindowManager windowMain = WindowManager("Shader Practice");
@@ -29,6 +29,10 @@ int main(int argc, char ** argsv)
 	//Should this be done only once in game Init?
 	//glEnable(GL_CULL_FACE); 
 
+
+	/*---------------------
+	Object creation
+	---------------------*/
 
 	//Load Mesh
 	MeshCollection* tankMesh = new MeshCollection();
@@ -55,6 +59,9 @@ int main(int argc, char ** argsv)
 	objects.push_back(tank1);
 	objects.push_back(tank2);
 	
+
+
+
 	//Set programID
 	GLuint programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
 
@@ -210,6 +217,26 @@ int main(int argc, char ** argsv)
 
 	glDeleteProgram(programID);
 
+	//Destroy vector of game objects
+	auto iter = objects.begin();
+	while (iter != objects.end())
+	{
+		if (*iter)
+		{
+			//(*iter)->CleanUp(); Call destructor/cleanup here
+			delete (*iter);
+			(*iter) = nullptr;
+			iter = objects.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+
+	objects.clear();
+
+
 	//Delete context
 	SDL_GL_DeleteContext(glContext);
 
@@ -220,13 +247,13 @@ int main(int argc, char ** argsv)
 	return 0;
 }
 
-int main1(int argc, char ** argsv) 
+int main(int argc, char ** argsv) 
 {
 	Game game = Game();
 	game.Init();
-	//game.Setup();
-	//game.GameLoop();
-	//game.Cleanup();
+	game.Setup();
+	game.GameLoop();
+	game.Cleanup();
 
 	return 0;
 }

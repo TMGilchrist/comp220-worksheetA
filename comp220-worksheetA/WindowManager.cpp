@@ -1,6 +1,6 @@
 #include "WindowManager.h"
 
-
+//Make an init function!!
 WindowManager::WindowManager()
 {
 	initSDL();
