@@ -4,6 +4,7 @@
 
 Mesh::Mesh()
 {
+	/*
 	//Translation and scale
 	modelTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 	modelScale = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -13,6 +14,7 @@ Mesh::Mesh()
 	xAxis = glm::vec3(1.0f, 0.0f, 0.0f);
 	yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
 	zAxis = glm::vec3(0.0f, 0.0f, 1.0f);
+	*/
 
 	numOfIndices = 0;
 	numOfVertices = 0;
@@ -57,12 +59,13 @@ void Mesh::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned
 
 void Mesh::CalculateModelMatrix()
 {
+	/*
 	//Calculate Transformation Matricies
 	translationMatrix = glm::translate(modelTranslation);
 	rotationMatrix = glm::rotate(modelRotation.x, xAxis) * glm::rotate(modelRotation.y, yAxis) * glm::rotate(modelRotation.z, zAxis);
 	scaleMatrix = glm::scale(modelScale);
 
-	modelMatrix = rotationMatrix * scaleMatrix * translationMatrix;
+	modelMatrix = rotationMatrix * scaleMatrix * translationMatrix;*/
 }
 
 void Mesh::SetVertexAttributes()

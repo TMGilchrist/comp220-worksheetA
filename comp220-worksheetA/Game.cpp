@@ -59,7 +59,7 @@ void Game::Setup()
 	camera->setProjectionMatrix(windowMain.getWidth(), windowMain.getHeight());
 
 	//Caluclate MVP
-	glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * newObject.getModelMatrix(); //modelMatrix;
+	//glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * newObject.getModelMatrix(); //modelMatrix;
 	MVPLocation = glGetUniformLocation(programID, "MVP");
 
 
@@ -138,7 +138,7 @@ void Game::GameLoop()
 		controller.handleKeyboard(deltaTime);
 
 
-		glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * newObject.getModelMatrix();// modelMatrix;
+		//glm::mat4 MVP = camera->getProjectionMatrix() * camera->getViewMatrix() * newObject.getModelMatrix();// modelMatrix;
 
 
 		//OpenGL rendering
@@ -154,7 +154,7 @@ void Game::GameLoop()
 		----------------------*/
 
 		//MVP matrix
-		glUniformMatrix4fv(MVPLocation, 1, false, &MVP[0][0]);
+		//glUniformMatrix4fv(MVPLocation, 1, false, &MVP[0][0]);
 
 
 

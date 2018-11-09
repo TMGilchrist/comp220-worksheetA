@@ -68,17 +68,18 @@ public:
 		textureID = loadTextureFromFile(TextureFile);
 	}
 
-
+	/*
 	glm::mat4 getModelMatrix() 
 	{
-		return modelMatrix;
-	}
+		//return modelMatrix;
+	}*/
 
 private:
 	GLuint vertexBuffer;
 	GLuint elementBuffer;
 	GLuint vertexAttributes;
 
+	/*
 	glm::mat4 modelMatrix;
 
 	//Transformation Matricies
@@ -95,6 +96,7 @@ private:
 	glm::vec3 xAxis;
 	glm::vec3 yAxis;
 	glm::vec3 zAxis;
+	*/
 
 	//Mesh Data
 	//static const Vertex vertexData[];

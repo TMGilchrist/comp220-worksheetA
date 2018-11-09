@@ -23,19 +23,10 @@ int main(int argc, char ** argsv)
 	float deltaTime = 0.0f;	// Time between current frame and last frame
 	float lastFrame = 0.0f; // Time of last frame
 
-	   
-	//Testing an object. A lot of these functions should be handled by the init.
-	/*
-	Mesh newObject = Mesh();
-	newObject.Init();
-	//newObject.setTextureID("checkerboard.png");
-	newObject.setTextureID("Resources/Tank1DF.PNG");
-	newObject.BindTexure();
-	newObject.FillBufferData(GeometryModels::cube, 8, GeometryModels::cubeIndices, 36);
-	newObject.CalculateModelMatrix();*/
-
-
-	//Enable backface culling. Not all faces are properly rotated :c
+	bool isFirstMouse = true;
+	  
+	//Enable backface culling. Currently being done in the render function of Mesh.cpp. 
+	//Should this be done only once in game Init?
 	//glEnable(GL_CULL_FACE); 
 
 
@@ -48,9 +39,11 @@ int main(int argc, char ** argsv)
 	GameObject* tank1 = new GameObject();
 	GameObject* tank2 = new GameObject();
 
+	//Init object variables
 	tank1->Init();
 	tank2->Init();
 
+	//Move tank2
 	tank2->setTranslation(glm::vec3(5.0, 0.0, 0.0));
 
 	//Set object meshes
@@ -135,8 +128,26 @@ int main(int argc, char ** argsv)
 
 				case SDL_MOUSEMOTION:
 					//Pass location to inputManager
+
+					/* Trying to fix the view jump at the beginning.... not working. :P
+					//if not first mouse movement
+					if (isFirstMouse != true) 
+					{
+						input->mouseInput(event.motion.xrel, event.motion.yrel);
+					}
+
+					//If first mouse movement
+					else 
+					{
+						input->mouseInput(0, 0);
+						isFirstMouse = false;
+					}
+									   
+					controller.handleMouse();*/
+
 					input->mouseInput(event.motion.xrel, event.motion.yrel);
 					controller.handleMouse();
+
 					break;
 			}
 		}
@@ -147,7 +158,6 @@ int main(int argc, char ** argsv)
 		float currentFrame = SDL_GetTicks();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
-
 		
 		//Handle keyboard input
 		controller.handleKeyboard(deltaTime);
@@ -168,12 +178,10 @@ int main(int argc, char ** argsv)
 		Send Uniform Values
 		----------------------*/
 
-		//MVP matrix
-		//glUniformMatrix4fv(MVPLocation, 1, false, &MVP[0][0]);
-
 		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 		glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
 		//glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(tank1->getModelMatrix()));
+
 
 		/*----------------
 		Check vector of game objects
@@ -190,9 +198,6 @@ int main(int argc, char ** argsv)
 		/*----------------
 		Drawing Objects
 		------------------*/
-
-		//newObject.Render();
-		//tankMesh->render();
 
 		//Refresh screen
 		SDL_GL_SwapWindow(window);
