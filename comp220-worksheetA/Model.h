@@ -11,7 +11,7 @@
 #include <SDL_opengl.h>
 
 #include "vertex.h"
-#include "Object.h"
+#include "Mesh.h"
 
 bool loadModelFromFile(const std::string& filename, GLuint VBO, GLuint EBO, unsigned int& numVerts, unsigned int& numIndices);
 

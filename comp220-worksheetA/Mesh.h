@@ -10,13 +10,13 @@
 #include "Texture.h"
 
 
-class Object
+class Mesh
 {
 public:
-	Object();
-	~Object();
+	Mesh();
+	~Mesh();
 
-	//Object(Vertex VertexData[], int Indices[]);
+	//Mesh(Vertex VertexData[], int Indices[]);
 
 	/**
 	Set up buffer and vertex attribute array
@@ -33,12 +33,7 @@ public:
 
 	*/
 	void FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices);
-	
-	/**
-	Calculate the model matrix from the transform matrices
-	*/
-	void CalculateModelMatrix();
-	
+		
 	/**
 	Set the vertex attributes
 	*/
@@ -54,11 +49,10 @@ public:
 	*/
 	void BindTexure();
 
+	/**
+	Render the mesh
+	*/
 	void Render();
-
-	/***/
-	void Update();
-
 
 	/**
 	Load texture from filepath.
@@ -68,40 +62,17 @@ public:
 		textureID = loadTextureFromFile(TextureFile);
 	}
 
-
-	glm::mat4 getModelMatrix() 
-	{
-		return modelMatrix;
-	}
 private:
+	//Buffers
 	GLuint vertexBuffer;
 	GLuint elementBuffer;
 	GLuint vertexAttributes;
 
-	glm::mat4 modelMatrix;
-
-	//Transformation Matricies
-	glm::mat4 translationMatrix;
-	glm::mat4 rotationMatrix;
-	glm::mat4 scaleMatrix;
-
-	//Translation and scale vectors
-	glm::vec3 modelTranslation;
-	glm::vec3 modelScale;
-
-	//Rotation vecotrs
-	glm::vec3 modelRotation;
-	glm::vec3 xAxis;
-	glm::vec3 yAxis;
-	glm::vec3 zAxis;
-
-	//Mesh Data
-	//static const Vertex vertexData[];
-	//static const int indices[];
-
+	//Vertex and index data
 	static const Vertex vertexData[];
 	static unsigned int indices[];
 
+	//Number of vertices and indices
 	int numOfVertices;
 	int numOfIndices;
 
@@ -116,10 +87,10 @@ public:
 	MeshCollection();
 	~MeshCollection();
 
-	void addMesh(Object *mesh);
+	void addMesh(Mesh *mesh);
 
 	void render();
 	void destroy();
 private:
-	std::vector<Object*> meshes;
+	std::vector<Mesh*> meshes;
 };

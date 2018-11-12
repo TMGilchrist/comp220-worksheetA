@@ -1,30 +1,20 @@
-#include "Object.h"
+#include "Mesh.h"
 
 
 
-Object::Object()
+Mesh::Mesh()
 {
-	//Translation and scale
-	modelTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
-	modelScale = glm::vec3(1.0f, 1.0f, 1.0f);
-
-	//Rotation
-	modelRotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	xAxis = glm::vec3(1.0f, 0.0f, 0.0f);
-	yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
-	zAxis = glm::vec3(0.0f, 0.0f, 1.0f);
-
 	numOfIndices = 0;
 	numOfVertices = 0;
 }
 
 
-Object::~Object()
+Mesh::~Mesh()
 {
 	CleanUp();
 }
 
-void Object::Init()
+void Mesh::Init()
 {
 	//Generate Vertex Attribute Array
 	glGenVertexArrays(1, &vertexAttributes);
@@ -39,7 +29,7 @@ void Object::Init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 }
 
-void Object::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices)
+void Mesh::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, NumOfVertices * sizeof(Vertex), VertexData, GL_STATIC_DRAW);
@@ -55,17 +45,7 @@ void Object::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsign
 	SetVertexAttributes();
 }
 
-void Object::CalculateModelMatrix()
-{
-	//Calculate Transformation Matricies
-	translationMatrix = glm::translate(modelTranslation);
-	rotationMatrix = glm::rotate(modelRotation.x, xAxis) * glm::rotate(modelRotation.y, yAxis) * glm::rotate(modelRotation.z, zAxis);
-	scaleMatrix = glm::scale(modelScale);
-
-	modelMatrix = rotationMatrix * scaleMatrix * translationMatrix;
-}
-
-void Object::SetVertexAttributes()
+void Mesh::SetVertexAttributes()
 {
 	glBindVertexArray(vertexAttributes);
 
@@ -106,26 +86,20 @@ void Object::SetVertexAttributes()
 	);
 }
 
-void Object::CleanUp()
+void Mesh::CleanUp()
 {
 	glDeleteVertexArrays(1, &vertexAttributes);
 	glDeleteBuffers(1, &vertexBuffer);
 	glDeleteBuffers(1, &elementBuffer);
 }
 
-void Object::BindTexure()
+void Mesh::BindTexure()
 {
-	//glUseProgram(programID); //Ask why this isn't needed...
-
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
-
-	//if we want another texture do the following:
-	//glActiveTexture(GL_Texture1);
-	//glBindTexture(GL_TEXTURE_2D, anotherTextureID);
 }
 
-void Object::Render()
+void Mesh::Render()
 {
 	glBindVertexArray(vertexAttributes);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -150,14 +124,14 @@ MeshCollection::~MeshCollection()
 	destroy();
 }
 
-void MeshCollection::addMesh(Object * mesh)
+void MeshCollection::addMesh(Mesh * mesh)
 {
 	meshes.push_back(mesh);
 }
 
 void MeshCollection::render()
 {
-	for (Object *mesh : meshes)
+	for (Mesh *mesh : meshes)
 	{
 		mesh->Render();
 	}

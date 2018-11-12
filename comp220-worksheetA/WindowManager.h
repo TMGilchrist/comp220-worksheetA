@@ -4,14 +4,14 @@
 #include <SDL_opengl.h>
 #include "globals.h"
 
-class Window
+class WindowManager
 {
 public:
-	Window();
-	Window(const char* title);
-	Window(const char* title, int Height, int Width);
+	WindowManager();
+	~WindowManager();
 
-	~Window();
+	//Init sdl and window.
+	void Init(const char* title="Default Window", int Width = global::SCREEN_WIDTH, int Height = global::SCREEN_HEIGHT);
 
 	//Initalise SDL ready for window creation
 	int initSDL();
