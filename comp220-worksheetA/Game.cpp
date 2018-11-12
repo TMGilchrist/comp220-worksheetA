@@ -20,7 +20,6 @@ void Game::Init()
 
 	//Initalise Open_GL and GLEW. Get Open_GL context.
 	glManager = GLManager(window);
-	//glManager.setWindow(window);
 	glManager.Init();
 	glContext = glManager.getGLContext();
 
@@ -39,41 +38,11 @@ void Game::Setup()
 	float deltaTime = 0.0f;	// Time between current frame and last frame
 	float lastFrame = 0.0f; // Time of last frame
 
-	bool isFirstMouse = true;
+	//Enable backface culling.
+	glEnable(GL_CULL_FACE); 
 
-	//Enable backface culling. Currently being done in the render function of Mesh.cpp. 
-	//Should this be done only once in game Init?
-	//glEnable(GL_CULL_FACE); 
-
-
-	/*---------------------
-	Object creation
-	---------------------*/
-
-	//Load Mesh
-	MeshCollection* tankMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
-	GLuint TextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
-
-	//Create new objects
-	GameObject* tank1 = new GameObject();
-	GameObject* tank2 = new GameObject();
-
-	//Init object variables
-	tank1->Init();
-	tank2->Init();
-
-	//Move tank2
-	tank2->setTranslation(glm::vec3(5.0, 0.0, 0.0));
-
-	//Set object meshes
-	tank1->setMesh(tankMesh);
-	tank2->setMesh(tankMesh);
-
-	//Add objects to vector of game objects
-	objects.push_back(tank1);
-	objects.push_back(tank2);
-
+	//Create game objects
+	CreateObjects();
 
 	//Set programID
 	programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
@@ -92,6 +61,49 @@ void Game::Setup()
 	//Set up new inputManager and PlayerController
 	input = new InputManager();
 	controller = CharacterController(input, camera);
+}
+
+void Game::CreateObjects()
+{
+	/*---------------------
+	Object creation
+	---------------------*/
+
+	//Create an objectBuilder class that loads all meshes and then assigns them to different objects.
+
+	//Load Tank Mesh
+	MeshCollection* tankMesh = new MeshCollection();
+	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
+	GLuint TextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
+
+	//Load Teapot Mesh
+	MeshCollection* teaPotMesh = new MeshCollection();
+	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
+	TextureID = loadTextureFromFile("Resources/checkerboard.PNG");
+
+	//Create new objects
+	GameObject* tank1 = new GameObject();
+	GameObject* tank2 = new GameObject();
+	GameObject* teapot = new GameObject();
+
+	//Init object variables
+	tank1->Init();
+	tank2->Init();
+	teapot->Init();
+
+	//Move tank2
+	tank2->setTranslation(glm::vec3(5.0, 0.0, 0.0));
+	teapot->setTranslation(glm::vec3(10, 0.0, 5.0));
+
+	//Set object meshes
+	tank1->setMesh(tankMesh);
+	tank2->setMesh(tankMesh);
+	teapot->setMesh(teaPotMesh);
+
+	//Add objects to vector of game objects
+	objects.push_back(tank1);
+	objects.push_back(tank2);
+	objects.push_back(teapot);
 }
 
 void Game::GameLoop()
@@ -147,22 +159,6 @@ void Game::GameLoop()
 			case SDL_MOUSEMOTION:
 				//Pass location to inputManager
 
-				/* Trying to fix the view jump at the beginning.... not working. :P
-				//if not first mouse movement
-				if (isFirstMouse != true)
-				{
-					input->mouseInput(event.motion.xrel, event.motion.yrel);
-				}
-
-				//If first mouse movement
-				else
-				{
-					input->mouseInput(0, 0);
-					isFirstMouse = false;
-				}
-
-				controller.handleMouse();*/
-
 				input->mouseInput(event.motion.xrel, event.motion.yrel);
 				controller.handleMouse();
 
@@ -184,17 +180,15 @@ void Game::GameLoop()
 		glClearColor(0.0, 0.0, 1.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//Linking shaders
-		glUseProgram(programID);
+	
 
 
 		/*---------------------
 		Send Uniform Values
 		----------------------*/
 
-		glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
-		glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
 
+		glUseProgram(programID);
 
 		/*----------------
 		Check vector of game objects
@@ -202,14 +196,18 @@ void Game::GameLoop()
 
 		for (GameObject* object : objects)
 		{
+			//Get current programme from game object
+			//set as active (use!)
+			//send the values
+			//draw
+
+
+			glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
+			glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
 			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
 			object->Update();
 		}
 
-
-		/*----------------
-		Drawing Objects
-		------------------*/
 
 		//Refresh screen
 		SDL_GL_SwapWindow(window);

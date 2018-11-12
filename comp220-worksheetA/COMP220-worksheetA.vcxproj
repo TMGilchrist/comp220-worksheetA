@@ -188,6 +188,8 @@ copy ..\Libraries\assimp-4.1.0\bin\x64\*.dll "$(OutDir)\*.dll"</Command>
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="BlinnPhongFragment.glsl" />
+    <None Include="BlinnPhongVert.glsl" />
     <None Include="fragmentShader.glsl" />
     <None Include="fragmentTextured.glsl" />
     <None Include="vertexShader.glsl" />

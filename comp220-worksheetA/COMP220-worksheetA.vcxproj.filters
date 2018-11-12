@@ -104,5 +104,7 @@
     <None Include="vertexShader.glsl" />
     <None Include="fragmentTextured.glsl" />
     <None Include="vertexTextured.glsl" />
+    <None Include="BlinnPhongFragment.glsl" />
+    <None Include="BlinnPhongVert.glsl" />
   </ItemGroup>
 </Project>

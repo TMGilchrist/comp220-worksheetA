@@ -38,9 +38,14 @@ public:
 	void Init();
 
 	/**
-	Setup game components. Create objects and populate the objects vector. Initialise camera, input manager and controller.
+	Setup game components. Initialise camera, input manager and controller.
 	*/
 	void Setup();
+
+	/**
+	Create game objects and add to the objects vector.
+	*/
+	void CreateObjects();
 
 	/**
 	The main game loop. Runs until escape is pressed or the window is closed.
