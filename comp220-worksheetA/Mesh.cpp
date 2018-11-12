@@ -93,7 +93,7 @@ void Mesh::CleanUp()
 	glDeleteBuffers(1, &elementBuffer);
 }
 
-void Mesh::BindTexure()
+void Mesh::BindTexture()
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
@@ -133,6 +133,7 @@ void MeshCollection::render()
 {
 	for (Mesh *mesh : meshes)
 	{
+		mesh->BindTexture(); // Experimenting to see if this will work?
 		mesh->Render();
 	}
 }
