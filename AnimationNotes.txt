@@ -1,0 +1,89 @@
+/*---------------------------------------------------------------------------------
+Basic transform animation.
+---------------------------------------------------------------------------------*/
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) <- use this to display wireframe.
+
+	//Create or copy Timer class.
+
+/*
+AnimationVert.GLSL
+*/
+	uniform float time;
+
+	vec3 animatedPosition = vertexPosition; //cannot alter vertexPosition in code -> copy into new variable to do so.
+
+	//Update references to vertexPosition to animatedPosition
+
+	//Move object on y and z axes
+	animatedPosition.y += (sin(time + animatedPosition.x) * 10.0) * 0.1;
+	animatedPosition.z += (sin(time + animatedPosition.x) * 10.0) * 0.1;
+
+
+/*
+Main.cpp
+*/
+
+	Glint timeUniformLocation = glGetUniformLocation(programID, "time");
+
+	glUniform1f(timeUniformLocation, timer.getUpdatedTime());
+
+
+
+
+/*------------------------------------------------------------------------------------------------------------
+Morph target animation: Moving between two shapes, interpolating between start and finish. 
+Used in facial animations, fish etc.
+------------------------------------------------------------------------------------------------------------*/
+
+	//Starting with plain white cube which we will collapse into a pyramid..
+	//Copy cube x, y, z into r, g, b: then set r and b to 0 where they = 0.5f to use as target. (Could just make a vec3 target?)
+
+/*
+MorphTargetVert.GLSL
+*/
+
+	layout(locaiton = 1) in vec4 vertexTargetPosition;
+
+	//How much to blend into target shape
+	uniform float blendFactor = 1.0f;
+
+
+	vec3 morphPosition = mix(vertexPosition, vertexTargetPosition.xyz, blendFactor);
+	vec4 mvpPosition = mvpMatrix ( mvpMatrix * vec4(vertexTargetPosition, 1.0f)
+
+	vertexColourOut = vec4(1.0f);
+
+
+/*
+Main.cpp
+*/
+
+	float morphBlendFactor = 0.5f
+	GLint blendFactorLocation = glGetUniformLocation(programID, "blendFactor")
+
+	//In input loop, can add controls for blend factor.
+	//On keypress 
+	morphBlendFactor += 0.01f;
+	morphBlendFactor -= 0.01f;
+
+	//Stop blend from going into weird numbers.
+	glm::clamp(morphBlendFactor, 0.0f, 1.0f);
+
+	//Alternatively, use time to change blend.
+	morphBlendFactor += timer.getDeltaTime;
+	
+	
+	glUniform1f(blendFactorLocation, morphBlendFactor);
+
+
+
+
+
+
+
+
+
+
+
+
