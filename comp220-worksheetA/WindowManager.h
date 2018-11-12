@@ -8,10 +8,10 @@ class WindowManager
 {
 public:
 	WindowManager();
-	WindowManager(const char* title);
-	WindowManager(const char* title, int Height, int Width);
-
 	~WindowManager();
+
+	//Init sdl and window.
+	void Init(const char* title="Default Window", int Width = global::SCREEN_WIDTH, int Height = global::SCREEN_HEIGHT);
 
 	//Initalise SDL ready for window creation
 	int initSDL();

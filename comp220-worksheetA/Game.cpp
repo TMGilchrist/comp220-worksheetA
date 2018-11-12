@@ -14,7 +14,8 @@ Game::~Game()
 void Game::Init()
 {
 	//Create SDL window
-	windowMain = new WindowManager("Shader Practice");
+	windowMain = new WindowManager();
+	windowMain->Init("Shader Practice");
 	window = windowMain->getWindow();
 
 	//Initalise Open_GL and GLEW. Get Open_GL context.

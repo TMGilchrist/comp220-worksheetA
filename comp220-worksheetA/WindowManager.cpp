@@ -3,56 +3,34 @@
 //Make an init function!!
 WindowManager::WindowManager()
 {
-	initSDL();
 
-	//Create a window, note we have to free the pointer returned using the DestroyWindow Function
-	window = SDL_CreateWindow("SDL_Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, global::SCREEN_WIDTH, global::SCREEN_WIDTH, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-
-	verifyWindow();
-	SDL_SetWindowResizable(window, SDL_TRUE);
-	SDL_GetWindowSize(window, &width, &height);
-
-	flags = SDL_GetWindowFlags(window);
-	isFullscreen = false;
-	isMaximised = false;
-}
-
-WindowManager::WindowManager(const char* title)
-{
-	initSDL();
-
-	//Create a window, note we have to free the pointer returned using the DestroyWindow Function
-	window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, global::SCREEN_WIDTH, global::SCREEN_WIDTH, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-
-	verifyWindow();
-	SDL_SetWindowResizable(window, SDL_TRUE);
-	SDL_GetWindowSize(window, &width, &height);
-
-	flags = SDL_GetWindowFlags(window);
-	isFullscreen = false;
-	isMaximised = false;
-}
-
-WindowManager::WindowManager(const char * title, int Height, int Width)
-{
-	initSDL();
-
-	//Create a window, note we have to free the pointer returned using the DestroyWindow Function
-	window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Height, Width, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-
-	verifyWindow();
-	SDL_SetWindowResizable(window, SDL_TRUE);
-	SDL_GetWindowSize(window, &width, &height);
-
-	flags = SDL_GetWindowFlags(window);
-	isFullscreen = false;
-	isMaximised = false;
 }
 
 WindowManager::~WindowManager()
 {
 	SDL_DestroyWindow(window);
 	//SDL_Quit();
+}
+
+void WindowManager::Init(const char* title, int Width, int Height)
+{
+	//Init SDL
+	initSDL();
+
+	//Create a window, note we have to free the pointer returned using the DestroyWindow Function
+	window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Width, Height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+
+	//Verify that window is created.
+	verifyWindow();
+
+	//Allow window to be resized
+	SDL_SetWindowResizable(window, SDL_TRUE);
+	SDL_GetWindowSize(window, &width, &height); //Is this line necessary? Check this.
+
+	//Store window flags and init required flags.
+	flags = SDL_GetWindowFlags(window);
+	isFullscreen = false;
+	isMaximised = false;
 }
 
 int WindowManager::initSDL()
