@@ -51,6 +51,16 @@ void CharacterController::handleKeyboard(float deltaTime)
 		attachedCamera->setPosition(cameraPosition + (glm::normalize(glm::cross(cameraTarget, attachedCamera->getUpVector())) * movespeed));
 		attachedCamera->setViewMatrix();
 	}
+
+	if (input->isPressed(SDLK_SPACE)) 
+	{
+		//Move up
+	}
+
+	if (input->isPressed(SDLK_LSHIFT)) 
+	{
+		//Move down
+	}
 }
 
 void CharacterController::handleMouse()

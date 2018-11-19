@@ -74,12 +74,12 @@ void Game::CreateObjects()
 	//Load Tank Mesh
 	MeshCollection* tankMesh = new MeshCollection();
 	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
-	GLuint TextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
+	GLuint tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
 
 	//Load Teapot Mesh
 	MeshCollection* teaPotMesh = new MeshCollection();
 	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
-	TextureID = loadTextureFromFile("Resources/checkerboard.PNG");
+	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
 
 	//Create new objects
 	GameObject* tank1 = new GameObject();
@@ -91,7 +91,12 @@ void Game::CreateObjects()
 	tank2->Init();
 	teapot->Init();
 
-	//Move tank2
+	//Set textures
+	tank1->setDiffuseTextureID(tankTextureID);
+	tank2->setDiffuseTextureID(tankTextureID);
+	teapot->setDiffuseTextureID(checkerTextureID);
+
+	//Position objects
 	tank2->setTranslation(glm::vec3(5.0, 0.0, 0.0));
 	teapot->setTranslation(glm::vec3(10, 0.0, 5.0));
 
@@ -201,6 +206,11 @@ void Game::GameLoop()
 			//send the values
 			//draw
 
+			glActiveTexture(GL_TEXTURE0);
+
+			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
+
+			glUniform1i(textureUniformLocation, 0);
 
 			glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 			glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));

@@ -43,13 +43,26 @@ public:
 		return modelMatrix;
 	}
 
+	void setDiffuseTextureID(GLuint ID) 
+	{
+		diffuseTextureID = ID;
+	}
+
+	GLuint getDiffuseTextureID() 
+	{
+		return diffuseTextureID;
+	}
+
 private:
 	//Mesh collection for the object's model.
 	MeshCollection* mesh;
 
+	GLuint diffuseTextureID;
+
 	//Model Matrix of the object
 	glm::mat4 modelMatrix;
 
+	//These could be moved into a transform class
 	//Transformation Matricies
 	glm::mat4 translationMatrix;
 	glm::mat4 rotationMatrix;
