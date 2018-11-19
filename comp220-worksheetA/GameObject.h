@@ -36,7 +36,10 @@ public:
 	{
 		modelTranslation = Translation;
 	}
-
+	void setScale(glm::vec3 Scale) 
+	{
+		modelScale = Scale;
+	}
 	
 	glm::mat4 getModelMatrix() 
 	{

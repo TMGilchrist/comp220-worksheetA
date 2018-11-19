@@ -76,8 +76,6 @@ private:
 	InputManager* input;
 	CharacterController controller;
 
-	MeshCollection* tankMesh;
-
 	//Uniform locations
 	GLuint textureUniformLocation;
 	GLuint modelMatrixLocation;
@@ -86,5 +84,11 @@ private:
 
 	//Vector of game objects
 	std::vector<GameObject*> objects;
+
+	//Vector of meshes
+	std::vector<MeshCollection*> meshes;
+
+	//Vector of textures
+	std::vector<GLuint*> textures;
 };
 

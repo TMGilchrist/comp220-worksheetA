@@ -4,6 +4,7 @@
 #include "Vertex.h"
 #include <iostream>
 
+
 class CharacterController
 {
 public:
@@ -26,6 +27,6 @@ private:
 	glm::vec3 cameraTarget;
 
 	//How fast the player can move
-	float movespeed;
+	float moveSpeed;
 };
 

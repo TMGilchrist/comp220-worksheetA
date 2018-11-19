@@ -81,6 +81,10 @@ void Game::CreateObjects()
 	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
 	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
 
+	//Add meshes to vector
+	meshes.push_back(tankMesh);
+	meshes.push_back(teaPotMesh);
+
 	//Create new objects
 	GameObject* tank1 = new GameObject();
 	GameObject* tank2 = new GameObject();
@@ -96,9 +100,12 @@ void Game::CreateObjects()
 	tank2->setDiffuseTextureID(tankTextureID);
 	teapot->setDiffuseTextureID(checkerTextureID);
 
+	//Scale objects
+	teapot->setScale(glm::vec3(0.25, 0.25, 0.25));
+
 	//Position objects
-	tank2->setTranslation(glm::vec3(5.0, 0.0, 0.0));
-	teapot->setTranslation(glm::vec3(10, 0.0, 5.0));
+	tank2->setTranslation(glm::vec3(10.0, 0.0, 0.0));
+	teapot->setTranslation(glm::vec3(10, 15.0, 5.0));
 
 	//Set object meshes
 	tank1->setMesh(tankMesh);
@@ -232,6 +239,8 @@ void Game::Cleanup()
 
 	glDeleteProgram(programID);
 
+	
+
 	//Destroy vector of game objects
 	auto iter = objects.begin();
 	while (iter != objects.end())
@@ -250,7 +259,46 @@ void Game::Cleanup()
 		}
 	}
 
+	//Destroy vector of meshes
+	auto iter2 = meshes.begin();
+	while (iter2 != meshes.end())
+	{
+		if (*iter2)
+		{
+			//(*iter)->CleanUp(); Call destructor/cleanup here
+			delete (*iter2);
+			(*iter2) = nullptr;
+			iter2 = meshes.erase(iter2);
+		}
+
+		else
+		{
+			iter2++;
+		}
+	}
+
+	//Destroy vector of textures
+	auto iter3 = textures.begin();
+	while (iter3 != textures.end())
+	{
+		if (*iter3)
+		{
+			//(*iter)->CleanUp(); Call destructor/cleanup here
+			delete (*iter3);
+			(*iter3) = nullptr;
+			iter3 = textures.erase(iter3);
+		}
+
+		else
+		{
+			iter3++;
+		}
+	}
+
+
 	objects.clear();
+	meshes.clear();
+	textures.clear();
 
 	//Delete context
 	SDL_GL_DeleteContext(glContext);
