@@ -43,6 +43,12 @@ public:
 	void Setup();
 
 	/**
+	Setup the lighting uniforms and values.
+	This should likely be moved into a lighting manager class at some point.
+	*/
+	void lightingSetup();
+
+	/**
 	Create game objects and add to the objects vector.
 	*/
 	void CreateObjects();
@@ -82,11 +88,33 @@ private:
 	GLuint viewMatrixLocation;
 	GLuint projectionMatrixLocation;
 
-	GLuint	ambientMaterialColourLocation;
-	GLuint ambientLightColourLocation;
+	/*----------------------------------------------
+	Lighting related uniforms.
+	Probably move these out to a lightingManager
+	----------------------------------------------*/
 
+	//Ambient
 	glm::vec4 ambientMaterialColour;
 	glm::vec4 ambientLightColour;
+	float ambientIntensity;
+
+	GLuint	ambientMaterialColourLocation;
+	GLuint ambientLightColourLocation;
+	GLuint ambientIntensityLocation;
+
+	//Diffuse
+	glm::vec4 diffuseMaterialColour;
+	glm::vec4 diffuseLightColour;
+	glm::vec3 lightDirection;
+	float diffuseIntensity;
+
+	GLuint diffuseMaterialColourLocation;
+	GLuint diffuseLightColourLocation;
+	GLuint lightDirectionLocation;
+	GLuint diffuseIntensityLocation;
+
+	//Specular
+
 
 	//Vector of game objects
 	std::vector<GameObject*> objects;

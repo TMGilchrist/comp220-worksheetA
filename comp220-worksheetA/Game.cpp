@@ -55,12 +55,8 @@ void Game::Setup()
 	projectionMatrixLocation = glGetUniformLocation(programID, "projectionMatrix");
 	MVPLocation = glGetUniformLocation(programID, "MVP");
 
-	//Lighting
-	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
-	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
-
-	ambientMaterialColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	//Setup lighting
+	lightingSetup();
 
 	//Set up a camera and init the projection matrix with window size
 	camera = new Camera();
@@ -69,6 +65,30 @@ void Game::Setup()
 	//Set up new inputManager and PlayerController
 	input = new InputManager();
 	controller = CharacterController(input, camera);
+}
+
+void Game::lightingSetup()
+{
+	//Material
+	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
+	diffuseMaterialColourLocation = glGetUniformLocation(programID, "diffuseMaterialColour");
+
+	ambientMaterialColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	diffuseMaterialColour = glm::vec4(0.8f, 0.0f, 0.0f, 1.0f);
+
+	//Light
+	lightDirectionLocation = glGetUniformLocation(programID, "lightDirection");
+	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
+	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
+	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
+	diffuseIntensity = glGetUniformLocation(programID, "diffuseIntensity");
+
+
+	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
+	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	ambientIntensity = 0.3f;
+	diffuseIntensity = 1.0f;
 }
 
 void Game::CreateObjects()
@@ -209,10 +229,15 @@ void Game::GameLoop()
 		Send Uniform Values
 		----------------------*/
 		glUseProgram(programID);
+
 		glUniform4fv(ambientLightColourLocation, 1, value_ptr(ambientLightColour));
 		glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(ambientMaterialColour));
+		glUniform1f(ambientIntensityLocation, ambientIntensity);
 
-	
+		glUniform4fv(diffuseLightColourLocation, 1, value_ptr(diffuseLightColour));
+		glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(diffuseMaterialColour));
+		glUniform3fv(lightDirectionLocation, 1, value_ptr(lightDirection));
+		glUniform1f(diffuseIntensityLocation, diffuseIntensity);
 
 		/*----------------
 		Check vector of game objects

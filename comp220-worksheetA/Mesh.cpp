@@ -84,6 +84,18 @@ void Mesh::SetVertexAttributes()
 		sizeof(Vertex),
 		(void*)(7 * sizeof(float))
 	);
+
+	//4th attribute buffer : Normals
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer
+	(
+		3,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		sizeof(Vertex),
+		(void*)(9 * sizeof(float))
+	);
 }
 
 void Mesh::CleanUp()

@@ -23,18 +23,28 @@ bool loadModelFromFile(const std::string& filename, GLuint VBO, GLuint EBO, unsi
 			aiVector3D currentModelVertex = currentMesh->mVertices[v];
 			aiColor4D currentModelColour = aiColor4D(1.0, 1.0, 1.0, 1.0);
 			aiVector3D currentTextureCoordinates = aiVector3D(0.0f, 0.0f, 0.0f);
+			aiVector3D currentNormal = aiVector3D(0.0f, 0.0f, 0.0f);
 
 			if (currentMesh->HasVertexColors(0))
 			{
 				currentModelColour = currentMesh->mColors[0][v];
 			}
+
 			if (currentMesh->HasTextureCoords(0))
 			{
 				currentTextureCoordinates = currentMesh->mTextureCoords[0][v];
 			}
-			Vertex currentVertex = { currentModelVertex.x,currentModelVertex.y,currentModelVertex.z,
-				currentModelColour.r,currentModelColour.g,currentModelColour.b,currentModelColour.a,
-				currentTextureCoordinates.x,currentTextureCoordinates.y };
+
+			if (currentMesh->HasNormals())
+			{
+			   currentNormal = currentMesh->mNormals[v];
+			}
+
+			Vertex currentVertex = {currentModelVertex.x, currentModelVertex.y, currentModelVertex.z,
+									currentModelColour.r, currentModelColour.g, currentModelColour.b, currentModelColour.a,
+									currentTextureCoordinates.x, currentTextureCoordinates.y,
+									currentNormal.x, currentNormal.y, currentNormal.z 
+								   };
 
 			vertices.push_back(currentVertex);
 		}
@@ -87,18 +97,28 @@ bool loadMeshFromFile(const std::string & filename, MeshCollection * pMeshCollec
 			aiVector3D currentModelVertex = currentMesh->mVertices[v];
 			aiColor4D currentModelColour = aiColor4D(1.0, 1.0, 1.0, 1.0);
 			aiVector3D currentTextureCoordinates = aiVector3D(0.0f, 0.0f, 0.0f);
+			aiVector3D currentNormal = aiVector3D(0.0f, 0.0f, 0.0f);
 
 			if (currentMesh->HasVertexColors(0))
 			{
 				currentModelColour = currentMesh->mColors[0][v];
 			}
+
 			if (currentMesh->HasTextureCoords(0))
 			{
 				currentTextureCoordinates = currentMesh->mTextureCoords[0][v];
 			}
-			Vertex currentVertex = { currentModelVertex.x,currentModelVertex.y,currentModelVertex.z,
-				currentModelColour.r,currentModelColour.g,currentModelColour.b,currentModelColour.a,
-				currentTextureCoordinates.x,currentTextureCoordinates.y };
+
+			if (currentMesh->HasNormals())
+			{
+				currentNormal = currentMesh->mNormals[v];
+			}
+
+			Vertex currentVertex = {currentModelVertex.x,currentModelVertex.y,currentModelVertex.z,
+									currentModelColour.r,currentModelColour.g,currentModelColour.b,currentModelColour.a,
+									currentTextureCoordinates.x,currentTextureCoordinates.y, 
+									currentNormal.x, currentNormal.y, currentNormal.z
+								   };
 
 			vertices.push_back(currentVertex);
 		}
