@@ -44,19 +44,8 @@ void Game::Setup()
 	//Create game objects
 	CreateObjects();
 
-	//Set programID
-	//programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
-	programID = LoadShaders("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
-
-	//Set uniform locations
-	textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
-	modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
-	viewMatrixLocation = glGetUniformLocation(programID, "viewMatrix");
-	projectionMatrixLocation = glGetUniformLocation(programID, "projectionMatrix");
-	MVPLocation = glGetUniformLocation(programID, "MVP");
-
 	//Setup lighting
-	lightingSetup();
+	InitLighting();
 
 	//Set up a camera and init the projection matrix with window size
 	camera = new Camera();
@@ -67,23 +56,13 @@ void Game::Setup()
 	controller = CharacterController(input, camera);
 }
 
-void Game::lightingSetup()
+void Game::InitLighting()
 {
 	//Material
-	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
-	diffuseMaterialColourLocation = glGetUniformLocation(programID, "diffuseMaterialColour");
-
 	ambientMaterialColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 	diffuseMaterialColour = glm::vec4(0.8f, 0.0f, 0.0f, 1.0f);
 
-	//Light
-	lightDirectionLocation = glGetUniformLocation(programID, "lightDirection");
-	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
-	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
-	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
-	diffuseIntensity = glGetUniformLocation(programID, "diffuseIntensity");
-
-
+	//Lighting
 	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -119,7 +98,7 @@ void Game::CreateObjects()
 	GameObject* tank2 = new GameObject();
 	GameObject* teapot = new GameObject();
 
-	//Init object variables
+	//Init object variables with the shaders to use
 	tank1->Init("vertexTextured.glsl", "fragmentTextured.glsl");
 	tank2->Init("vertexTextured.glsl", "fragmentTextured.glsl");
 	teapot->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
@@ -128,7 +107,6 @@ void Game::CreateObjects()
 	tank1->setDiffuseTextureID(tankTextureID);
 	tank2->setDiffuseTextureID(tankTextureID);
 	teapot->setDiffuseTextureID(checkerTextureID);
-	//teapot->setDiffuseTextureID(redTextureID);
 
 	//Scale objects
 	teapot->setScale(glm::vec3(0.25, 0.25, 0.25));
@@ -221,23 +199,8 @@ void Game::GameLoop()
 		//OpenGL rendering
 		glClearColor(0.0, 0.0, 1.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	
 
-
-		/*---------------------
-		Send Uniform Values
-		----------------------*/
-		glUseProgram(programID);
-
-		glUniform4fv(ambientLightColourLocation, 1, value_ptr(ambientLightColour));
-		glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(ambientMaterialColour));
-		glUniform1f(ambientIntensityLocation, ambientIntensity);
-
-		glUniform4fv(diffuseLightColourLocation, 1, value_ptr(diffuseLightColour));
-		glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(diffuseMaterialColour));
-		glUniform3fv(lightDirectionLocation, 1, value_ptr(lightDirection));
-		glUniform1f(diffuseIntensityLocation, diffuseIntensity);
 
 		/*----------------
 		Check vector of game objects   This should probably be changed to only update when the objects require updating.
@@ -245,20 +208,19 @@ void Game::GameLoop()
 
 		for (GameObject* object : objects)
 		{
-			//Get current programme from game object
-			//set as active (use!)
-			//send the values
-			//draw
+			//Setup program and uniforms unique to object
+			glUseProgram(object->getProgramID());
+			SetUniformLocations(object->getProgramID());
 
+			//Bind and send texture. I would like the texture uniform to be part of SendUniforms, but I'm not sure how that would work with multiple textures?
 			glActiveTexture(GL_TEXTURE0);
-
 			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
-
 			glUniform1i(textureUniformLocation, 0);
-					   
-			glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
-			glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
-			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
+
+			//Send uniforms
+			SendUniforms(object);
+
+			//Update object
 			object->Update();
 		}
 
@@ -266,6 +228,50 @@ void Game::GameLoop()
 		//Refresh screen
 		SDL_GL_SwapWindow(window);
 	}
+}
+
+void Game::SetUniformLocations(GLuint programID)
+{
+	//Matrices
+	modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
+	viewMatrixLocation = glGetUniformLocation(programID, "viewMatrix");
+	projectionMatrixLocation = glGetUniformLocation(programID, "projectionMatrix");
+	MVPLocation = glGetUniformLocation(programID, "MVP");
+
+	//Materials
+	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
+	diffuseMaterialColourLocation = glGetUniformLocation(programID, "diffuseMaterialColour");
+
+	//Lighting
+	lightDirectionLocation = glGetUniformLocation(programID, "lightDirection");
+	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
+	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
+	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
+	diffuseIntensity = glGetUniformLocation(programID, "diffuseIntensity");
+
+	//Textures
+	textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
+}
+
+void Game::SendUniforms(GameObject* object)
+{
+	//Matrices
+	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
+	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
+
+	//Materials
+	glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(ambientMaterialColour));
+	glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(diffuseMaterialColour));
+
+	//Lighting
+	glUniform3fv(lightDirectionLocation, 1, value_ptr(lightDirection));
+
+	glUniform4fv(ambientLightColourLocation, 1, value_ptr(ambientLightColour));
+	glUniform4fv(diffuseLightColourLocation, 1, value_ptr(diffuseLightColour));
+
+	glUniform1f(ambientIntensityLocation, ambientIntensity);
+	glUniform1f(diffuseIntensityLocation, diffuseIntensity);
 }
 
 void Game::Cleanup()

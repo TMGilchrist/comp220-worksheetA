@@ -28,5 +28,5 @@ void main()
 	float diffuseIntensity = clamp(dot(vertexNormalOut, -lightDirection), 0, 1);
 
 	//colour = (ambientLightColour * ambientMaterialColour);
-	colour = ((ambientLightColour * ambientMaterialColour) * 0.3 ) + (diffuseLightColour * diffuseIntensity * diffuseMaterialColour);
+	colour = ((ambientLightColour * ambientMaterialColour) * ambientIntensity ) + (diffuseLightColour * diffuseIntensity * diffuseMaterialColour);
 }
