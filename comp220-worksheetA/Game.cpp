@@ -41,15 +41,15 @@ void Game::Setup()
 	//Enable backface culling.
 	glEnable(GL_CULL_FACE); 
 
+	//Set up a camera and init the projection matrix with window size
+	camera = new Camera();
+	camera->setProjectionMatrix(windowMain->getWidth(), windowMain->getHeight());
+
 	//Create game objects
 	CreateObjects();
 
 	//Setup lighting
 	InitLighting();
-
-	//Set up a camera and init the projection matrix with window size
-	camera = new Camera();
-	camera->setProjectionMatrix(windowMain->getWidth(), windowMain->getHeight());
 
 	//Set up new inputManager and PlayerController
 	input = new InputManager();
@@ -61,13 +61,17 @@ void Game::InitLighting()
 	//Material
 	ambientMaterialColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 	diffuseMaterialColour = glm::vec4(0.8f, 0.0f, 0.0f, 1.0f);
+	specularMaterialColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//Lighting
 	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ambientIntensity = 0.3f;
-	diffuseIntensity = 1.0f;
+
+	cameraPosition = camera->getPosition();
+	specularPower = 25;
 }
 
 void Game::CreateObjects()
@@ -247,7 +251,11 @@ void Game::SetUniformLocations(GLuint programID)
 	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
 	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
 	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
-	diffuseIntensity = glGetUniformLocation(programID, "diffuseIntensity");
+
+	specularMaterialColourLocation = glGetUniformLocation(programID, "specularMaterialColour");
+	specularLightColourLocation = glGetUniformLocation(programID, "specularLightColour");
+	cameraPositionLocation = glGetUniformLocation(programID, "cameraPosition");
+	specularPowerLocation = glGetUniformLocation(programID, "specularPower");
 
 	//Textures
 	textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
@@ -255,6 +263,8 @@ void Game::SetUniformLocations(GLuint programID)
 
 void Game::SendUniforms(GameObject* object)
 {
+	//cameraPosition = camera->getPosition();
+
 	//Matrices
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
@@ -266,12 +276,14 @@ void Game::SendUniforms(GameObject* object)
 
 	//Lighting
 	glUniform3fv(lightDirectionLocation, 1, value_ptr(lightDirection));
-
 	glUniform4fv(ambientLightColourLocation, 1, value_ptr(ambientLightColour));
 	glUniform4fv(diffuseLightColourLocation, 1, value_ptr(diffuseLightColour));
-
 	glUniform1f(ambientIntensityLocation, ambientIntensity);
-	glUniform1f(diffuseIntensityLocation, diffuseIntensity);
+
+	glUniform4fv(specularLightColourLocation, 1, value_ptr(specularLightColour));
+	glUniform4fv(specularMaterialColourLocation, 1, value_ptr(specularMaterialColour));
+	glUniform3fv(cameraPositionLocation, 1, value_ptr(cameraPosition));
+	glUniform1f(specularPowerLocation, specularPower);
 }
 
 void Game::Cleanup()

@@ -89,9 +89,8 @@ private:
 	float lastFrame;
 
 	GLuint programID;
-	GLuint MVPLocation;
-	Camera* camera;
 
+	Camera* camera;
 	InputManager* input;
 	CharacterController controller;
 
@@ -100,6 +99,7 @@ private:
 	GLuint modelMatrixLocation;
 	GLuint viewMatrixLocation;
 	GLuint projectionMatrixLocation;
+	GLuint MVPLocation;
 
 	/*----------------------------------------------
 	Lighting related uniforms.
@@ -119,7 +119,6 @@ private:
 	glm::vec4 diffuseMaterialColour;
 	glm::vec4 diffuseLightColour;
 	glm::vec3 lightDirection;
-	float diffuseIntensity;
 
 	GLuint diffuseMaterialColourLocation;
 	GLuint diffuseLightColourLocation;
@@ -127,6 +126,15 @@ private:
 	GLuint diffuseIntensityLocation;
 
 	//Specular
+	glm::vec4 specularMaterialColour;
+	glm::vec4 specularLightColour;
+	glm::vec3 cameraPosition;
+	float specularPower;
+
+	GLuint specularMaterialColourLocation;
+	GLuint specularLightColourLocation;
+	GLuint cameraPositionLocation;
+	GLuint specularPowerLocation;
 
 
 	//Vector of game objects
