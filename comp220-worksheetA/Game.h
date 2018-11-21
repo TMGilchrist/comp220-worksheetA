@@ -82,6 +82,12 @@ private:
 	GLuint viewMatrixLocation;
 	GLuint projectionMatrixLocation;
 
+	GLuint	ambientMaterialColourLocation;
+	GLuint ambientLightColourLocation;
+
+	glm::vec4 ambientMaterialColour;
+	glm::vec4 ambientLightColour;
+
 	//Vector of game objects
 	std::vector<GameObject*> objects;
 

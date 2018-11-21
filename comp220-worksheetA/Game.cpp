@@ -45,7 +45,8 @@ void Game::Setup()
 	CreateObjects();
 
 	//Set programID
-	programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
+	//programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
+	programID = LoadShaders("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
 
 	//Set uniform locations
 	textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
@@ -53,6 +54,13 @@ void Game::Setup()
 	viewMatrixLocation = glGetUniformLocation(programID, "viewMatrix");
 	projectionMatrixLocation = glGetUniformLocation(programID, "projectionMatrix");
 	MVPLocation = glGetUniformLocation(programID, "MVP");
+
+	//Lighting
+	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
+	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
+
+	ambientMaterialColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//Set up a camera and init the projection matrix with window size
 	camera = new Camera();
@@ -80,6 +88,7 @@ void Game::CreateObjects()
 	MeshCollection* teaPotMesh = new MeshCollection();
 	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
 	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
+	GLuint redTextureID = loadTextureFromFile("Resources/Red.PNG");
 
 	//Add meshes to vector
 	meshes.push_back(tankMesh);
@@ -99,6 +108,7 @@ void Game::CreateObjects()
 	tank1->setDiffuseTextureID(tankTextureID);
 	tank2->setDiffuseTextureID(tankTextureID);
 	teapot->setDiffuseTextureID(checkerTextureID);
+	//teapot->setDiffuseTextureID(redTextureID);
 
 	//Scale objects
 	teapot->setScale(glm::vec3(0.25, 0.25, 0.25));
@@ -198,9 +208,11 @@ void Game::GameLoop()
 		/*---------------------
 		Send Uniform Values
 		----------------------*/
-
-
 		glUseProgram(programID);
+		glUniform4fv(ambientLightColourLocation, 1, value_ptr(ambientLightColour));
+		glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(ambientMaterialColour));
+
+	
 
 		/*----------------
 		Check vector of game objects
@@ -218,7 +230,7 @@ void Game::GameLoop()
 			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
 
 			glUniform1i(textureUniformLocation, 0);
-
+					   
 			glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 			glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
 			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));

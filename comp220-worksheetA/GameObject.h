@@ -60,7 +60,10 @@ private:
 	//Mesh collection for the object's model.
 	MeshCollection* mesh;
 
+	//Object's textureID
 	GLuint diffuseTextureID;
+
+	//ProgramID <- load different shaders for each object? 
 
 	//Model Matrix of the object
 	glm::mat4 modelMatrix;

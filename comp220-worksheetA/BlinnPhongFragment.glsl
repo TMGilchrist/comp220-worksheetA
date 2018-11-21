@@ -16,6 +16,6 @@ out vec4 colour;
 
 void main()
 {
-	colour = texture(textureSampler, vertexTextureCoordsOut);
-	//colour = (ambientLightColour * ambientMaterialColour);
+	//colour = texture(textureSampler, vertexTextureCoordsOut);
+	colour = (ambientLightColour * ambientMaterialColour);
 }
