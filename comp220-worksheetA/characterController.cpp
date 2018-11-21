@@ -25,30 +25,49 @@ void CharacterController::handleKeyboard(float deltaTime)
 {
 	cameraPosition = attachedCamera->getPosition();
 	cameraTarget = attachedCamera->getTarget();
-	movespeed = 0.05f * deltaTime;
+	moveSpeed = 0.05f * deltaTime;
 
-	//Check inputs.
+	//This isn't multi-directional movement, this should be fixed!
+
+	//Strafe forwards
 	if (input->isPressed(SDLK_w))
 	{
-		attachedCamera->setPosition(cameraPosition + (movespeed * cameraTarget));
+		attachedCamera->setPosition(cameraPosition + (moveSpeed * cameraTarget));
 		attachedCamera->setViewMatrix();
 	}
 
+	//Strafe left
 	if (input->isPressed(SDLK_a))
 	{
-		attachedCamera->setPosition(cameraPosition - (glm::normalize(glm::cross(cameraTarget, attachedCamera->getUpVector())) * movespeed));
+		attachedCamera->setPosition(cameraPosition - (glm::normalize(glm::cross(cameraTarget, attachedCamera->getUpVector())) * moveSpeed));
 		attachedCamera->setViewMatrix();
 	}
 
+	//Strafe backwards
 	if (input->isPressed(SDLK_s))
 	{
-		attachedCamera->setPosition(cameraPosition - (movespeed * cameraTarget));
+		attachedCamera->setPosition(cameraPosition - (moveSpeed * cameraTarget));
 		attachedCamera->setViewMatrix();
 	}
 
+	//Strafe right
 	if (input->isPressed(SDLK_d))
 	{
-		attachedCamera->setPosition(cameraPosition + (glm::normalize(glm::cross(cameraTarget, attachedCamera->getUpVector())) * movespeed));
+		attachedCamera->setPosition(cameraPosition + (glm::normalize(glm::cross(cameraTarget, attachedCamera->getUpVector())) * moveSpeed));
+		attachedCamera->setViewMatrix();
+	}
+
+	// Strafe up
+	if (input->isPressed(SDLK_SPACE))
+	{
+		attachedCamera->setPosition(cameraPosition + (glm::vec3(0, 1, 0) * moveSpeed));
+		attachedCamera->setViewMatrix();
+	}
+
+	// Strafe down
+	if (input->isPressed(SDLK_LCTRL))
+	{
+		attachedCamera->setPosition(cameraPosition + (glm::vec3(0, -1, 0) * moveSpeed));
 		attachedCamera->setViewMatrix();
 	}
 }

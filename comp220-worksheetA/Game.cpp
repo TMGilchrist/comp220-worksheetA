@@ -45,7 +45,8 @@ void Game::Setup()
 	CreateObjects();
 
 	//Set programID
-	programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
+	//programID = LoadShaders("vertexTextured.glsl", "fragmentTextured.glsl");
+	programID = LoadShaders("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
 
 	//Set uniform locations
 	textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
@@ -54,6 +55,9 @@ void Game::Setup()
 	projectionMatrixLocation = glGetUniformLocation(programID, "projectionMatrix");
 	MVPLocation = glGetUniformLocation(programID, "MVP");
 
+	//Setup lighting
+	lightingSetup();
+
 	//Set up a camera and init the projection matrix with window size
 	camera = new Camera();
 	camera->setProjectionMatrix(windowMain->getWidth(), windowMain->getHeight());
@@ -61,6 +65,30 @@ void Game::Setup()
 	//Set up new inputManager and PlayerController
 	input = new InputManager();
 	controller = CharacterController(input, camera);
+}
+
+void Game::lightingSetup()
+{
+	//Material
+	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
+	diffuseMaterialColourLocation = glGetUniformLocation(programID, "diffuseMaterialColour");
+
+	ambientMaterialColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	diffuseMaterialColour = glm::vec4(0.8f, 0.0f, 0.0f, 1.0f);
+
+	//Light
+	lightDirectionLocation = glGetUniformLocation(programID, "lightDirection");
+	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
+	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
+	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
+	diffuseIntensity = glGetUniformLocation(programID, "diffuseIntensity");
+
+
+	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
+	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	ambientIntensity = 0.3f;
+	diffuseIntensity = 1.0f;
 }
 
 void Game::CreateObjects()
@@ -74,12 +102,17 @@ void Game::CreateObjects()
 	//Load Tank Mesh
 	MeshCollection* tankMesh = new MeshCollection();
 	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
-	GLuint TextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
+	GLuint tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
 
 	//Load Teapot Mesh
 	MeshCollection* teaPotMesh = new MeshCollection();
 	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
-	TextureID = loadTextureFromFile("Resources/checkerboard.PNG");
+	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
+	GLuint redTextureID = loadTextureFromFile("Resources/Red.PNG");
+
+	//Add meshes to vector
+	meshes.push_back(tankMesh);
+	meshes.push_back(teaPotMesh);
 
 	//Create new objects
 	GameObject* tank1 = new GameObject();
@@ -87,13 +120,22 @@ void Game::CreateObjects()
 	GameObject* teapot = new GameObject();
 
 	//Init object variables
-	tank1->Init();
-	tank2->Init();
-	teapot->Init();
+	tank1->Init("vertexTextured.glsl", "fragmentTextured.glsl");
+	tank2->Init("vertexTextured.glsl", "fragmentTextured.glsl");
+	teapot->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
 
-	//Move tank2
-	tank2->setTranslation(glm::vec3(5.0, 0.0, 0.0));
-	teapot->setTranslation(glm::vec3(10, 0.0, 5.0));
+	//Set textures
+	tank1->setDiffuseTextureID(tankTextureID);
+	tank2->setDiffuseTextureID(tankTextureID);
+	teapot->setDiffuseTextureID(checkerTextureID);
+	//teapot->setDiffuseTextureID(redTextureID);
+
+	//Scale objects
+	teapot->setScale(glm::vec3(0.25, 0.25, 0.25));
+
+	//Position objects
+	tank2->setTranslation(glm::vec3(10.0, 0.0, 0.0));
+	teapot->setTranslation(glm::vec3(10, 15.0, 5.0));
 
 	//Set object meshes
 	tank1->setMesh(tankMesh);
@@ -186,12 +228,19 @@ void Game::GameLoop()
 		/*---------------------
 		Send Uniform Values
 		----------------------*/
-
-
 		glUseProgram(programID);
 
+		glUniform4fv(ambientLightColourLocation, 1, value_ptr(ambientLightColour));
+		glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(ambientMaterialColour));
+		glUniform1f(ambientIntensityLocation, ambientIntensity);
+
+		glUniform4fv(diffuseLightColourLocation, 1, value_ptr(diffuseLightColour));
+		glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(diffuseMaterialColour));
+		glUniform3fv(lightDirectionLocation, 1, value_ptr(lightDirection));
+		glUniform1f(diffuseIntensityLocation, diffuseIntensity);
+
 		/*----------------
-		Check vector of game objects
+		Check vector of game objects   This should probably be changed to only update when the objects require updating.
 		----------------*/
 
 		for (GameObject* object : objects)
@@ -201,7 +250,12 @@ void Game::GameLoop()
 			//send the values
 			//draw
 
+			glActiveTexture(GL_TEXTURE0);
 
+			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
+
+			glUniform1i(textureUniformLocation, 0);
+					   
 			glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 			glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
 			glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
@@ -222,6 +276,8 @@ void Game::Cleanup()
 
 	glDeleteProgram(programID);
 
+	
+
 	//Destroy vector of game objects
 	auto iter = objects.begin();
 	while (iter != objects.end())
@@ -240,7 +296,46 @@ void Game::Cleanup()
 		}
 	}
 
+	//Destroy vector of meshes
+	auto iter2 = meshes.begin();
+	while (iter2 != meshes.end())
+	{
+		if (*iter2)
+		{
+			//(*iter)->CleanUp(); Call destructor/cleanup here
+			delete (*iter2);
+			(*iter2) = nullptr;
+			iter2 = meshes.erase(iter2);
+		}
+
+		else
+		{
+			iter2++;
+		}
+	}
+
+	//Destroy vector of textures
+	auto iter3 = textures.begin();
+	while (iter3 != textures.end())
+	{
+		if (*iter3)
+		{
+			//(*iter)->CleanUp(); Call destructor/cleanup here
+			delete (*iter3);
+			(*iter3) = nullptr;
+			iter3 = textures.erase(iter3);
+		}
+
+		else
+		{
+			iter3++;
+		}
+	}
+
+
 	objects.clear();
+	meshes.clear();
+	textures.clear();
 
 	//Delete context
 	SDL_GL_DeleteContext(glContext);

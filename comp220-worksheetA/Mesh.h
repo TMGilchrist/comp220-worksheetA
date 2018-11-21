@@ -47,7 +47,7 @@ public:
 	/**
 	Bind the model's texture
 	*/
-	void BindTexure();
+	void BindTexture();
 
 	/**
 	Render the mesh
