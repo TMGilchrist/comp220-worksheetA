@@ -56,7 +56,7 @@ void Game::Setup()
 	controller = CharacterController(input, camera);
 }
 
-void Game::InitLighting()
+void Game::InitLighting() //Things here can probably be split up at some point into materials/lighting
 {
 	//Material
 	ambientMaterialColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -206,9 +206,9 @@ void Game::GameLoop()
 	
 
 
-		/*----------------
-		Check vector of game objects   This should probably be changed to only update when the objects require updating.
-		----------------*/
+		/*----------------------------
+		Check vector of game objects          <-This should probably be changed to only update when the objects require updating.
+		----------------------------*/
 
 		for (GameObject* object : objects)
 		{
