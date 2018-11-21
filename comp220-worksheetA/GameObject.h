@@ -1,6 +1,8 @@
 #pragma once
 #include <glm\glm.hpp>
+#include "shader.h"
 #include "Mesh.h"
+
 
 class GameObject
 {
@@ -14,7 +16,7 @@ public:
 	/**
 	Initalise member variables
 	*/
-	void Init();
+	void Init(const char* vert, const char* fragment);
 
 	/**
 	Update function. Calculates the model matrix. Should be called whenever the object changes in some way. 
@@ -36,6 +38,10 @@ public:
 	{
 		modelTranslation = Translation;
 	}
+
+	/**
+	Set the object's scale. Use to resize object. 1.0 is the default size.
+	*/
 	void setScale(glm::vec3 Scale) 
 	{
 		modelScale = Scale;
@@ -63,7 +69,7 @@ private:
 	//Object's textureID
 	GLuint diffuseTextureID;
 
-	//ProgramID <- load different shaders for each object? 
+	GLuint programID; //<- load different shaders for each object? 
 
 	//Model Matrix of the object
 	glm::mat4 modelMatrix;

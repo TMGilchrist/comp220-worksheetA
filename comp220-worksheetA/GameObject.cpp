@@ -11,8 +11,10 @@ GameObject::~GameObject()
 {
 }
 
-void GameObject::Init()
+void GameObject::Init(const char* vert, const char* fragment)
 {
+	programID = LoadShaders(vert, fragment);
+
 	//Translation and scale
 	modelTranslation = glm::vec3(0.0f, 0.0f, 0.0f);
 	modelScale = glm::vec3(1.0f, 1.0f, 1.0f);

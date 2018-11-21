@@ -120,9 +120,9 @@ void Game::CreateObjects()
 	GameObject* teapot = new GameObject();
 
 	//Init object variables
-	tank1->Init();
-	tank2->Init();
-	teapot->Init();
+	tank1->Init("vertexTextured.glsl", "fragmentTextured.glsl");
+	tank2->Init("vertexTextured.glsl", "fragmentTextured.glsl");
+	teapot->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
 
 	//Set textures
 	tank1->setDiffuseTextureID(tankTextureID);
@@ -240,7 +240,7 @@ void Game::GameLoop()
 		glUniform1f(diffuseIntensityLocation, diffuseIntensity);
 
 		/*----------------
-		Check vector of game objects
+		Check vector of game objects   This should probably be changed to only update when the objects require updating.
 		----------------*/
 
 		for (GameObject* object : objects)
