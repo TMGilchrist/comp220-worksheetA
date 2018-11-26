@@ -23,6 +23,10 @@ void Game::Init()
 	glManager.Init();
 	glContext = glManager.getGLContext();
 
+	//Initialise Bullet Physics
+	physics = PhysicsManager();
+	physics.Init();
+
 	//Mouse setup, can probably be moved to sdl init?
 	SDL_ShowCursor(0);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -47,6 +51,7 @@ void Game::Setup()
 
 	//Create game objects
 	CreateObjects();
+	CreatePhysicsObjects();
 
 	//Setup lighting
 	InitLighting();
@@ -84,12 +89,12 @@ void Game::CreateObjects()
 
 	//Load Tank Mesh
 	MeshCollection* tankMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
+	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); 
 	GLuint tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
 
 	//Load Teapot Mesh
 	MeshCollection* teaPotMesh = new MeshCollection();
-	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
+	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh);
 	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
 	GLuint redTextureID = loadTextureFromFile("Resources/Red.PNG");
 
@@ -128,6 +133,132 @@ void Game::CreateObjects()
 	objects.push_back(tank1);
 	objects.push_back(tank2);
 	objects.push_back(teapot);
+}
+
+void Game::CreatePhysicsObjects()
+{
+	
+	/*------------------------------
+	Create the gameObject and mesh
+	------------------------------*/
+
+	MeshCollection* cubeMesh = new MeshCollection();
+	loadMeshFromFile("Resources/cube.nff", cubeMesh);
+
+	GameObject* ground = new GameObject();
+
+	//Init object variables with the shaders to use
+	ground->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
+
+	ground->setScale(glm::vec3(100.0f, 1.0f, 100.0f));
+	//ground->setTranslation(glm::vec3(0.0f, -10.0f, -120.0f));
+	ground->setTranslation(glm::vec3(0.0f, -10.0f, 0.0f));
+
+	//Set object meshes
+	ground->setMesh(cubeMesh);
+
+
+	/*------------------------------------
+	Create rigidbody and collisionBody
+	------------------------------------*/
+
+	//The btScalar values should be half of the respective size of the object.
+	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.0), btScalar(0.5), btScalar(50.0)));
+
+	//Transform (position, rotation, scale) of the object
+	btTransform groundTransform;
+	groundTransform.setIdentity();
+
+	//Objects position in the world. This should match the position of the object mesh being rendered.
+	groundTransform.setOrigin(btVector3(0, -10, -120));
+
+	//Use this to rotate object. Takes in a quaternion.
+	//groundTransform.setRotation();
+
+	//Set the mass of the object. 0 for static objects. Do not use negative mass.
+	btScalar mass(0.);
+
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool isDynamic = (mass != 0.f);
+
+	//Calculate inertia. This should be done for every object.
+	btVector3 localInertia(0, 0, 0);
+	if (isDynamic)
+		groundShape->calculateLocalInertia(mass, localInertia);
+
+
+	//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
+	btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
+
+	//Link collisionShape and rigidbody together.
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
+
+	//Create the rigidbody
+	btRigidBody* groundBody = new btRigidBody(rbInfo);
+
+
+	//add the body to the dynamics world
+	physics.getDynamicsWorld()->addRigidBody(groundBody);
+	//ground->setRigidBody(groundBody);
+
+
+	//Add objects to vector of game objects
+	objects.push_back(ground);
+
+
+
+	/*------------------------------
+	Create the gameObject and mesh
+	------------------------------*/
+
+	MeshCollection* sphereMesh = new MeshCollection();
+	loadMeshFromFile("Resources/sphere.nff", sphereMesh);
+
+	GameObject* sphere = new GameObject();
+
+	//Init object variables with the shaders to use
+	sphere->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
+
+	sphere->setScale(glm::vec3(100.0f, 1.0f, 100.0f));
+	sphere->setTranslation(glm::vec3(0.0f, 0.0f, 10.0f));
+
+	//Set object meshes
+	sphere->setMesh(sphereMesh);
+	
+	/*------------------------------------
+	Create rigidbody and collisionBody
+	------------------------------------*/
+
+	btCollisionShape* colShape = new btSphereShape(btScalar(1.));
+	//collisionShapes.push_back(colShape);
+
+	/// Create Dynamic Objects
+	btTransform startTransform;
+	startTransform.setIdentity();
+
+	startTransform.setOrigin(btVector3(0, -10, -120));
+	btScalar sphereMass(1.f);
+
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool sphereIsDynamic = (sphereMass != 0.f);
+
+	btVector3 localSphereInertia(0, 0, 0);
+	if (sphereIsDynamic)
+		colShape->calculateLocalInertia(mass, localSphereInertia);
+
+	startTransform.setOrigin(btVector3(2, 10, 0));
+
+	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+	btDefaultMotionState* sphereMotionState = new btDefaultMotionState(startTransform);
+	btRigidBody::btRigidBodyConstructionInfo sphereRbInfo(sphereMass, sphereMotionState, colShape, localSphereInertia);
+	btRigidBody* sphereBody = new btRigidBody(sphereRbInfo);
+
+	physics.getDynamicsWorld()->addRigidBody(sphereBody);
+	//sphereGO->setRigidBody(sphereBody);
+
+	//Add objects to vector of game objects
+	objects.push_back(sphere);
+
 }
 
 void Game::GameLoop()

@@ -24,6 +24,7 @@
 #include "GeometryModels.h"
 #include "Model.h"
 #include "GameObject.h"
+#include "PhysicsManager.h"
 
 class Game
 {
@@ -51,6 +52,8 @@ public:
 	Create game objects and add to the objects vector.
 	*/
 	void CreateObjects();
+
+	void CreatePhysicsObjects();
 
 	/**
 	The main game loop. Runs until escape is pressed or the window is closed.
@@ -81,6 +84,8 @@ private:
 	SDL_Window* window;
 
 	GLManager glManager;
+	PhysicsManager physics;
+
 	SDL_GLContext glContext;
 
 	//Delta time and the time last frame
