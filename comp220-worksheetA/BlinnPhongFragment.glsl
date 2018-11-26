@@ -16,7 +16,7 @@ uniform vec4 ambientMaterialColour;
 uniform float ambientIntensity = 0.3;
 
 //Diffuse lighting
-uniform vec3 lightDirection;
+uniform vec3 lightDirection=vec3(0.0f,0.0f,1.0f);
 uniform vec4 diffuseLightColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 uniform vec4 diffuseMaterialColour = vec4(0.8f, 0.0f, 0.0f, 1.0f);
 
@@ -31,7 +31,7 @@ out vec4 colour;
 
 void main()
 {
-	vec3 viewDirection = normalize(worldSpaceVertex.xyz - cameraPosition); //Normalize most things -> possibly -lightDirection as well.
+	vec3 viewDirection = normalize(cameraPosition - worldSpaceVertex.xyz); //Normalize most things -> possibly -lightDirection as well.
 	vec3 halfWay = normalize(-lightDirection + viewDirection);
  
 	float specularIntensity = pow(clamp(dot(vertexNormalOut, halfWay), 0, 1), specularPower);

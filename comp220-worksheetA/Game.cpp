@@ -282,7 +282,7 @@ void Game::SendUniforms(GameObject* object)
 
 	glUniform4fv(specularLightColourLocation, 1, value_ptr(specularLightColour));
 	glUniform4fv(specularMaterialColourLocation, 1, value_ptr(specularMaterialColour));
-	glUniform3fv(cameraPositionLocation, 1, value_ptr(cameraPosition));
+	glUniform3fv(cameraPositionLocation, 1, value_ptr(camera->getPosition()));
 	glUniform1f(specularPowerLocation, specularPower);
 }
 
