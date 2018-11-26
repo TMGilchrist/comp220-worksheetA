@@ -50,7 +50,7 @@ void Game::Setup()
 	camera->setProjectionMatrix(windowMain->getWidth(), windowMain->getHeight());
 
 	//Create game objects
-	CreateObjects();
+	//CreateObjects();
 	CreatePhysicsObjects();
 
 	//Setup lighting
@@ -152,7 +152,7 @@ void Game::CreatePhysicsObjects()
 
 	ground->setScale(glm::vec3(100.0f, 1.0f, 100.0f));
 	//ground->setTranslation(glm::vec3(0.0f, -10.0f, -120.0f));
-	ground->setTranslation(glm::vec3(0.0f, -10.0f, 0.0f));
+	ground->SetPosition(0.0f, -10.0f, 0.0f);
 
 	//Set object meshes
 	ground->setMesh(cubeMesh);
@@ -170,16 +170,17 @@ void Game::CreatePhysicsObjects()
 	groundTransform.setIdentity();
 
 	//Objects position in the world. This should match the position of the object mesh being rendered.
-	groundTransform.setOrigin(btVector3(0, -10, -120));
+	glm::vec3 groundPosition = ground->getPosition();
+	groundTransform.setOrigin(btVector3(groundPosition.x, groundPosition.y, groundPosition.z));
 
 	//Use this to rotate object. Takes in a quaternion.
 	//groundTransform.setRotation();
 
 	//Set the mass of the object. 0 for static objects. Do not use negative mass.
-	btScalar mass(0.);
+	btScalar mass(0.0);
 
 	//rigidbody is dynamic if and only if mass is non zero, otherwise static
-	bool isDynamic = (mass != 0.f);
+	bool isDynamic = (mass != 0.0f);
 
 	//Calculate inertia. This should be done for every object.
 	btVector3 localInertia(0, 0, 0);
@@ -199,7 +200,8 @@ void Game::CreatePhysicsObjects()
 
 	//add the body to the dynamics world
 	physics.getDynamicsWorld()->addRigidBody(groundBody);
-	//ground->setRigidBody(groundBody);
+
+	ground->setRigidBody(groundBody);
 
 
 	//Add objects to vector of game objects
@@ -213,14 +215,15 @@ void Game::CreatePhysicsObjects()
 
 	MeshCollection* sphereMesh = new MeshCollection();
 	loadMeshFromFile("Resources/sphere.nff", sphereMesh);
-
+	
 	GameObject* sphere = new GameObject();
 
 	//Init object variables with the shaders to use
 	sphere->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
 
-	sphere->setScale(glm::vec3(100.0f, 1.0f, 100.0f));
-	sphere->setTranslation(glm::vec3(0.0f, 0.0f, 10.0f));
+	sphere->setScale(glm::vec3(4.0f, 4.0f, 4.0f));
+	//sphere->setTranslation(glm::vec3(0.0f, 5.0f, 10.0f));
+	sphere->SetPosition(0.0f, 5.0f, 10.0f);
 
 	//Set object meshes
 	sphere->setMesh(sphereMesh);
@@ -229,32 +232,33 @@ void Game::CreatePhysicsObjects()
 	Create rigidbody and collisionBody
 	------------------------------------*/
 
-	btCollisionShape* colShape = new btSphereShape(btScalar(1.));
-	//collisionShapes.push_back(colShape);
+	btCollisionShape* sphereShape = new btSphereShape(btScalar(2.0));
+	//collisionShapes.push_back(sphereShape);
 
 	/// Create Dynamic Objects
-	btTransform startTransform;
-	startTransform.setIdentity();
+	btTransform sphereTransform;
+	sphereTransform.setIdentity();
 
-	startTransform.setOrigin(btVector3(0, -10, -120));
-	btScalar sphereMass(1.f);
+	//sphereTransform.setOrigin(btVector3(0, 5, 10));
+	glm::vec3 spherePosition = sphere->getPosition();
+	sphereTransform.setOrigin(btVector3(spherePosition.x, spherePosition.y, spherePosition.z));
+
+	btScalar sphereMass(1.0f);
 
 	//rigidbody is dynamic if and only if mass is non zero, otherwise static
-	bool sphereIsDynamic = (sphereMass != 0.f);
+	bool sphereIsDynamic = (sphereMass != 0.0f);
 
 	btVector3 localSphereInertia(0, 0, 0);
 	if (sphereIsDynamic)
-		colShape->calculateLocalInertia(mass, localSphereInertia);
-
-	startTransform.setOrigin(btVector3(2, 10, 0));
+		sphereShape->calculateLocalInertia(mass, localSphereInertia);
 
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-	btDefaultMotionState* sphereMotionState = new btDefaultMotionState(startTransform);
-	btRigidBody::btRigidBodyConstructionInfo sphereRbInfo(sphereMass, sphereMotionState, colShape, localSphereInertia);
+	btDefaultMotionState* sphereMotionState = new btDefaultMotionState(sphereTransform);
+	btRigidBody::btRigidBodyConstructionInfo sphereRbInfo(sphereMass, sphereMotionState, sphereShape, localSphereInertia);
 	btRigidBody* sphereBody = new btRigidBody(sphereRbInfo);
 
 	physics.getDynamicsWorld()->addRigidBody(sphereBody);
-	//sphereGO->setRigidBody(sphereBody);
+	sphere->setRigidBody(sphereBody);
 
 	//Add objects to vector of game objects
 	objects.push_back(sphere);
@@ -327,9 +331,10 @@ void Game::GameLoop()
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+		physics.getDynamicsWorld()->stepSimulation(deltaTime, 10); //This shouldn't use deltaTime but fixed time.
+
 		//Handle keyboard input
 		controller.handleKeyboard(deltaTime);
-
 
 		//OpenGL rendering
 		glClearColor(0.0, 0.0, 1.0, 1.0);
