@@ -13,11 +13,15 @@ out vec4 vertexColourOut;
 out vec2 vertexTextureCoordsOut;
 out vec3 vertexNormalOut;
 
+out vec4 worldSpaceVertex;
+
 
 void main()
 {
 	vertexColourOut = vertexColour;
 	vertexTextureCoordsOut = vertexTextureCoords;
+
+	worldSpaceVertex = modelMatrix * vec4(vertexPosition, 1);
 
 	//Calculate MVP and position
 	mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;

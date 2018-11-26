@@ -47,6 +47,11 @@ public:
 		modelScale = Scale;
 	}
 	
+	void setProgramID(const char* vert, const char* fragment) 
+	{
+		programID = LoadShaders(vert, fragment);
+	}
+
 	glm::mat4 getModelMatrix() 
 	{
 		return modelMatrix;
@@ -60,6 +65,11 @@ public:
 	GLuint getDiffuseTextureID() 
 	{
 		return diffuseTextureID;
+	}
+
+	GLuint getProgramID() 
+	{
+		return programID;
 	}
 
 private:

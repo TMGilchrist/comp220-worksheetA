@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 #include <SDL.h>
 #include <GL/glew.h>
@@ -46,7 +45,7 @@ public:
 	Setup the lighting uniforms and values.
 	This should likely be moved into a lighting manager class at some point.
 	*/
-	void lightingSetup();
+	void InitLighting();
 
 	/**
 	Create game objects and add to the objects vector.
@@ -57,6 +56,19 @@ public:
 	The main game loop. Runs until escape is pressed or the window is closed.
 	*/
 	void GameLoop();
+
+	/**
+	Sets the uniform location variables for a certain program. 
+	This needs to be called every time the active program is changed. 
+
+	@param programID : The ID of the program being used.
+	*/
+	void SetUniformLocations(GLuint programID);
+
+	/**
+	Send across the uniform variables. This must be called after SetUniformLocations has been called.
+	*/
+	void SendUniforms(GameObject* object);
 
 	/**
 	Cleanup components
@@ -76,9 +88,8 @@ private:
 	float lastFrame;
 
 	GLuint programID;
-	GLuint MVPLocation;
-	Camera* camera;
 
+	Camera* camera;
 	InputManager* input;
 	CharacterController controller;
 
@@ -87,6 +98,7 @@ private:
 	GLuint modelMatrixLocation;
 	GLuint viewMatrixLocation;
 	GLuint projectionMatrixLocation;
+	GLuint MVPLocation;
 
 	/*----------------------------------------------
 	Lighting related uniforms.
@@ -106,7 +118,6 @@ private:
 	glm::vec4 diffuseMaterialColour;
 	glm::vec4 diffuseLightColour;
 	glm::vec3 lightDirection;
-	float diffuseIntensity;
 
 	GLuint diffuseMaterialColourLocation;
 	GLuint diffuseLightColourLocation;
@@ -114,6 +125,15 @@ private:
 	GLuint diffuseIntensityLocation;
 
 	//Specular
+	glm::vec4 specularMaterialColour;
+	glm::vec4 specularLightColour;
+	glm::vec3 cameraPosition;
+	float specularPower;
+
+	GLuint specularMaterialColourLocation;
+	GLuint specularLightColourLocation;
+	GLuint cameraPositionLocation;
+	GLuint specularPowerLocation;
 
 
 	//Vector of game objects
