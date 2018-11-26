@@ -58,20 +58,15 @@ void Game::Setup()
 
 void Game::InitLighting() //Things here can probably be split up at some point into materials/lighting
 {
-	//Material
-	//ambientMaterialColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	//diffuseMaterialColour = glm::vec4(0.8f, 0.0f, 0.0f, 1.0f);
-	//specularMaterialColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
 	//Lighting
-	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 	ambientIntensity = 0.3f;
 
 	cameraPosition = camera->getPosition();
-	//specularPower = 25;
 }
 
 void Game::CreateObjects()
@@ -85,20 +80,22 @@ void Game::CreateObjects()
 	MaterialPresets materialPresets = MaterialPresets();
 	materialPresets.Init();
 
-	//Load Tank Mesh
+	//Load Meshes
 	MeshCollection* tankMesh = new MeshCollection();
 	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
-	GLuint tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
-
-	//Load Teapot Mesh
+	   
 	MeshCollection* teaPotMesh = new MeshCollection();
 	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
-	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
-	GLuint redTextureID = loadTextureFromFile("Resources/Red.PNG");
 
 	//Add meshes to vector
 	meshes.push_back(tankMesh);
 	meshes.push_back(teaPotMesh);
+
+	//Load textures <- should be added to vector like the meshes? This would require changing to pointer.
+	GLuint tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
+	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
+	GLuint redTextureID = loadTextureFromFile("Resources/Red.PNG");
+
 
 	//Create new objects
 	GameObject* tank1 = new GameObject();
@@ -118,8 +115,7 @@ void Game::CreateObjects()
 	teapot->setDiffuseTextureID(checkerTextureID);
 	teapot2->setDiffuseTextureID(checkerTextureID);
 
-	//tank1->SetMaterial();
-	//tank2->SetMaterial();
+	//Set materials
 	teapot->SetMaterial(materialPresets.GetMat1());
 	teapot2->SetMaterial(materialPresets.GetMat2());
 
@@ -260,17 +256,18 @@ void Game::SetUniformLocations(GLuint programID)
 	//Materials
 	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
 	diffuseMaterialColourLocation = glGetUniformLocation(programID, "diffuseMaterialColour");
+	specularMaterialColourLocation = glGetUniformLocation(programID, "specularMaterialColour");
+	specularPowerLocation = glGetUniformLocation(programID, "specularPower");
 
 	//Lighting
+	cameraPositionLocation = glGetUniformLocation(programID, "cameraPosition");
 	lightDirectionLocation = glGetUniformLocation(programID, "lightDirection");
+
 	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
 	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
-	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
-
-	specularMaterialColourLocation = glGetUniformLocation(programID, "specularMaterialColour");
 	specularLightColourLocation = glGetUniformLocation(programID, "specularLightColour");
-	cameraPositionLocation = glGetUniformLocation(programID, "cameraPosition");
-	specularPowerLocation = glGetUniformLocation(programID, "specularPower");
+
+	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
 
 	//Textures
 	textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
@@ -278,16 +275,12 @@ void Game::SetUniformLocations(GLuint programID)
 
 void Game::SendUniforms(GameObject* object)
 {
-	//cameraPosition = camera->getPosition();
-
 	//Matrices
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
 
 	//Materials
-	//glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(ambientMaterialColour));
-	//glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(diffuseMaterialColour));
 
 	glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetAmbientColour()));
 	glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetDiffuseColour()));
