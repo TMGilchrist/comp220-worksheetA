@@ -24,6 +24,7 @@
 #include "GeometryModels.h"
 #include "Model.h"
 #include "GameObject.h"
+#include "MaterialPresets.h"
 
 class Game
 {
