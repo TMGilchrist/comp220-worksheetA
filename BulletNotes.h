@@ -100,8 +100,9 @@ Game.cpp
 
 	//add the body to the dynamics world
 	dynamicsWorld->addRigidBody(groundBody);
+	groundGO-->setRigidBody(groundBody);
 	
-	
+	//add ground to 
 	
 ///Creating Sphere. Note, variable names must be changed or {} scope operators used.
 	//Load in sphere
@@ -131,9 +132,12 @@ Game.cpp
 	btRigidBody* sphereBody = new btRigidBody(rbInfo);
 
 	dynamicsWorld->addRigidBody(sphereBody);
+	sphereGO->setRigidBody(sphereBody);
+	
+	//Add sphere to gameobjects list.
 	
 ///After the timer update <- used fixed step. Check how much time has passed then update physics.
-	dynamicsWorld->stepSimulation(timer.GetDeltaTime(), 10); //This shouldn't use deltaTime but fixed time.
+	dynamicsWorld->stepSimulation(timer.GetDeltaTime()z, 10); //This shouldn't use deltaTime but fixed time.
 	
 	btTransform sphereTransform;
 	sphereBody->getMotionState()->getWorldTransofrm(sphereTransform);
@@ -157,3 +161,66 @@ Game.cpp
 	delete dispatcher;
 
 	delete collisionConfiguration;
+	
+	
+	auto iter = gameObjectList.begin();
+		dynamicWorld->removeRigidBody(*iter)->getRigidBody();
+		delete(*iter);
+	
+	
+/*-----------------------
+GameObject.h
+-----------------------*/	
+
+
+//Getters and setters
+
+
+private:
+	btRigidBody body;
+
+	
+	
+//Update
+
+if (RigidBody)
+{
+	Vector3 transform;
+	RigidBody->getMotionState()->getWorldTransform(transform);
+	
+	btVector3 physicsPos = transform
+	
+}
+
+//Deconstruct
+
+glDeleteTExtures(1, ~DiffuseTExture);
+
+if(rigidbody)
+{
+	delete RigidBody->getMotionState();
+	delete RigidBody->getCollisionShape();
+	
+	delete RigidBody;
+	
+}
+
+
+
+/*-----------------------
+Applying Forces
+-----------------------*/	
+
+sphereBody->applyForce(btVector3(0.0f, 10000.0of, 0.0f), btVector3(0.0f, 0.0f, 0.0f));
+
+//or
+
+sphereBody->applyImpulse();
+
+
+
+
+
+
+	
+
