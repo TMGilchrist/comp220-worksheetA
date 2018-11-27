@@ -11,17 +11,25 @@ public:
 
 	void Init();
 
-	GameObject* MakeObject(const char * vertexShader, const char * fragmentShader, MeshCollection* mesh, GLuint texture, Material material, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
+	GameObject* MakeObject(const char * vertexShader, const char * fragmentShader, MeshCollection* mesh, GLuint diffuseTexture,
+						   Material material, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
 
+	GameObject* MakeObject(const char * vertexShader, const char * fragmentShader, MeshCollection* mesh, GLuint diffuseTexture, GLuint specularTexture,
+		Material material, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
 
 	std::vector<MeshCollection*> getMeshes()
 	{
 		return meshes;
 	}
 
-	std::vector<GLuint> getTextures()
+	std::vector<GLuint> getDiffuseTextures()
 	{
-		return textures;
+		return diffuseTextures;
+	}
+
+	std::vector<GLuint> getSpecularTextures()
+	{
+		return specularTextures;
 	}
 
 private:
@@ -30,13 +38,17 @@ private:
 	//Vector of meshes
 	std::vector<MeshCollection*> meshes;
 
-	//Vector of textures
-	std::vector<GLuint> textures;
+	//Vectors for textures
+	std::vector<GLuint> diffuseTextures;
+	std::vector<GLuint> specularTextures;
 
-	//Textures
+	//Diffuse textures
 	GLuint tankTextureID;
 	GLuint checkerTextureID;
 	GLuint redTextureID;
+
+	//Specular textures
+	GLuint spotLightTextureID;
 
 	MeshCollection* tankMesh;
 	MeshCollection* teaPotMesh;

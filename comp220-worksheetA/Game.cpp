@@ -84,19 +84,19 @@ void Game::CreateObjects()
 	materialPresets.Init();
 
 	GameObject* tank1 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
-												objectBuilder.getMeshes()[0], objectBuilder.getTextures()[0], 
+												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0], 
 												materialPresets.GetMat1());
 
 	GameObject* tank2 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
-												objectBuilder.getMeshes()[0], objectBuilder.getTextures()[0], 
+												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0],
 												materialPresets.GetMat1(), glm::vec3(10.0, 0.0, 0.0));
 
 	GameObject* teapot1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl", 
-												  objectBuilder.getMeshes()[1], objectBuilder.getTextures()[1], 
+												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
 												  materialPresets.GetMat1(), glm::vec3(0, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
 	GameObject* teapot2 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",		
-												  objectBuilder.getMeshes()[1], objectBuilder.getTextures()[1], 
+												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1],
 												  materialPresets.GetMat2(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
 	//Add objects to vector of game objects
@@ -195,7 +195,14 @@ void Game::GameLoop()
 			//Bind and send texture. I would like the texture uniform to be part of SendUniforms, but I'm not sure how that would work with multiple textures?
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
-			glUniform1i(textureUniformLocation, 0);
+			glUniform1i(diffuseTextureLocation, 0);
+
+			if (object->getSpecularTextureID() != NULL) 
+			{
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, object->getSpecularTextureID());
+				glUniform1i(specularTextureLocation, 1);
+			}
 
 			//Send uniforms
 			SendUniforms(object);
@@ -235,8 +242,8 @@ void Game::SetUniformLocations(GLuint programID)
 	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
 
 	//Textures
-	//textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
-	textureUniformLocation = glGetUniformLocation(programID, "diffuseTexture");
+	diffuseTextureLocation = glGetUniformLocation(programID, "diffuseTexture");
+	specularTextureLocation = glGetUniformLocation(programID, "specularTexture");
 }
 
 void Game::SendUniforms(GameObject* object)

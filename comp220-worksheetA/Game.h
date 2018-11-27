@@ -98,7 +98,9 @@ private:
 	CharacterController controller;
 
 	//Uniform locations
-	GLuint textureUniformLocation;
+	GLuint diffuseTextureLocation;
+	GLuint specularTextureLocation;
+
 	GLuint modelMatrixLocation;
 	GLuint viewMatrixLocation;
 	GLuint projectionMatrixLocation;

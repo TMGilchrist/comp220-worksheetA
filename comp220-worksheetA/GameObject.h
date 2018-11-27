@@ -68,6 +68,16 @@ public:
 		return diffuseTextureID;
 	}
 
+	void setSpecularTextureID(GLuint ID)
+	{
+		specularTextureID = ID;
+	}
+
+	GLuint getSpecularTextureID()
+	{
+		return specularTextureID;
+	}
+
 	GLuint getProgramID() 
 	{
 		return programID;
@@ -89,6 +99,7 @@ private:
 
 	//Object's textureID
 	GLuint diffuseTextureID;
+	GLuint specularTextureID;
 
 	GLuint programID; //<- load different shaders for each object? 
 
