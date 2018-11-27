@@ -19,10 +19,16 @@ public:
 		return mat2;
 	}
 
+	Material GetPlainWhite()
+	{
+		return plainWhite;
+	}
+
 private:
 	//Material presets
 	Material mat1;
 	Material mat2;
+	Material plainWhite;
 
 };
 

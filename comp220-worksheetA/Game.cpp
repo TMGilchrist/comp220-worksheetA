@@ -99,11 +99,17 @@ void Game::CreateObjects()
 												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1],
 												  materialPresets.GetMat2(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
+	GameObject* tower = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[1],
+													materialPresets.GetPlainWhite(), glm::vec3(0, 0.0, 0.0), glm::vec3(40, 40, 100));
+	tower->SetRotation(glm::vec3(1, 90, 1));
+
 	//Add objects to vector of game objects
 	objects.push_back(tank1);
-	objects.push_back(tank2);
-	objects.push_back(teapot1);
-	objects.push_back(teapot2);
+	//objects.push_back(tank2);
+	//objects.push_back(teapot1);
+	//objects.push_back(teapot2);
+	objects.push_back(tower);
 }
 
 void Game::GameLoop()

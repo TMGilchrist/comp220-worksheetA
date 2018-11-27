@@ -93,6 +93,16 @@ public:
 		return material;
 	}
 
+	glm::vec3 GetRotation() 
+	{
+		return modelRotation;		
+	}
+
+	void SetRotation(glm::vec3 Rotation) 
+	{
+		modelRotation = Rotation;
+	}
+
 private:
 	//Mesh collection for the object's model.
 	MeshCollection* mesh;

@@ -18,14 +18,18 @@ void ObjectBuilder::Init()
 
 	//Load Meshes
 	tankMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
+	loadMeshFromFile("Resources/Tank1.FBX", tankMesh);
 
 	teaPotMesh = new MeshCollection();
-	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
+	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh);
+
+	towerMesh = new MeshCollection();
+	loadMeshFromFile("Resources/Models/Tower.FBX", towerMesh); //Need to move the mvp calculations into shaders.
 
 	//Add meshes to vector
 	meshes.push_back(tankMesh);
 	meshes.push_back(teaPotMesh);
+	meshes.push_back(towerMesh);
 
 	//Load diffuseTextures <- should be added to vector like the meshes? This would require changing to pointer.
 	tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
@@ -53,8 +57,9 @@ GameObject * ObjectBuilder::MakeObject(const char * vertexShader, const char * f
 	object->SetMaterial(material);
 
 	//Position object
-	object->setScale(scale);
 	object->setTranslation(position);
+	object->setScale(scale);
+
 
 	//Set object meshes
 	object->setMesh(mesh);
@@ -76,8 +81,9 @@ GameObject* ObjectBuilder::MakeObject(const char * vertexShader, const char * fr
 	object->SetMaterial(material);
 	   
 	//Position object
-	object->setScale(scale);
 	object->setTranslation(position);
+	object->setScale(scale);
+
 
 	//Set object meshes
 	object->setMesh(mesh);
