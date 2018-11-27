@@ -25,6 +25,7 @@
 #include "Model.h"
 #include "GameObject.h"
 #include "MaterialPresets.h"
+#include "ObjectBuilder.h"
 
 class Game
 {
@@ -83,6 +84,8 @@ private:
 
 	GLManager glManager;
 	SDL_GLContext glContext;
+
+	ObjectBuilder objectBuilder;
 
 	//Delta time and the time last frame
 	float deltaTime;

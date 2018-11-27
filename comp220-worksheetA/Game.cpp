@@ -23,6 +23,10 @@ void Game::Init()
 	glManager.Init();
 	glContext = glManager.getGLContext();
 
+	//Init object builder.
+	objectBuilder = ObjectBuilder();
+	objectBuilder.Init();
+
 	//Mouse setup, can probably be moved to sdl init?
 	SDL_ShowCursor(0);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -75,69 +79,33 @@ void Game::CreateObjects()
 	Object creation
 	---------------------*/
 
+
+
 	//Create an objectBuilder class that loads all meshes and then assigns them to different objects.
 
 	MaterialPresets materialPresets = MaterialPresets();
 	materialPresets.Init();
 
-	//Load Meshes
-	MeshCollection* tankMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
-	   
-	MeshCollection* teaPotMesh = new MeshCollection();
-	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
+	GameObject* tank1 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
+												objectBuilder.getMeshes()[0], objectBuilder.getTextures()[0], 
+												materialPresets.GetMat1());
 
-	//Add meshes to vector
-	meshes.push_back(tankMesh);
-	meshes.push_back(teaPotMesh);
+	GameObject* tank2 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
+												objectBuilder.getMeshes()[0], objectBuilder.getTextures()[0], 
+												materialPresets.GetMat1(), glm::vec3(10.0, 0.0, 0.0));
 
-	//Load textures <- should be added to vector like the meshes? This would require changing to pointer.
-	GLuint tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
-	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
-	GLuint redTextureID = loadTextureFromFile("Resources/Red.PNG");
+	GameObject* teapot1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl", 
+												  objectBuilder.getMeshes()[1], objectBuilder.getTextures()[1], 
+												  materialPresets.GetMat1(), glm::vec3(0, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
-
-	//Create new objects
-	GameObject* tank1 = new GameObject();
-	GameObject* tank2 = new GameObject();
-	GameObject* teapot = new GameObject();
-	GameObject* teapot2 = new GameObject();
-	
-	//Init object variables with the shaders to use
-	tank1->Init("vertexTextured.glsl", "fragmentTextured.glsl");
-	tank2->Init("vertexTextured.glsl", "fragmentTextured.glsl");
-	teapot->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
-	teapot2->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
-
-	//Set textures
-	tank1->setDiffuseTextureID(tankTextureID);
-	tank2->setDiffuseTextureID(tankTextureID);
-	teapot->setDiffuseTextureID(checkerTextureID);
-	teapot2->setDiffuseTextureID(checkerTextureID);
-
-	//Set materials
-	teapot->SetMaterial(materialPresets.GetMat1());
-	teapot2->SetMaterial(materialPresets.GetMat2());
-
-	//Scale objects
-	teapot->setScale(glm::vec3(0.25, 0.25, 0.25));
-	teapot2->setScale(glm::vec3(0.25, 0.25, 0.25));
-
-	//Position objects
-	tank2->setTranslation(glm::vec3(10.0, 0.0, 0.0));
-	teapot->setTranslation(glm::vec3(10, 15.0, 5.0));
-	teapot2->setTranslation(glm::vec3(20, 15.0, 5.0));
-
-	//Set object meshes
-	tank1->setMesh(tankMesh);
-	tank2->setMesh(tankMesh);
-	teapot->setMesh(teaPotMesh);
-	teapot2->setMesh(teaPotMesh);
+	GameObject* teapot2 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",		
+												  objectBuilder.getMeshes()[1], objectBuilder.getTextures()[1], 
+												  materialPresets.GetMat2(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
 	//Add objects to vector of game objects
 	objects.push_back(tank1);
 	objects.push_back(tank2);
-	objects.push_back(teapot);
+	objects.push_back(teapot1);
 	objects.push_back(teapot2);
 }
 
@@ -270,7 +238,8 @@ void Game::SetUniformLocations(GLuint programID)
 	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
 
 	//Textures
-	textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
+	//textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
+	textureUniformLocation = glGetUniformLocation(programID, "diffuseTexture");
 }
 
 void Game::SendUniforms(GameObject* object)
