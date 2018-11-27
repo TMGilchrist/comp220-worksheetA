@@ -40,8 +40,8 @@ void main()
 	//Clamp to avoid visual errors
 	float diffuseIntensity = clamp(dot(vertexNormalOut, -lightDirection), 0, 1);
 
-	int diffuseTextureColour = 1; 
-	//vec4 diffuseTextureColour = texture(diffuseTexture, vertexTextureCoordOut);
+	//int diffuseTextureColour = 1; 
+	vec4 diffuseTextureColour = texture(diffuseTexture, vertexTextureCoordsOut);
 
 	colour = ((ambientLightColour * ambientMaterialColour) * ambientIntensity ) + 
 			  (diffuseLightColour * diffuseIntensity * diffuseMaterialColour * diffuseTextureColour) + 

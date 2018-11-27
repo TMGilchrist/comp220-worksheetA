@@ -79,10 +79,7 @@ void Game::CreateObjects()
 	Object creation
 	---------------------*/
 
-
-
-	//Create an objectBuilder class that loads all meshes and then assigns them to different objects.
-
+	//Material presets.
 	MaterialPresets materialPresets = MaterialPresets();
 	materialPresets.Init();
 
