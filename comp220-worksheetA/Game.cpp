@@ -58,20 +58,15 @@ void Game::Setup()
 
 void Game::InitLighting() //Things here can probably be split up at some point into materials/lighting
 {
-	//Material
-	ambientMaterialColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	diffuseMaterialColour = glm::vec4(0.8f, 0.0f, 0.0f, 1.0f);
-	specularMaterialColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
 	//Lighting
-	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 	ambientIntensity = 0.3f;
 
 	cameraPosition = camera->getPosition();
-	specularPower = 25;
 }
 
 void Game::CreateObjects()
@@ -82,52 +77,68 @@ void Game::CreateObjects()
 
 	//Create an objectBuilder class that loads all meshes and then assigns them to different objects.
 
-	//Load Tank Mesh
+	MaterialPresets materialPresets = MaterialPresets();
+	materialPresets.Init();
+
+	//Load Meshes
 	MeshCollection* tankMesh = new MeshCollection();
 	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
-	GLuint tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
-
-	//Load Teapot Mesh
+	   
 	MeshCollection* teaPotMesh = new MeshCollection();
 	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
-	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
-	GLuint redTextureID = loadTextureFromFile("Resources/Red.PNG");
 
 	//Add meshes to vector
 	meshes.push_back(tankMesh);
 	meshes.push_back(teaPotMesh);
 
+	//Load textures <- should be added to vector like the meshes? This would require changing to pointer.
+	GLuint tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
+	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
+	GLuint redTextureID = loadTextureFromFile("Resources/Red.PNG");
+
+
 	//Create new objects
 	GameObject* tank1 = new GameObject();
 	GameObject* tank2 = new GameObject();
 	GameObject* teapot = new GameObject();
-
+	GameObject* teapot2 = new GameObject();
+	
 	//Init object variables with the shaders to use
 	tank1->Init("vertexTextured.glsl", "fragmentTextured.glsl");
 	tank2->Init("vertexTextured.glsl", "fragmentTextured.glsl");
 	teapot->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
+	teapot2->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
 
 	//Set textures
 	tank1->setDiffuseTextureID(tankTextureID);
 	tank2->setDiffuseTextureID(tankTextureID);
 	teapot->setDiffuseTextureID(checkerTextureID);
+	teapot2->setDiffuseTextureID(checkerTextureID);
+
+	//Set materials
+	teapot->SetMaterial(materialPresets.GetMat1());
+	teapot2->SetMaterial(materialPresets.GetMat2());
 
 	//Scale objects
 	teapot->setScale(glm::vec3(0.25, 0.25, 0.25));
+	teapot2->setScale(glm::vec3(0.25, 0.25, 0.25));
 
 	//Position objects
 	tank2->setTranslation(glm::vec3(10.0, 0.0, 0.0));
 	teapot->setTranslation(glm::vec3(10, 15.0, 5.0));
+	teapot2->setTranslation(glm::vec3(20, 15.0, 5.0));
 
 	//Set object meshes
 	tank1->setMesh(tankMesh);
 	tank2->setMesh(tankMesh);
 	teapot->setMesh(teaPotMesh);
+	teapot2->setMesh(teaPotMesh);
 
 	//Add objects to vector of game objects
 	objects.push_back(tank1);
 	objects.push_back(tank2);
 	objects.push_back(teapot);
+	objects.push_back(teapot2);
 }
 
 void Game::GameLoop()
@@ -245,17 +256,18 @@ void Game::SetUniformLocations(GLuint programID)
 	//Materials
 	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
 	diffuseMaterialColourLocation = glGetUniformLocation(programID, "diffuseMaterialColour");
+	specularMaterialColourLocation = glGetUniformLocation(programID, "specularMaterialColour");
+	specularPowerLocation = glGetUniformLocation(programID, "specularPower");
 
 	//Lighting
+	cameraPositionLocation = glGetUniformLocation(programID, "cameraPosition");
 	lightDirectionLocation = glGetUniformLocation(programID, "lightDirection");
+
 	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
 	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
-	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
-
-	specularMaterialColourLocation = glGetUniformLocation(programID, "specularMaterialColour");
 	specularLightColourLocation = glGetUniformLocation(programID, "specularLightColour");
-	cameraPositionLocation = glGetUniformLocation(programID, "cameraPosition");
-	specularPowerLocation = glGetUniformLocation(programID, "specularPower");
+
+	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
 
 	//Textures
 	textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
@@ -263,16 +275,17 @@ void Game::SetUniformLocations(GLuint programID)
 
 void Game::SendUniforms(GameObject* object)
 {
-	//cameraPosition = camera->getPosition();
-
 	//Matrices
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
 
 	//Materials
-	glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(ambientMaterialColour));
-	glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(diffuseMaterialColour));
+
+	glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetAmbientColour()));
+	glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetDiffuseColour()));
+	glUniform4fv(specularMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetSpecularColour()));
+	glUniform1f(specularPowerLocation, object->GetMaterial().GetSpecularPower());
 
 	//Lighting
 	glUniform3fv(lightDirectionLocation, 1, value_ptr(lightDirection));
@@ -281,9 +294,7 @@ void Game::SendUniforms(GameObject* object)
 	glUniform1f(ambientIntensityLocation, ambientIntensity);
 
 	glUniform4fv(specularLightColourLocation, 1, value_ptr(specularLightColour));
-	glUniform4fv(specularMaterialColourLocation, 1, value_ptr(specularMaterialColour));
 	glUniform3fv(cameraPositionLocation, 1, value_ptr(camera->getPosition()));
-	glUniform1f(specularPowerLocation, specularPower);
 }
 
 void Game::Cleanup()

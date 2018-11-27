@@ -2,6 +2,7 @@
 #include <glm\glm.hpp>
 #include "shader.h"
 #include "Mesh.h"
+#include "Material.h"
 
 
 class GameObject
@@ -72,6 +73,16 @@ public:
 		return programID;
 	}
 
+	void SetMaterial(Material newMaterial) 
+	{
+		material = newMaterial;
+	}
+
+	Material GetMaterial() 
+	{
+		return material;
+	}
+
 private:
 	//Mesh collection for the object's model.
 	MeshCollection* mesh;
@@ -83,6 +94,8 @@ private:
 
 	//Model Matrix of the object
 	glm::mat4 modelMatrix;
+
+	Material material;
 
 	//These could be moved into a transform class
 	//Transformation Matricies
