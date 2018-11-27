@@ -150,9 +150,10 @@ void Game::CreatePhysicsObjects()
 	//Init object variables with the shaders to use
 	ground->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
 
+	ground->SetPosition(0.0f, -10.0f, 0.0f);
 	ground->setScale(glm::vec3(100.0f, 1.0f, 100.0f));
 	//ground->setTranslation(glm::vec3(0.0f, -10.0f, -120.0f));
-	ground->SetPosition(0.0f, -10.0f, 0.0f);
+
 
 	//Set object meshes
 	ground->setMesh(cubeMesh);
@@ -171,7 +172,8 @@ void Game::CreatePhysicsObjects()
 
 	//Objects position in the world. This should match the position of the object mesh being rendered.
 	glm::vec3 groundPosition = ground->getPosition();
-	groundTransform.setOrigin(btVector3(groundPosition.x, groundPosition.y, groundPosition.z));
+	groundTransform.setOrigin(btVector3(groundPosition.x, groundPosition.y + 8, groundPosition.z)); //+8 to put the collider at the right level... 
+																									//why does the collider sit 8 units lower than the mesh????
 
 	//Use this to rotate object. Takes in a quaternion.
 	//groundTransform.setRotation();
