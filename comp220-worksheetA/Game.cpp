@@ -84,21 +84,21 @@ void Game::CreateObjects()
 	MaterialPresets materialPresets = MaterialPresets();
 	materialPresets.Init();
 
-	GameObject* tank1 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
-												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0], 
-												materialPresets.GetMat1());
+	GameObject* tank1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0], objectBuilder.getSpecularTextures()[0],
+												materialPresets.GetMetal());
 
 	GameObject* tank2 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
 												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0],
-												materialPresets.GetMat1(), glm::vec3(10.0, 0.0, 0.0));
+												materialPresets.GetPlainGreen(), glm::vec3(10.0, 0.0, 0.0));
 
 	GameObject* teapot1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl", 
 												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
-												  materialPresets.GetMat1(), glm::vec3(0, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
+												  materialPresets.GetPlainGreen(), glm::vec3(0, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
 	GameObject* teapot2 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",		
 												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1],
-												  materialPresets.GetMat2(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
+												  materialPresets.GetPlainRed(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
 	GameObject* tower = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[1],
@@ -126,7 +126,7 @@ void Game::CreatePhysicsObjects()
 
 	GameObject* ground = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 												   objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
-												   materialPresets.GetMat2(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
+												   materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
 	/*------------------------------------
 	Create rigidbody and collisionBody
@@ -178,7 +178,7 @@ void Game::CreatePhysicsObjects()
 
 	GameObject* sphere = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 												   objectBuilder.getMeshes()[4], objectBuilder.getDiffuseTextures()[1],
-												   materialPresets.GetMat1(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
+												   materialPresets.GetPlainGreen(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
 	
 	/*------------------------------------
 	Create rigidbody and collisionBody
