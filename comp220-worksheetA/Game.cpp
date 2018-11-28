@@ -64,12 +64,13 @@ void Game::Setup()
 void Game::InitLighting() //Things here can probably be split up at some point into materials/lighting
 {
 	//Lighting
+	//ambientLightColour = glm::vec4(136 / 255, 0 / 255, 204 / 255, 1.0f);
 	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
-	ambientIntensity = 0.001f;
+	ambientIntensity = 0.5f;
 
 	cameraPosition = camera->getPosition();
 }
@@ -300,7 +301,9 @@ void Game::GameLoop()
 		controller.handleKeyboard(deltaTime);
 
 		//OpenGL rendering
-		glClearColor(0.0, 0.0, 1.0, 1.0);
+		//glClearColor(0.0, 0.0, 1.0, 1.0);
+		glClearColor(37.0 / 255, 5.0 / 255, 43.0 / 255, 1.0f);
+		//glClearColor(106/255, 9/255, 196/255, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 

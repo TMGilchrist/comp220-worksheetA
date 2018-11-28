@@ -46,7 +46,7 @@ void ObjectBuilder::Init()
 	//Load diffuseTextures <- should be added to vector like the meshes? This would require changing to pointer.
 	tankTextureID = loadTextureFromFile("Resources/Textures/Tank1DF.PNG");
 	checkerTextureID = loadTextureFromFile("Resources/Textures/checkerboard.PNG");
-	RockTextureID = loadTextureFromFile("Resources/Textures/painterlyRock.jpg");
+	RockTextureID = loadTextureFromFile("Resources/Textures/seamlessRock.jpg");
 
 	diffuseTextures.push_back(tankTextureID);
 	diffuseTextures.push_back(checkerTextureID);
