@@ -172,7 +172,7 @@ void Game::CreatePhysicsObjects()
 
 	//Objects position in the world. This should match the position of the object mesh being rendered.
 	glm::vec3 groundPosition = ground->getPosition();
-	groundTransform.setOrigin(btVector3(groundPosition.x, groundPosition.y + 8, groundPosition.z)); //+8 to put the collider at the right level... 
+	groundTransform.setOrigin(btVector3(groundPosition.x, groundPosition.y, groundPosition.z)); //+8 to put the collider at the right level... 
 																									//why does the collider sit 8 units lower than the mesh????
 
 	//Use this to rotate object. Takes in a quaternion.
@@ -223,7 +223,7 @@ void Game::CreatePhysicsObjects()
 	//Init object variables with the shaders to use
 	sphere->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
 
-	sphere->setScale(glm::vec3(4.0f, 4.0f, 4.0f));
+	//sphere->setScale(glm::vec3(4.0f, 4.0f, 4.0f));
 	//sphere->setTranslation(glm::vec3(0.0f, 5.0f, 10.0f));
 	sphere->SetPosition(0.0f, 5.0f, 10.0f);
 
@@ -234,7 +234,7 @@ void Game::CreatePhysicsObjects()
 	Create rigidbody and collisionBody
 	------------------------------------*/
 
-	btCollisionShape* sphereShape = new btSphereShape(btScalar(2.0));
+	btCollisionShape* sphereShape = new btSphereShape(btScalar(1.0));
 	//collisionShapes.push_back(sphereShape);
 
 	/// Create Dynamic Objects
