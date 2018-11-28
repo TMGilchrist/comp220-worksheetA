@@ -29,11 +29,18 @@ public:
 		return metal;
 	}
 
+	Material GetDeepPurple()
+	{
+		return deepPurple;
+	}
+
 private:
 	//Material presets
 	Material plainGreen;
 	Material plainRed;
 	Material plainWhite;
+
+	Material deepPurple;
 
 	Material metal;
 

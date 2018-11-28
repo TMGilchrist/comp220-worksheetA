@@ -69,7 +69,7 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
-	ambientIntensity = 0.3f;
+	ambientIntensity = 0.001f;
 
 	cameraPosition = camera->getPosition();
 }
@@ -101,10 +101,21 @@ void Game::CreateObjects()
 												  materialPresets.GetPlainRed(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
 	GameObject* tower = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[1],
-													materialPresets.GetPlainWhite(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(40, 40, 100));
+													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
+													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600)); //was 40, 40, 100
 	
+	GameObject* terrain = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+													objectBuilder.getMeshes()[5], objectBuilder.getDiffuseTextures()[2], objectBuilder.getSpecularTextures()[0],
+													materialPresets.GetPlainWhite(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
+
+	terrain->SetRotation(glm::vec3(-1.5, 0.0, -1.5));
+	//Currently, for whateve reason (probably the import rotation?) x = z, y = x, z = y.
+	terrain->SetPosition(-50, 100, 0);
+
 	tower->SetRotation(glm::vec3(-1.5, 0, 0));
+	//x, z, y
+	//tower->SetPosition(-5.0, -25.0, 1.2);
+	tower->SetPosition(0.0, -5.0, 0.25);
 
 	//Add objects to vector of game objects
 	objects.push_back(tank1);
@@ -112,6 +123,7 @@ void Game::CreateObjects()
 	//objects.push_back(teapot1);
 	//objects.push_back(teapot2);
 	objects.push_back(tower);
+	objects.push_back(terrain);
 }
 
 void Game::CreatePhysicsObjects()
@@ -125,8 +137,8 @@ void Game::CreatePhysicsObjects()
 	------------------------------*/
 
 	GameObject* ground = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-												   objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
-												   materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
+												 objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
+												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
 	/*------------------------------------
 	Create rigidbody and collisionBody
@@ -308,7 +320,7 @@ void Game::GameLoop()
 			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
 			glUniform1i(diffuseTextureLocation, 0);
 
-			if (object->getSpecularTextureID() != NULL) 
+			if (object->getSpecularTextureID() > 100) 
 			{
 				glActiveTexture(GL_TEXTURE1);
 				glBindTexture(GL_TEXTURE_2D, object->getSpecularTextureID());

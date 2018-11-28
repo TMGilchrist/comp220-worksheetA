@@ -48,7 +48,7 @@ private:
 	//Diffuse textures
 	GLuint tankTextureID;
 	GLuint checkerTextureID;
-	GLuint redTextureID;
+	GLuint RockTextureID;
 
 	//Specular textures
 	GLuint spotLightTextureID;
@@ -57,6 +57,8 @@ private:
 	MeshCollection* tankMesh;
 	MeshCollection* teaPotMesh;
 	MeshCollection* towerMesh;
+
+	MeshCollection* terrainMesh;
 
 	MeshCollection* cubeMesh;
 	MeshCollection* sphereMesh;

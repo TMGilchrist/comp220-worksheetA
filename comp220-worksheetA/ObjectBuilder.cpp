@@ -18,19 +18,22 @@ void ObjectBuilder::Init()
 
 	//Load Meshes
 	tankMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Tank1.FBX", tankMesh);
+	loadMeshFromFile("Resources/Models/Tank1.FBX", tankMesh);
 
 	teaPotMesh = new MeshCollection();
-	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh);
+	loadMeshFromFile("Resources/Models/teapot.FBX", teaPotMesh);
 
 	towerMesh = new MeshCollection();
 	loadMeshFromFile("Resources/Models/Tower.FBX", towerMesh); 
 
 	cubeMesh = new MeshCollection();
-	loadMeshFromFile("Resources/cube.nff", cubeMesh);
+	loadMeshFromFile("Resources/Models/cube.nff", cubeMesh);
 
 	sphereMesh = new MeshCollection();
-	loadMeshFromFile("Resources/sphere.nff", sphereMesh);
+	loadMeshFromFile("Resources/Models/sphere.nff", sphereMesh);
+
+	terrainMesh = new MeshCollection();
+	loadMeshFromFile("Resources/Models/landscapePrototype.FBX", terrainMesh);
 
 	//Add meshes to vector
 	meshes.push_back(tankMesh);
@@ -38,14 +41,16 @@ void ObjectBuilder::Init()
 	meshes.push_back(towerMesh);
 	meshes.push_back(cubeMesh);
 	meshes.push_back(sphereMesh);
+	meshes.push_back(terrainMesh);
 
 	//Load diffuseTextures <- should be added to vector like the meshes? This would require changing to pointer.
-	tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
-	checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
+	tankTextureID = loadTextureFromFile("Resources/Textures/Tank1DF.PNG");
+	checkerTextureID = loadTextureFromFile("Resources/Textures/checkerboard.PNG");
+	RockTextureID = loadTextureFromFile("Resources/Textures/painterlyRock.jpg");
 
 	diffuseTextures.push_back(tankTextureID);
 	diffuseTextures.push_back(checkerTextureID);
-	diffuseTextures.push_back(redTextureID);
+	diffuseTextures.push_back(RockTextureID);
 
 	spotLightTextureID = loadTextureFromFile("Resources/spotlightSpecMap.jpg");
 	specularTextures.push_back(spotLightTextureID);
