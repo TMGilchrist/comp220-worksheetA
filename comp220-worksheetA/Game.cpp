@@ -23,7 +23,11 @@ void Game::Init()
 	glManager.Init();
 	glContext = glManager.getGLContext();
 
-	//Mouse setup, can probably be moved to sdl init?
+	//Init object builder.
+	objectBuilder = ObjectBuilder();
+	objectBuilder.Init();	//Initialise Bullet Physics
+	physics = PhysicsManager();
+	physics.Init();
 	SDL_ShowCursor(0);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 
@@ -47,6 +51,7 @@ void Game::Setup()
 
 	//Create game objects
 	CreateObjects();
+	CreatePhysicsObjects();
 
 	//Setup lighting
 	InitLighting();
@@ -64,7 +69,7 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
-	ambientIntensity = 0.3f;
+	ambientIntensity = 0.001f;
 
 	cameraPosition = camera->getPosition();
 }
@@ -75,70 +80,152 @@ void Game::CreateObjects()
 	Object creation
 	---------------------*/
 
-	//Create an objectBuilder class that loads all meshes and then assigns them to different objects.
-
+	//Material presets.
 	MaterialPresets materialPresets = MaterialPresets();
 	materialPresets.Init();
 
-	//Load Meshes
-	MeshCollection* tankMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); //Need to move the mvp calculations into shaders.
-	   
-	MeshCollection* teaPotMesh = new MeshCollection();
-	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh); //Need to move the mvp calculations into shaders.
+	GameObject* tank1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0], objectBuilder.getSpecularTextures()[0],
+												materialPresets.GetMetal());
 
-	//Add meshes to vector
-	meshes.push_back(tankMesh);
-	meshes.push_back(teaPotMesh);
+	GameObject* tank2 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
+												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0],
+												materialPresets.GetPlainGreen(), glm::vec3(10.0, 0.0, 0.0));
 
-	//Load textures <- should be added to vector like the meshes? This would require changing to pointer.
-	GLuint tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
-	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
-	GLuint redTextureID = loadTextureFromFile("Resources/Red.PNG");
+	GameObject* teapot1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl", 
+												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
+												  materialPresets.GetPlainGreen(), glm::vec3(0, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
+	GameObject* teapot2 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",		
+												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1],
+												  materialPresets.GetPlainRed(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
-	//Create new objects
-	GameObject* tank1 = new GameObject();
-	GameObject* tank2 = new GameObject();
-	GameObject* teapot = new GameObject();
-	GameObject* teapot2 = new GameObject();
+	GameObject* tower = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
+													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600)); //was 40, 40, 100
 	
-	//Init object variables with the shaders to use
-	tank1->Init("vertexTextured.glsl", "fragmentTextured.glsl");
-	tank2->Init("vertexTextured.glsl", "fragmentTextured.glsl");
-	teapot->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
-	teapot2->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
+	GameObject* terrain = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+													objectBuilder.getMeshes()[5], objectBuilder.getDiffuseTextures()[2], objectBuilder.getSpecularTextures()[0],
+													materialPresets.GetPlainWhite(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
 
-	//Set textures
-	tank1->setDiffuseTextureID(tankTextureID);
-	tank2->setDiffuseTextureID(tankTextureID);
-	teapot->setDiffuseTextureID(checkerTextureID);
-	teapot2->setDiffuseTextureID(checkerTextureID);
+	terrain->SetRotation(glm::vec3(-1.5, 0.0, -1.5));
+	//Currently, for whateve reason (probably the import rotation?) x = z, y = x, z = y.
+	terrain->SetPosition(-50, 100, 0);
 
-	//Set materials
-	teapot->SetMaterial(materialPresets.GetMat1());
-	teapot2->SetMaterial(materialPresets.GetMat2());
-
-	//Scale objects
-	teapot->setScale(glm::vec3(0.25, 0.25, 0.25));
-	teapot2->setScale(glm::vec3(0.25, 0.25, 0.25));
-
-	//Position objects
-	tank2->setTranslation(glm::vec3(10.0, 0.0, 0.0));
-	teapot->setTranslation(glm::vec3(10, 15.0, 5.0));
-	teapot2->setTranslation(glm::vec3(20, 15.0, 5.0));
-
-	//Set object meshes
-	tank1->setMesh(tankMesh);
-	tank2->setMesh(tankMesh);
-	teapot->setMesh(teaPotMesh);
-	teapot2->setMesh(teaPotMesh);
+	tower->SetRotation(glm::vec3(-1.5, 0, 0));
+	//x, z, y
+	//tower->SetPosition(-5.0, -25.0, 1.2);
+	tower->SetPosition(0.0, -5.0, 0.25);
 
 	//Add objects to vector of game objects
 	objects.push_back(tank1);
-	objects.push_back(tank2);
-	objects.push_back(teapot);
-	objects.push_back(teapot2);
+	//objects.push_back(tank2);
+	//objects.push_back(teapot1);
+	//objects.push_back(teapot2);
+	objects.push_back(tower);
+	objects.push_back(terrain);
+}
+
+void Game::CreatePhysicsObjects()
+{
+	//Material presets.
+	MaterialPresets materialPresets = MaterialPresets();
+	materialPresets.Init();
+
+	/*------------------------------
+	Create the gameObject and mesh
+	------------------------------*/
+
+	GameObject* ground = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+												 objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
+												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
+
+	/*------------------------------------
+	Create rigidbody and collisionBody
+	------------------------------------*/
+
+	//The btScalar values should be half of the respective size of the object.
+	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.0), btScalar(0.5), btScalar(50.0)));
+
+	//Transform (position, rotation, scale) of the object
+	btTransform groundTransform;
+	groundTransform.setIdentity();
+
+	//Objects position in the world. This should match the position of the object mesh being rendered.
+	glm::vec3 groundPosition = ground->getPosition();
+	groundTransform.setOrigin(btVector3(groundPosition.x, groundPosition.y, groundPosition.z)); //+8 to put the collider at the right level... 
+																									//why does the collider sit 8 units lower than the mesh????
+
+	//Use this to rotate object. Takes in a quaternion.
+	//groundTransform.setRotation();
+
+	//Set the mass of the object. 0 for static objects. Do not use negative mass.
+	btScalar mass(0.0);
+
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool isDynamic = (mass != 0.0f);
+
+	//Calculate inertia. This should be done for every object.
+	btVector3 localInertia(0, 0, 0);
+	if (isDynamic)
+		groundShape->calculateLocalInertia(mass, localInertia);
+
+
+	//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
+	btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
+	btRigidBody* groundBody = new btRigidBody(rbInfo);
+
+	//add the body to the dynamics world
+	physics.getDynamicsWorld()->addRigidBody(groundBody);
+	ground->setRigidBody(groundBody);
+
+	//Add objects to vector of game objects
+	objects.push_back(ground);
+
+
+	/*------------------------------
+	Create the gameObject and mesh
+	------------------------------*/
+
+	GameObject* sphere = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+												   objectBuilder.getMeshes()[4], objectBuilder.getDiffuseTextures()[1],
+												   materialPresets.GetPlainGreen(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
+	
+	/*------------------------------------
+	Create rigidbody and collisionBody
+	------------------------------------*/
+
+	btCollisionShape* sphereShape = new btSphereShape(btScalar(2.5));
+	//collisionShapes.push_back(sphereShape);
+
+	/// Create Dynamic Objects
+	btTransform sphereTransform;
+	sphereTransform.setIdentity();
+
+	glm::vec3 spherePosition = sphere->getPosition();
+	sphereTransform.setOrigin(btVector3(spherePosition.x, spherePosition.y, spherePosition.z));
+
+	btScalar sphereMass(1.0f);
+
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool sphereIsDynamic = (sphereMass != 0.0f);
+
+	btVector3 localSphereInertia(0, 0, 0);
+	if (sphereIsDynamic)
+		sphereShape->calculateLocalInertia(mass, localSphereInertia);
+
+	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+	btDefaultMotionState* sphereMotionState = new btDefaultMotionState(sphereTransform);
+	btRigidBody::btRigidBodyConstructionInfo sphereRbInfo(sphereMass, sphereMotionState, sphereShape, localSphereInertia);
+	btRigidBody* sphereBody = new btRigidBody(sphereRbInfo);
+
+	physics.getDynamicsWorld()->addRigidBody(sphereBody);
+	sphere->setRigidBody(sphereBody);
+
+	//Add objects to vector of game objects
+	objects.push_back(sphere);
+
 }
 
 void Game::GameLoop()
@@ -207,9 +294,10 @@ void Game::GameLoop()
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+		physics.getDynamicsWorld()->stepSimulation(deltaTime, 10); //This shouldn't use deltaTime but fixed time.
+
 		//Handle keyboard input
 		controller.handleKeyboard(deltaTime);
-
 
 		//OpenGL rendering
 		glClearColor(0.0, 0.0, 1.0, 1.0);
@@ -230,7 +318,14 @@ void Game::GameLoop()
 			//Bind and send texture. I would like the texture uniform to be part of SendUniforms, but I'm not sure how that would work with multiple textures?
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
-			glUniform1i(textureUniformLocation, 0);
+			glUniform1i(diffuseTextureLocation, 0);
+
+			if (object->getSpecularTextureID() > 100) 
+			{
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, object->getSpecularTextureID());
+				glUniform1i(specularTextureLocation, 1);
+			}
 
 			//Send uniforms
 			SendUniforms(object);
@@ -270,7 +365,8 @@ void Game::SetUniformLocations(GLuint programID)
 	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
 
 	//Textures
-	textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
+	diffuseTextureLocation = glGetUniformLocation(programID, "diffuseTexture");
+	specularTextureLocation = glGetUniformLocation(programID, "specularTexture");
 }
 
 void Game::SendUniforms(GameObject* object)

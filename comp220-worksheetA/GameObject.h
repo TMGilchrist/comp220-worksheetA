@@ -1,5 +1,7 @@
 #pragma once
 #include <glm\glm.hpp>
+#include <btBulletDynamicsCommon.h>
+
 #include "shader.h"
 #include "Mesh.h"
 #include "Material.h"
@@ -68,6 +70,16 @@ public:
 		return diffuseTextureID;
 	}
 
+	void setSpecularTextureID(GLuint ID)
+	{
+		specularTextureID = ID;
+	}
+
+	GLuint getSpecularTextureID()
+	{
+		return specularTextureID;
+	}
+
 	GLuint getProgramID() 
 	{
 		return programID;
@@ -83,14 +95,51 @@ public:
 		return material;
 	}
 
+	glm::vec3 GetRotation() 
+	{
+		return modelRotation;		
+	}
+
+	void SetRotation(glm::vec3 Rotation) 
+	{
+		modelRotation = Rotation;
+	}
+
+btRigidBody* getRigidbody() 
+	{
+		return rigidBody;
+	}
+
+	void setRigidBody(btRigidBody* RigidBody) 
+	{
+		rigidBody = RigidBody;
+	}
+
+	glm::vec3 getPosition() 
+	{
+		return position;
+	}
+
+	void SetPosition(float x, float y, float z)
+	{
+		position = glm::vec3(x, y, z);
+	}
+
 private:
 	//Mesh collection for the object's model.
 	MeshCollection* mesh;
 
 	//Object's textureID
 	GLuint diffuseTextureID;
+	GLuint specularTextureID;
 
 	GLuint programID; //<- load different shaders for each object? 
+
+	//The object's rigidbody
+	btRigidBody* rigidBody;
+
+	//The position of the object
+	glm::vec3 position;
 
 	//Model Matrix of the object
 	glm::mat4 modelMatrix;

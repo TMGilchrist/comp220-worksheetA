@@ -24,8 +24,10 @@
 #include "GeometryModels.h"
 #include "Model.h"
 #include "GameObject.h"
-#include "MaterialPresets.h"
 
+#include "MaterialPresets.h"
+#include "ObjectBuilder.h"
+#include "PhysicsManager.h"
 class Game
 {
 public:
@@ -52,6 +54,8 @@ public:
 	Create game objects and add to the objects vector.
 	*/
 	void CreateObjects();
+
+	void CreatePhysicsObjects();
 
 	/**
 	The main game loop. Runs until escape is pressed or the window is closed.
@@ -82,7 +86,11 @@ private:
 	SDL_Window* window;
 
 	GLManager glManager;
+	PhysicsManager physics;
+
 	SDL_GLContext glContext;
+
+	ObjectBuilder objectBuilder;
 
 	//Delta time and the time last frame
 	float deltaTime;
@@ -95,7 +103,9 @@ private:
 	CharacterController controller;
 
 	//Uniform locations
-	GLuint textureUniformLocation;
+	GLuint diffuseTextureLocation;
+	GLuint specularTextureLocation;
+
 	GLuint modelMatrixLocation;
 	GLuint viewMatrixLocation;
 	GLuint projectionMatrixLocation;

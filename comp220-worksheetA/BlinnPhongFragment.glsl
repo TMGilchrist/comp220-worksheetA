@@ -8,7 +8,8 @@ in vec4 worldSpaceVertex;
 uniform vec4 triangleColour1; 
 uniform vec4 triangleColour2; 
 
-uniform sampler2D textureSampler;
+uniform sampler2D diffuseTexture;
+uniform sampler2D specularTexture;
 
 //Ambient lighting
 uniform vec4 ambientLightColour;
@@ -40,7 +41,11 @@ void main()
 	//Clamp to avoid visual errors
 	float diffuseIntensity = clamp(dot(vertexNormalOut, -lightDirection), 0, 1);
 
+	//int diffuseTextureColour = 1; 
+	vec4 diffuseTextureColour = texture(diffuseTexture, vertexTextureCoordsOut);
+	vec4 specularTextureColour = texture(specularTexture, vertexTextureCoordsOut);
+
 	colour = ((ambientLightColour * ambientMaterialColour) * ambientIntensity ) + 
-			  (diffuseLightColour * diffuseIntensity * diffuseMaterialColour) + 
-			  (specularLightColour * specularIntensity * specularMaterialColour);
+			  (diffuseLightColour * diffuseIntensity * diffuseMaterialColour * diffuseTextureColour) + 
+			  (specularLightColour * specularIntensity * specularMaterialColour * specularTextureColour);
 }

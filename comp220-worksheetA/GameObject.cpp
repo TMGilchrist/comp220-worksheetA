@@ -4,6 +4,7 @@
 
 GameObject::GameObject()
 {
+	rigidBody = nullptr;
 }
 
 
@@ -29,9 +30,22 @@ void GameObject::Init(const char* vert, const char* fragment)
 }
 
 void GameObject::Update()
-{
+{   
+	if (rigidBody)
+	{
+		btTransform currentTransform;
+		btMotionState* currentMotionState = rigidBody->getMotionState();
+		currentMotionState->getWorldTransform(currentTransform);
+
+		position = glm::vec3(currentTransform.getOrigin().getX(),
+							 currentTransform.getOrigin().getY(),
+							 currentTransform.getOrigin().getZ());
+	}
+
+
+
 	//Calculate Transformation Matricies
-	translationMatrix = glm::translate(modelTranslation);
+	translationMatrix = glm::translate(position);
 	rotationMatrix = glm::rotate(modelRotation.x, xAxis) * glm::rotate(modelRotation.y, yAxis) * glm::rotate(modelRotation.z, zAxis);
 	scaleMatrix = glm::scale(modelScale);
 

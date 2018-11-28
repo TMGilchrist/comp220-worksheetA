@@ -9,20 +9,40 @@ public:
 
 	void Init();
 
-	Material GetMat1() 
+	Material GetPlainGreen() 
 	{
-		return mat1;
+		return plainGreen;
 	}
 
-	Material GetMat2()
+	Material GetPlainRed()
 	{
-		return mat2;
+		return plainRed;
+	}
+
+	Material GetPlainWhite()
+	{
+		return plainWhite;
+	}
+
+	Material GetMetal() 
+	{
+		return metal;
+	}
+
+	Material GetDeepPurple()
+	{
+		return deepPurple;
 	}
 
 private:
 	//Material presets
-	Material mat1;
-	Material mat2;
+	Material plainGreen;
+	Material plainRed;
+	Material plainWhite;
+
+	Material deepPurple;
+
+	Material metal;
 
 };
 

@@ -27,7 +27,27 @@ void CharacterController::handleKeyboard(float deltaTime)
 	cameraTarget = attachedCamera->getTarget();
 	moveSpeed = 0.05f * deltaTime;
 
+	bool debugSpeedEnabled = false;
+
 	//This isn't multi-directional movement, this should be fixed!
+
+	//Debug speed increase
+	if (input->isPressed(SDLK_LSHIFT))
+	{
+
+		if (debugSpeedEnabled == false) 
+		{
+			moveSpeed = 0.5f * deltaTime;
+			debugSpeedEnabled == true;
+		}
+
+		else
+		{
+			moveSpeed = 0.05f * deltaTime;
+			debugSpeedEnabled = false;
+		}
+
+	}
 
 	//Strafe forwards
 	if (input->isPressed(SDLK_w))
