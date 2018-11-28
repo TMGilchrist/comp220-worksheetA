@@ -101,7 +101,7 @@ void Game::CreateObjects()
 
 	GameObject* tower = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[1],
-													materialPresets.GetPlainWhite(), glm::vec3(0, 0.0, 0.0), glm::vec3(40, 40, 100));
+													materialPresets.GetPlainWhite(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(40, 40, 100));
 	
 	tower->SetRotation(glm::vec3(-1.5, 0, 0));
 
