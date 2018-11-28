@@ -4,6 +4,7 @@
 
 #include "shader.h"
 #include "Mesh.h"
+#include "Material.h"
 
 
 class GameObject
@@ -69,12 +70,42 @@ public:
 		return diffuseTextureID;
 	}
 
+	void setSpecularTextureID(GLuint ID)
+	{
+		specularTextureID = ID;
+	}
+
+	GLuint getSpecularTextureID()
+	{
+		return specularTextureID;
+	}
+
 	GLuint getProgramID() 
 	{
 		return programID;
 	}
 
-	btRigidBody* getRigidbody() 
+	void SetMaterial(Material newMaterial) 
+	{
+		material = newMaterial;
+	}
+
+	Material GetMaterial() 
+	{
+		return material;
+	}
+
+	glm::vec3 GetRotation() 
+	{
+		return modelRotation;		
+	}
+
+	void SetRotation(glm::vec3 Rotation) 
+	{
+		modelRotation = Rotation;
+	}
+
+btRigidBody* getRigidbody() 
 	{
 		return rigidBody;
 	}
@@ -100,6 +131,7 @@ private:
 
 	//Object's textureID
 	GLuint diffuseTextureID;
+	GLuint specularTextureID;
 
 	GLuint programID; //<- load different shaders for each object? 
 
@@ -111,6 +143,8 @@ private:
 
 	//Model Matrix of the object
 	glm::mat4 modelMatrix;
+
+	Material material;
 
 	//These could be moved into a transform class
 	//Transformation Matricies

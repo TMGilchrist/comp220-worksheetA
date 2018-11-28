@@ -23,11 +23,11 @@ void Game::Init()
 	glManager.Init();
 	glContext = glManager.getGLContext();
 
-	//Initialise Bullet Physics
+	//Init object builder.
+	objectBuilder = ObjectBuilder();
+	objectBuilder.Init();	//Initialise Bullet Physics
 	physics = PhysicsManager();
 	physics.Init();
-
-	//Mouse setup, can probably be moved to sdl init?
 	SDL_ShowCursor(0);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 
@@ -50,7 +50,7 @@ void Game::Setup()
 	camera->setProjectionMatrix(windowMain->getWidth(), windowMain->getHeight());
 
 	//Create game objects
-	//CreateObjects();
+	CreateObjects();
 	CreatePhysicsObjects();
 
 	//Setup lighting
@@ -63,20 +63,15 @@ void Game::Setup()
 
 void Game::InitLighting() //Things here can probably be split up at some point into materials/lighting
 {
-	//Material
-	ambientMaterialColour = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-	diffuseMaterialColour = glm::vec4(0.8f, 0.0f, 0.0f, 1.0f);
-	specularMaterialColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
 	//Lighting
-	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 	ambientIntensity = 0.3f;
 
 	cameraPosition = camera->getPosition();
-	specularPower = 25;
 }
 
 void Game::CreateObjects()
@@ -85,79 +80,53 @@ void Game::CreateObjects()
 	Object creation
 	---------------------*/
 
-	//Create an objectBuilder class that loads all meshes and then assigns them to different objects.
+	//Material presets.
+	MaterialPresets materialPresets = MaterialPresets();
+	materialPresets.Init();
 
-	//Load Tank Mesh
-	MeshCollection* tankMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Tank1.FBX", tankMesh); 
-	GLuint tankTextureID = loadTextureFromFile("Resources/Tank1DF.PNG");
+	GameObject* tank1 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
+												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0], 
+												materialPresets.GetMat1());
 
-	//Load Teapot Mesh
-	MeshCollection* teaPotMesh = new MeshCollection();
-	loadMeshFromFile("Resources/teapot.FBX", teaPotMesh);
-	GLuint checkerTextureID = loadTextureFromFile("Resources/checkerboard.PNG");
-	GLuint redTextureID = loadTextureFromFile("Resources/Red.PNG");
+	GameObject* tank2 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
+												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0],
+												materialPresets.GetMat1(), glm::vec3(10.0, 0.0, 0.0));
 
-	//Add meshes to vector
-	meshes.push_back(tankMesh);
-	meshes.push_back(teaPotMesh);
+	GameObject* teapot1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl", 
+												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
+												  materialPresets.GetMat1(), glm::vec3(0, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
-	//Create new objects
-	GameObject* tank1 = new GameObject();
-	GameObject* tank2 = new GameObject();
-	GameObject* teapot = new GameObject();
+	GameObject* teapot2 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",		
+												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1],
+												  materialPresets.GetMat2(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
-	//Init object variables with the shaders to use
-	tank1->Init("vertexTextured.glsl", "fragmentTextured.glsl");
-	tank2->Init("vertexTextured.glsl", "fragmentTextured.glsl");
-	teapot->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
-
-	//Set textures
-	tank1->setDiffuseTextureID(tankTextureID);
-	tank2->setDiffuseTextureID(tankTextureID);
-	teapot->setDiffuseTextureID(checkerTextureID);
-
-	//Scale objects
-	teapot->setScale(glm::vec3(0.25, 0.25, 0.25));
-
-	//Position objects
-	tank2->setTranslation(glm::vec3(10.0, 0.0, 0.0));
-	teapot->setTranslation(glm::vec3(10, 15.0, 5.0));
-
-	//Set object meshes
-	tank1->setMesh(tankMesh);
-	tank2->setMesh(tankMesh);
-	teapot->setMesh(teaPotMesh);
+	GameObject* tower = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[1],
+													materialPresets.GetPlainWhite(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(40, 40, 100));
+	
+	tower->SetRotation(glm::vec3(-1.5, 0, 0));
 
 	//Add objects to vector of game objects
 	objects.push_back(tank1);
-	objects.push_back(tank2);
-	objects.push_back(teapot);
+	//objects.push_back(tank2);
+	//objects.push_back(teapot1);
+	//objects.push_back(teapot2);
+	objects.push_back(tower);
 }
 
 void Game::CreatePhysicsObjects()
 {
-	
+	//Material presets.
+	MaterialPresets materialPresets = MaterialPresets();
+	materialPresets.Init();
+
 	/*------------------------------
 	Create the gameObject and mesh
 	------------------------------*/
 
-	MeshCollection* cubeMesh = new MeshCollection();
-	loadMeshFromFile("Resources/cube.nff", cubeMesh);
-
-	GameObject* ground = new GameObject();
-
-	//Init object variables with the shaders to use
-	ground->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
-
-	ground->SetPosition(0.0f, -10.0f, 0.0f);
-	ground->setScale(glm::vec3(100.0f, 1.0f, 100.0f));
-	//ground->setTranslation(glm::vec3(0.0f, -10.0f, -120.0f));
-
-
-	//Set object meshes
-	ground->setMesh(cubeMesh);
-
+	GameObject* ground = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+												   objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
+												   materialPresets.GetMat2(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
 	/*------------------------------------
 	Create rigidbody and collisionBody
@@ -192,56 +161,36 @@ void Game::CreatePhysicsObjects()
 
 	//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-
-	//Link collisionShape and rigidbody together.
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
-
-	//Create the rigidbody
 	btRigidBody* groundBody = new btRigidBody(rbInfo);
-
 
 	//add the body to the dynamics world
 	physics.getDynamicsWorld()->addRigidBody(groundBody);
-
 	ground->setRigidBody(groundBody);
-
 
 	//Add objects to vector of game objects
 	objects.push_back(ground);
-
 
 
 	/*------------------------------
 	Create the gameObject and mesh
 	------------------------------*/
 
-	MeshCollection* sphereMesh = new MeshCollection();
-	loadMeshFromFile("Resources/sphere.nff", sphereMesh);
-	
-	GameObject* sphere = new GameObject();
-
-	//Init object variables with the shaders to use
-	sphere->Init("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
-
-	//sphere->setScale(glm::vec3(4.0f, 4.0f, 4.0f));
-	//sphere->setTranslation(glm::vec3(0.0f, 5.0f, 10.0f));
-	sphere->SetPosition(0.0f, 5.0f, 10.0f);
-
-	//Set object meshes
-	sphere->setMesh(sphereMesh);
+	GameObject* sphere = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+												   objectBuilder.getMeshes()[4], objectBuilder.getDiffuseTextures()[1],
+												   materialPresets.GetMat1(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
 	
 	/*------------------------------------
 	Create rigidbody and collisionBody
 	------------------------------------*/
 
-	btCollisionShape* sphereShape = new btSphereShape(btScalar(1.0));
+	btCollisionShape* sphereShape = new btSphereShape(btScalar(2.5));
 	//collisionShapes.push_back(sphereShape);
 
 	/// Create Dynamic Objects
 	btTransform sphereTransform;
 	sphereTransform.setIdentity();
 
-	//sphereTransform.setOrigin(btVector3(0, 5, 10));
 	glm::vec3 spherePosition = sphere->getPosition();
 	sphereTransform.setOrigin(btVector3(spherePosition.x, spherePosition.y, spherePosition.z));
 
@@ -357,7 +306,14 @@ void Game::GameLoop()
 			//Bind and send texture. I would like the texture uniform to be part of SendUniforms, but I'm not sure how that would work with multiple textures?
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
-			glUniform1i(textureUniformLocation, 0);
+			glUniform1i(diffuseTextureLocation, 0);
+
+			if (object->getSpecularTextureID() != NULL) 
+			{
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, object->getSpecularTextureID());
+				glUniform1i(specularTextureLocation, 1);
+			}
 
 			//Send uniforms
 			SendUniforms(object);
@@ -383,34 +339,37 @@ void Game::SetUniformLocations(GLuint programID)
 	//Materials
 	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
 	diffuseMaterialColourLocation = glGetUniformLocation(programID, "diffuseMaterialColour");
-
-	//Lighting
-	lightDirectionLocation = glGetUniformLocation(programID, "lightDirection");
-	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
-	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
-	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
-
 	specularMaterialColourLocation = glGetUniformLocation(programID, "specularMaterialColour");
-	specularLightColourLocation = glGetUniformLocation(programID, "specularLightColour");
-	cameraPositionLocation = glGetUniformLocation(programID, "cameraPosition");
 	specularPowerLocation = glGetUniformLocation(programID, "specularPower");
 
+	//Lighting
+	cameraPositionLocation = glGetUniformLocation(programID, "cameraPosition");
+	lightDirectionLocation = glGetUniformLocation(programID, "lightDirection");
+
+	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
+	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
+	specularLightColourLocation = glGetUniformLocation(programID, "specularLightColour");
+
+	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
+
 	//Textures
-	textureUniformLocation = glGetUniformLocation(programID, "textureSampler");
+	diffuseTextureLocation = glGetUniformLocation(programID, "diffuseTexture");
+	specularTextureLocation = glGetUniformLocation(programID, "specularTexture");
 }
 
 void Game::SendUniforms(GameObject* object)
 {
-	//cameraPosition = camera->getPosition();
-
 	//Matrices
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
 
 	//Materials
-	glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(ambientMaterialColour));
-	glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(diffuseMaterialColour));
+
+	glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetAmbientColour()));
+	glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetDiffuseColour()));
+	glUniform4fv(specularMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetSpecularColour()));
+	glUniform1f(specularPowerLocation, object->GetMaterial().GetSpecularPower());
 
 	//Lighting
 	glUniform3fv(lightDirectionLocation, 1, value_ptr(lightDirection));
@@ -419,9 +378,7 @@ void Game::SendUniforms(GameObject* object)
 	glUniform1f(ambientIntensityLocation, ambientIntensity);
 
 	glUniform4fv(specularLightColourLocation, 1, value_ptr(specularLightColour));
-	glUniform4fv(specularMaterialColourLocation, 1, value_ptr(specularMaterialColour));
 	glUniform3fv(cameraPositionLocation, 1, value_ptr(camera->getPosition()));
-	glUniform1f(specularPowerLocation, specularPower);
 }
 
 void Game::Cleanup()

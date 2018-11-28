@@ -24,8 +24,10 @@
 #include "GeometryModels.h"
 #include "Model.h"
 #include "GameObject.h"
-#include "PhysicsManager.h"
 
+#include "MaterialPresets.h"
+#include "ObjectBuilder.h"
+#include "PhysicsManager.h"
 class Game
 {
 public:
@@ -88,6 +90,8 @@ private:
 
 	SDL_GLContext glContext;
 
+	ObjectBuilder objectBuilder;
+
 	//Delta time and the time last frame
 	float deltaTime;
 	float lastFrame;
@@ -99,7 +103,9 @@ private:
 	CharacterController controller;
 
 	//Uniform locations
-	GLuint textureUniformLocation;
+	GLuint diffuseTextureLocation;
+	GLuint specularTextureLocation;
+
 	GLuint modelMatrixLocation;
 	GLuint viewMatrixLocation;
 	GLuint projectionMatrixLocation;
