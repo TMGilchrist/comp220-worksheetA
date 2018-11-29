@@ -134,7 +134,7 @@ void Game::CreatePhysicsObjects()
 	materialPresets.Init();
 
 	/*------------------------------
-	Create the gameObject and mesh
+	Create the Ground gameObject and mesh
 	------------------------------*/
 
 	GameObject* ground = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
@@ -142,7 +142,7 @@ void Game::CreatePhysicsObjects()
 												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
 	/*------------------------------------
-	Create rigidbody and collisionBody
+	Create Ground rigidbody and collisionBody
 	------------------------------------*/
 
 	//The btScalar values should be half of the respective size of the object.
@@ -186,7 +186,7 @@ void Game::CreatePhysicsObjects()
 
 
 	/*------------------------------
-	Create the gameObject and mesh
+	Create the Sphere gameObject and mesh
 	------------------------------*/
 
 	GameObject* sphere = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
@@ -194,7 +194,7 @@ void Game::CreatePhysicsObjects()
 												   materialPresets.GetPlainGreen(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
 	
 	/*------------------------------------
-	Create rigidbody and collisionBody
+	Create Sphere rigidbody and collisionBody
 	------------------------------------*/
 
 	btCollisionShape* sphereShape = new btSphereShape(btScalar(2.5));
