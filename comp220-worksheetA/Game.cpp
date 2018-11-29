@@ -197,7 +197,7 @@ void Game::CreatePhysicsObjects()
 	Create Sphere rigidbody and collisionBody
 	------------------------------------*/
 
-	btCollisionShape* sphereShape = new btSphereShape(btScalar(2.5));
+	btCollisionShape* sphereShape = new btSphereShape(btScalar(5));
 	//collisionShapes.push_back(sphereShape);
 
 	/// Create Dynamic Objects
