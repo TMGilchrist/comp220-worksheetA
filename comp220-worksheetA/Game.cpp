@@ -64,7 +64,7 @@ void Game::Setup()
 void Game::InitLighting() //Things here can probably be split up at some point into materials/lighting
 {
 	//Lighting
-	//ambientLightColour = glm::vec4(136 / 255, 0 / 255, 204 / 255, 1.0f);
+	//ambientLightColour = glm::vec4(136.0f / 255.0f, 0.0f / 255.0f, 204.0f / 255.0f, 0.3f);
 	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -111,12 +111,12 @@ void Game::CreateObjects()
 
 	terrain->SetRotation(glm::vec3(-1.5, 0.0, -1.5));
 	//Currently, for whateve reason (probably the import rotation?) x = z, y = x, z = y.
-	terrain->SetPosition(-50, 100, 0);
-
+	terrain->SetPosition(500, 100, 0);
 	tower->SetRotation(glm::vec3(-1.5, 0, 0));
+
 	//x, z, y
 	//tower->SetPosition(-5.0, -25.0, 1.2);
-	tower->SetPosition(0.0, -5.0, 0.25);
+	tower->SetPosition(-150.0, -5.0, 600);
 
 	//Add objects to vector of game objects
 	objects.push_back(tank1);
@@ -301,9 +301,9 @@ void Game::GameLoop()
 		controller.handleKeyboard(deltaTime);
 
 		//OpenGL rendering
-		//glClearColor(0.0, 0.0, 1.0, 1.0);
-		glClearColor(37.0 / 255, 5.0 / 255, 43.0 / 255, 1.0f);
-		//glClearColor(106/255, 9/255, 196/255, 1.0f);
+		//glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+		//glClearColor(37.0 / 255, 5.0 / 255, 43.0 / 255, 1.0f);
+		glClearColor(106.0f/255.0f, 9.0f/255.0f, 196.0f/255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 

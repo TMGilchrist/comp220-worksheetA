@@ -50,7 +50,7 @@ void GameObject::Update()
 	scaleMatrix = glm::scale(modelScale);
 
 	//Calculate model matrix
-	modelMatrix = rotationMatrix * scaleMatrix * translationMatrix;
+	modelMatrix = translationMatrix * rotationMatrix * scaleMatrix;;
 
 	//Render model
 	mesh->render();
