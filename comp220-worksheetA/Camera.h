@@ -18,7 +18,7 @@ public:
 	@param float initNearClip: The near clipping plane (should not be smaller than 0.1).
 	@param float initFarClip: The far clipping plane (should not be too large).
 	*/
-	Camera(float initFoV = 60, float initNearClip = 0.1, float initFarClip = 2000, float PitchConstraintUp = 89, float PitchConstraintDown = -89);
+	Camera(float initFoV = 60, float initNearClip = 0.1, float initFarClip = 5000, float PitchConstraintUp = 89, float PitchConstraintDown = -89);
 
 	/**
 	Create new camera with custom starting location.
@@ -31,7 +31,7 @@ public:
 	@param float initNearClip: The near clipping plane (should not be smaller than 0.1).
 	@param float initFarClip: The far clipping plane (should not be too large).
 	*/
-	Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, float initFoV = 60, float initNearClip = 0.1, float initFarClip = 2000, float PitchConstraintUp = 89, float PitchConstraintDown = -89);
+	Camera(glm::vec3 &Position, glm::vec3 &Target, glm::vec3 &UpVector, float initFoV = 60, float initNearClip = 0.1, float initFarClip = 5000, float PitchConstraintUp = 89, float PitchConstraintDown = -89);
 
 	~Camera();
 
