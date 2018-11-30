@@ -57,11 +57,19 @@
     <ClCompile Include="Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-	<ClCompile Include="ObjectBuilder.cpp">
+    <ClCompile Include="ObjectBuilder.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>    <ClCompile Include="PhysicsManager.cpp">
+    </ClCompile>
+    <ClCompile Include="PhysicsManager.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>  </ItemGroup>
+    </ClCompile>
+    <ClCompile Include="MaterialPresets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>Header Files</Filter>
@@ -113,11 +121,20 @@
     </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>Header Files</Filter>
-    </ClInclude>	<ClInclude Include="ObjectBuilder.h">
+    </ClInclude>
+    <ClInclude Include="ObjectBuilder.h">
       <Filter>Header Files</Filter>
-    </ClInclude>    <ClInclude Include="PhysicsManager.h">
+    </ClInclude>
+    <ClInclude Include="PhysicsManager.h">
       <Filter>Header Files</Filter>
-    </ClInclude>  </ItemGroup>
+    </ClInclude>
+    <ClInclude Include="MaterialPresets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
   <ItemGroup>
     <None Include="fragmentShader.glsl" />
     <None Include="vertexShader.glsl" />
@@ -125,5 +142,11 @@
     <None Include="vertexTextured.glsl" />
     <None Include="BlinnPhongFragment.glsl" />
     <None Include="BlinnPhongVert.glsl" />
+    <None Include="skyboxVertexShader.glsl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="skyboxFragmentShader.glsl">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

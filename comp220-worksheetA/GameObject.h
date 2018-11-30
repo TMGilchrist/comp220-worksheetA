@@ -26,6 +26,11 @@ public:
 	*/
 	void Update();
 
+
+	/*----------------------
+	Getters and Setters
+	----------------------*/
+
 	/**
 	Attach a meshCollection to the game object.
 	*/
@@ -105,7 +110,7 @@ public:
 		modelRotation = Rotation;
 	}
 
-btRigidBody* getRigidbody() 
+	btRigidBody* getRigidbody() 
 	{
 		return rigidBody;
 	}

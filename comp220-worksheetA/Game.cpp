@@ -25,9 +25,13 @@ void Game::Init()
 
 	//Init object builder.
 	objectBuilder = ObjectBuilder();
-	objectBuilder.Init();	//Initialise Bullet Physics
+	objectBuilder.Init();	
+	
+	//Initialise Bullet Physics
 	physics = PhysicsManager();
 	physics.Init();
+
+	//Mouse settings
 	SDL_ShowCursor(0);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 
@@ -38,16 +42,15 @@ void Game::Init()
 
 void Game::Setup()
 {
-	//Init deltaTime
-	float deltaTime = 0.0f;	// Time between current frame and last frame
-	float lastFrame = 0.0f; // Time of last frame
-
 	//Enable backface culling.
 	glEnable(GL_CULL_FACE); 
 
 	//Set up a camera and init the projection matrix with window size
 	camera = new Camera();
 	camera->setProjectionMatrix(windowMain->getWidth(), windowMain->getHeight());
+
+	skybox = Skybox();
+	skybox.Init("skyboxVertexShader.glsl", "skyboxFragmentShader.glsl");
 
 	//Create game objects
 	CreateObjects();
@@ -306,6 +309,26 @@ void Game::GameLoop()
 		glClearColor(106.0f/255.0f, 9.0f/255.0f, 196.0f/255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+		
+		// draw skybox
+		glDepthMask(GL_FALSE);
+		glUseProgram(skybox.GetProgramID());
+
+		glm::mat4 view = glm::mat4(glm::mat3(camera->getViewMatrix()));
+
+		GLuint skyboxViewLocation = glGetUniformLocation(skybox.GetProgramID(), "viewMatrix");
+		GLuint skyboxProjLocation = glGetUniformLocation(skybox.GetProgramID(), "projectionMatrix");
+
+		glUniformMatrix4fv(skyboxViewLocation, 1, GL_FALSE, glm::value_ptr(glm::mat4(glm::mat3(camera->getViewMatrix()))));
+		glUniformMatrix4fv(skyboxProjLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
+
+		glBindVertexArray(skybox.GetSkyboxVAO());
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.GetCubemapTexture());
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		glBindVertexArray(0);
+		glDepthMask(GL_TRUE);
 
 
 		/*----------------------------
@@ -402,9 +425,7 @@ void Game::Cleanup()
 	   Cleanup
 	--------------------*/
 
-	glDeleteProgram(programID);
-
-	
+	glDeleteProgram(programID);	
 
 	//Destroy vector of game objects
 	auto iter = objects.begin();

@@ -28,6 +28,8 @@
 #include "MaterialPresets.h"
 #include "ObjectBuilder.h"
 #include "PhysicsManager.h"
+#include "Skybox.h"
+
 class Game
 {
 public:
@@ -91,6 +93,8 @@ private:
 	SDL_GLContext glContext;
 
 	ObjectBuilder objectBuilder;
+
+	Skybox skybox;
 
 	//Delta time and the time last frame
 	float deltaTime;
