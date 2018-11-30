@@ -27,6 +27,10 @@ void Game::Init()
 	objectBuilder = ObjectBuilder();
 	objectBuilder.Init();	
 	
+	//Init material presets
+	materialPresets = MaterialPresets();
+	materialPresets.Init();
+
 	//Initialise Bullet Physics
 	physics = PhysicsManager();
 	physics.Init();
@@ -80,14 +84,6 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 
 void Game::CreateObjects()
 {
-	/*---------------------
-	Object creation
-	---------------------*/
-
-	//Material presets.
-	MaterialPresets materialPresets = MaterialPresets();
-	materialPresets.Init();
-
 	GameObject* tank1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0], objectBuilder.getSpecularTextures()[0],
 												materialPresets.GetMetal());
@@ -106,19 +102,16 @@ void Game::CreateObjects()
 
 	GameObject* tower = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
-													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600)); //was 40, 40, 100
+													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600));
 	
 	GameObject* terrain = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 													objectBuilder.getMeshes()[5], objectBuilder.getDiffuseTextures()[2], objectBuilder.getSpecularTextures()[0],
 													materialPresets.GetPlainWhite(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
 
 	terrain->SetRotation(glm::vec3(-1.5, 0.0, -1.5));
-	//Currently, for whateve reason (probably the import rotation?) x = z, y = x, z = y.
 	terrain->SetPosition(500, 100, 0);
-	tower->SetRotation(glm::vec3(-1.5, 0, 0));
 
-	//x, z, y
-	//tower->SetPosition(-5.0, -25.0, 1.2);
+	tower->SetRotation(glm::vec3(-1.5, 0, 0));
 	tower->SetPosition(-150.0, -5.0, 600);
 
 	//Add objects to vector of game objects
@@ -132,102 +125,24 @@ void Game::CreateObjects()
 
 void Game::CreatePhysicsObjects()
 {
-	//Material presets.
-	MaterialPresets materialPresets = MaterialPresets();
-	materialPresets.Init();
-
-	/*------------------------------
-	Create the Ground gameObject and mesh
-	------------------------------*/
-
+	//Create physics objects
 	GameObject* ground = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 												 objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
 												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
-	/*------------------------------------
-	Create Ground rigidbody and collisionBody
-	------------------------------------*/
+	ground->SetupPhysicsComponents("BoxCollider", 0.0f);
+	ground->AddToPhysicsWorld(physics.getDynamicsWorld());
 
-	//The btScalar values should be half of the respective size of the object.
-	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.0), btScalar(0.5), btScalar(50.0)));
-
-	//Transform (position, rotation, scale) of the object
-	btTransform groundTransform;
-	groundTransform.setIdentity();
-
-	//Objects position in the world. This should match the position of the object mesh being rendered.
-	glm::vec3 groundPosition = ground->getPosition();
-	groundTransform.setOrigin(btVector3(groundPosition.x, groundPosition.y, groundPosition.z)); //+8 to put the collider at the right level... 
-																									//why does the collider sit 8 units lower than the mesh????
-
-	//Use this to rotate object. Takes in a quaternion.
-	//groundTransform.setRotation();
-
-	//Set the mass of the object. 0 for static objects. Do not use negative mass.
-	btScalar mass(0.0);
-
-	//rigidbody is dynamic if and only if mass is non zero, otherwise static
-	bool isDynamic = (mass != 0.0f);
-
-	//Calculate inertia. This should be done for every object.
-	btVector3 localInertia(0, 0, 0);
-	if (isDynamic)
-		groundShape->calculateLocalInertia(mass, localInertia);
-
-
-	//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
-	btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
-	btRigidBody* groundBody = new btRigidBody(rbInfo);
-
-	//add the body to the dynamics world
-	physics.getDynamicsWorld()->addRigidBody(groundBody);
-	ground->setRigidBody(groundBody);
-
-	//Add objects to vector of game objects
-	objects.push_back(ground);
-
-
-	/*------------------------------
-	Create the Sphere gameObject and mesh
-	------------------------------*/
 
 	GameObject* sphere = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 												   objectBuilder.getMeshes()[4], objectBuilder.getDiffuseTextures()[1],
 												   materialPresets.GetPlainGreen(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
 	
-	/*------------------------------------
-	Create Sphere rigidbody and collisionBody
-	------------------------------------*/
-
-	btCollisionShape* sphereShape = new btSphereShape(btScalar(5));
-	//collisionShapes.push_back(sphereShape);
-
-	/// Create Dynamic Objects
-	btTransform sphereTransform;
-	sphereTransform.setIdentity();
-
-	glm::vec3 spherePosition = sphere->getPosition();
-	sphereTransform.setOrigin(btVector3(spherePosition.x, spherePosition.y, spherePosition.z));
-
-	btScalar sphereMass(1.0f);
-
-	//rigidbody is dynamic if and only if mass is non zero, otherwise static
-	bool sphereIsDynamic = (sphereMass != 0.0f);
-
-	btVector3 localSphereInertia(0, 0, 0);
-	if (sphereIsDynamic)
-		sphereShape->calculateLocalInertia(mass, localSphereInertia);
-
-	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-	btDefaultMotionState* sphereMotionState = new btDefaultMotionState(sphereTransform);
-	btRigidBody::btRigidBodyConstructionInfo sphereRbInfo(sphereMass, sphereMotionState, sphereShape, localSphereInertia);
-	btRigidBody* sphereBody = new btRigidBody(sphereRbInfo);
-
-	physics.getDynamicsWorld()->addRigidBody(sphereBody);
-	sphere->setRigidBody(sphereBody);
+	sphere->SetupPhysicsComponents("SphereCollider", 1.0f);
+	sphere->AddToPhysicsWorld(physics.getDynamicsWorld());
 
 	//Add objects to vector of game objects
+	objects.push_back(ground);
 	objects.push_back(sphere);
 
 }

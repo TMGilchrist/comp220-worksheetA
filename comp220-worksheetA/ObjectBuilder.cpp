@@ -9,6 +9,61 @@ ObjectBuilder::ObjectBuilder()
 
 ObjectBuilder::~ObjectBuilder()
 {
+	//Destroy vector of meshes
+	auto iter2 = meshes.begin();
+	while (iter2 != meshes.end())
+	{
+		if (*iter2)
+		{
+			//(*iter)->CleanUp(); Call destructor/cleanup here
+			delete (*iter2);
+			(*iter2) = nullptr;
+			iter2 = meshes.erase(iter2);
+		}
+
+		else
+		{
+			iter2++;
+		}
+	}
+
+	//These need to be vecotrs of pointers?
+	/*
+	//Destroy vector of game objects
+	auto iter = diffuseTextures.begin();
+	while (iter != diffuseTextures.end())
+	{
+		if (*iter)
+		{
+			//(*iter)->CleanUp(); Call destructor/cleanup here
+			delete (*iter);
+			(*iter) = nullptr;
+			iter = diffuseTextures.erase(iter);
+		}
+
+		else
+		{
+			iter++;
+		}
+	}
+
+	//Destroy vector of textures
+	auto iter3 = specularTextures.begin();
+	while (iter3 != textures.end())
+	{
+		if (*iter3)
+		{
+			//(*iter)->CleanUp(); Call destructor/cleanup here
+			delete (*iter3);
+			(*iter3) = nullptr;
+			iter3 = textures.erase(iter3);
+		}
+
+		else
+		{
+			iter3++;
+		}
+	}*/
 }
 
 void ObjectBuilder::Init()

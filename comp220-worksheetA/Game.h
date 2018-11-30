@@ -93,6 +93,7 @@ private:
 	SDL_GLContext glContext;
 
 	ObjectBuilder objectBuilder;
+	MaterialPresets materialPresets;
 
 	Skybox skybox;
 

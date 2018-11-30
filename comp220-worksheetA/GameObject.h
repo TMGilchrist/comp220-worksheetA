@@ -26,6 +26,18 @@ public:
 	*/
 	void Update();
 
+	void SetupPhysicsComponents(std::string colliderType, btScalar mass);
+
+	void CreateBoxCollider();
+
+	void CreateSphereCollider();
+
+	void CreateConvexCollider();
+
+	/**
+	Add this gameobject's rigidbody to the specified phsyics world so it can interact with the physics system.
+	*/
+	void AddToPhysicsWorld(btDiscreteDynamicsWorld* physicsWorld);
 
 	/*----------------------
 	Getters and Setters
@@ -40,19 +52,11 @@ public:
 	}
 
 	/**
-	Set the object's translation. Use to move the object around.
-	*/
-	void setTranslation(glm::vec3 Translation) 
-	{
-		modelTranslation = Translation;
-	}
-
-	/**
 	Set the object's scale. Use to resize object. 1.0 is the default size.
 	*/
 	void setScale(glm::vec3 Scale) 
 	{
-		modelScale = Scale;
+		scale = Scale;
 	}
 	
 	void setProgramID(const char* vert, const char* fragment) 
@@ -102,12 +106,12 @@ public:
 
 	glm::vec3 GetRotation() 
 	{
-		return modelRotation;		
+		return rotation;		
 	}
 
 	void SetRotation(glm::vec3 Rotation) 
 	{
-		modelRotation = Rotation;
+		rotation = Rotation;
 	}
 
 	btRigidBody* getRigidbody() 
@@ -138,17 +142,16 @@ private:
 	GLuint diffuseTextureID;
 	GLuint specularTextureID;
 
-	GLuint programID; //<- load different shaders for each object? 
+	//The shaders to use to render this object
+	GLuint programID;
 
 	//The object's rigidbody
 	btRigidBody* rigidBody;
 
-	//The position of the object
-	glm::vec3 position;
-
 	//Model Matrix of the object
 	glm::mat4 modelMatrix;
 
+	//The material for this object
 	Material material;
 
 	//These could be moved into a transform class
@@ -157,14 +160,20 @@ private:
 	glm::mat4 rotationMatrix;
 	glm::mat4 scaleMatrix;
 
-	//Translation, scale and rotation vectors
-	glm::vec3 modelTranslation;
-	glm::vec3 modelScale;
-	glm::vec3 modelRotation;
+	//Position, scale and rotation vectors
+	glm::vec3 position;
+	glm::vec3 scale;
+	glm::vec3 rotation;
 
 	//Rotation axes
 	glm::vec3 xAxis;
 	glm::vec3 yAxis;
 	glm::vec3 zAxis;
+
+	//Mass of the object
+	btScalar mass;
+
+	//If this is a dynamic physics object
+	bool isDynamic;
 };
 
