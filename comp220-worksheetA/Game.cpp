@@ -396,6 +396,7 @@ void Game::Cleanup()
 		}
 	}
 
+	physics.CleanUp();
 
 	objects.clear();
 	meshes.clear();

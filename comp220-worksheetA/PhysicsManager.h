@@ -14,6 +14,8 @@ public:
 	*/
 	void Init(btVector3 Gravity= btVector3(0, -10, 0));
 
+	void CleanUp();
+
 	//Get the physics scene
 	btDiscreteDynamicsWorld* getDynamicsWorld() 
 	{

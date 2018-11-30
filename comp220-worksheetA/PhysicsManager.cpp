@@ -8,20 +8,7 @@ PhysicsManager::PhysicsManager()
 
 
 PhysicsManager::~PhysicsManager()
-{   /*
-	//delete dynamics world
-	delete dynamicsWorld;
-
-	//delete solver
-	delete solver;
-
-	//delete broadphase
-	delete overlappingPairCache;
-
-	//delete dispatcher
-	delete dispatcher;
-
-	delete collisionConfiguration;*/
+{   
 }
 
 void PhysicsManager::Init(btVector3 Gravity)
@@ -43,4 +30,21 @@ void PhysicsManager::Init(btVector3 Gravity)
 
 	//Note btVector3. 1 Unit in Bullet = 1 unit in graphics = 1 meter 	 
 	dynamicsWorld->setGravity(Gravity);
+}
+
+void PhysicsManager::CleanUp()
+{
+	//delete dynamics world
+	delete dynamicsWorld;
+
+	//delete solver
+	delete solver;
+
+	//delete broadphase
+	delete overlappingPairCache;
+
+	//delete dispatcher
+	delete dispatcher;
+
+	delete collisionConfiguration;
 }

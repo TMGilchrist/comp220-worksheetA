@@ -33,7 +33,9 @@ public:
 
 	*/
 	void FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices);
-		
+	
+	void CopyVertexData(const Vertex VertexData[]);
+
 	/**
 	Set the vertex attributes
 	*/
@@ -62,19 +64,29 @@ public:
 		textureID = loadTextureFromFile(TextureFile);
 	}
 
+	std::vector<Vertex> GetVertexData()
+	{
+		return vertexData;
+	}
+
 private:
 	//Buffers
 	GLuint vertexBuffer;
 	GLuint elementBuffer;
 	GLuint vertexAttributes;
 
-	//Vertex and index data
-	static const Vertex vertexData[];
-	static unsigned int indices[];
-
 	//Number of vertices and indices
 	int numOfVertices;
 	int numOfIndices;
+
+	//Vertex and index data
+	//const Vertex vertexData[1];
+
+	std::vector<Vertex> vertexData;
+
+	static unsigned int indices[];
+
+
 
 	//Texture
 	GLuint textureID;

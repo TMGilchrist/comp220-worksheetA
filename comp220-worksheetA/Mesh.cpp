@@ -40,9 +40,22 @@ void Mesh::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned
 	numOfIndices = NumOfIndices;
 	numOfVertices = NumOfVertices;
 
+	//CopyVertexData(VertexData);
+
 	//Is it necessary to save the vertex and index data?
 
 	SetVertexAttributes();
+}
+
+void Mesh::CopyVertexData(const Vertex VertexData[])
+{
+	//vertexData = VertexData;
+
+	//Copy values into member variable
+	for (int i = 0; i < sizeof(VertexData); i++) 
+	{
+		//vertexData[i] = VertexData[i];
+	}
 }
 
 void Mesh::SetVertexAttributes()
