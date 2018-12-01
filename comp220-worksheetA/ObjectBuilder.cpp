@@ -71,6 +71,12 @@ void ObjectBuilder::Init()
 	materialPresets = MaterialPresets();
 	materialPresets.Init();
 
+	LoadMeshes();
+	LoadTextures();
+}
+
+void ObjectBuilder::LoadMeshes()
+{
 	//Load Meshes
 	tankMesh = new MeshCollection();
 	loadMeshFromFile("Resources/Models/Tank1.FBX", tankMesh);
@@ -79,7 +85,7 @@ void ObjectBuilder::Init()
 	loadMeshFromFile("Resources/Models/teapot.FBX", teaPotMesh);
 
 	towerMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Models/Tower.FBX", towerMesh); 
+	loadMeshFromFile("Resources/Models/Tower.FBX", towerMesh); //LargeTower might look better
 
 	cubeMesh = new MeshCollection();
 	loadMeshFromFile("Resources/Models/cube.nff", cubeMesh);
@@ -90,6 +96,9 @@ void ObjectBuilder::Init()
 	terrainMesh = new MeshCollection();
 	loadMeshFromFile("Resources/Models/landscapePrototype.FBX", terrainMesh);
 
+	MeshCollection* treeMesh = new MeshCollection();
+	loadMeshFromFile("Resources/Models/Foliage/TreeType1.dae", treeMesh);
+
 	//Add meshes to vector
 	meshes.push_back(tankMesh);
 	meshes.push_back(teaPotMesh);
@@ -97,15 +106,26 @@ void ObjectBuilder::Init()
 	meshes.push_back(cubeMesh);
 	meshes.push_back(sphereMesh);
 	meshes.push_back(terrainMesh);
+	meshes.push_back(treeMesh);
+}
 
-	//Load diffuseTextures <- should be added to vector like the meshes? This would require changing to pointer.
+void ObjectBuilder::LoadTextures()
+{
 	tankTextureID = loadTextureFromFile("Resources/Textures/Tank1DF.PNG");
 	checkerTextureID = loadTextureFromFile("Resources/Textures/checkerboard.PNG");
 	RockTextureID = loadTextureFromFile("Resources/Textures/seamlessRock.jpg");
 
+	//StoneBrickID = loadTextureFromFile("Resources/Textures/Tower/tileable_bricks.jpg");
+	StoneBrick2ID = loadTextureFromFile("Resources/Textures/Tower/medium_bricks.jpg");
+	GLuint lowPolyTreeID = loadTextureFromFile("Resources/Textures/ColorsheetTreeNormal.png");
+
 	diffuseTextures.push_back(tankTextureID);
 	diffuseTextures.push_back(checkerTextureID);
 	diffuseTextures.push_back(RockTextureID);
+
+	//diffuseTextures.push_back(StoneBrickID);
+	diffuseTextures.push_back(StoneBrick2ID);
+	diffuseTextures.push_back(lowPolyTreeID);
 
 	spotLightTextureID = loadTextureFromFile("Resources/spotlightSpecMap.jpg");
 	specularTextures.push_back(spotLightTextureID);

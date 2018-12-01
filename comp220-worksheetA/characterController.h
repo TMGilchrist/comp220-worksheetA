@@ -1,3 +1,9 @@
+/**
+CharacterController
+
+Moves a given camera based on inputs from an InputManager.
+*/
+
 #pragma once
 #include "inputManager.h"
 #include "Camera.h"
@@ -12,21 +18,30 @@ public:
 	CharacterController(InputManager* Input, Camera* Camera);
 	~CharacterController();
 
-	//Handle effects of keyboard input
+	/**
+	Processes keyboard input and determines effects.
+
+	@param deltaTime : The game's deltaTime.
+	*/
 	void handleKeyboard(float deltaTime);
 
-	//Handle effects of mouse input
+	/**
+	Processes mouse input and determines effects.
+	*/
 	void handleMouse();
 
 private:
+	//Input source
 	InputManager* input;
-	Camera* attachedCamera; //Camera directly controlled
+
+	//Camera being controlled by this controller
+	Camera* attachedCamera;
 
 	//Position and target of the attached camera
 	glm::vec3 cameraPosition;
 	glm::vec3 cameraTarget;
 
-	//How fast the player can move
+	//The movement speed of the character
 	float moveSpeed;
 };
 

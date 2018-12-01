@@ -1,3 +1,12 @@
+/**
+GameObject
+
+Holds the information for an object, including mesh and texture data, 
+position in the gameworld and physics components.
+
+New instances of GameObject should be created using the ObjectBuilder class MakeObject function.
+*/
+
 #pragma once
 #include <glm\glm.hpp>
 #include <btBulletDynamicsCommon.h>
@@ -5,7 +14,6 @@
 #include "shader.h"
 #include "Mesh.h"
 #include "Material.h"
-
 
 class GameObject
 {
@@ -26,18 +34,34 @@ public:
 	*/
 	void Update();
 
+	/**
+	Calls the appropriate function to create physics components, including transform, rigidboy and collider.
+
+	@param colliderType : The type of collider that should be created.
+	@param mass : The mass of the object's rigidbody.
+	*/
 	void SetupPhysicsComponents(std::string colliderType, btScalar mass);
 
+	/**
+	Create a box collider and setup transform and rigidbody.
+	*/
 	void CreateBoxCollider();
 
+	/**
+	Create a sphere collider and setup transform and rigidbody.
+	*/
 	void CreateSphereCollider();
 
+	/**
+	Create a convex hull collider and setup transform and rigidbody.
+	*/
 	void CreateConvexCollider();
 
 	/**
 	Add this gameobject's rigidbody to the specified phsyics world so it can interact with the physics system.
 	*/
 	void AddToPhysicsWorld(btDiscreteDynamicsWorld* physicsWorld);
+
 
 	/*----------------------
 	Getters and Setters

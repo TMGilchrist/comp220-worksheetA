@@ -1,3 +1,9 @@
+/**
+WindowManager
+
+Handles the initialistion of SDL and it's required components as well as the creation of the SDL window for the game.
+*/
+
 #pragma once
 #include <SDL.h>
 #include <string>
@@ -10,21 +16,39 @@ public:
 	WindowManager();
 	~WindowManager();
 
-	//Init sdl and window.
+	/**
+	Calls InitSDL and creates an SDL window.
+
+	@param title : The title of the SDL window.
+	@param Width : The width of the SDL window.
+	@param Height : The height of the SDL window.
+	*/
 	void Init(const char* title="Default Window", int Width = global::SCREEN_WIDTH, int Height = global::SCREEN_HEIGHT);
 
-	//Initalise SDL ready for window creation
+	/**
+	Initalise SDL ready for window creation
+	*/
 	int initSDL();
 
-	//Verify that window has been created successfully
+	/**
+	Verify that window has been created successfully
+	*/
 	int verifyWindow();
 
-	//Toggle the state of the window between fullscreen and windowed
+	/**
+	Toggle the state of the window between fullscreen and windowed
+	*/
 	void toggleFullScreen();
 
-	//Toggled between maximised and non-maximised
+	/**
+	Toggled between maximised and non-maximised
+	*/
 	void toggleMaximised();
 
+
+	/*----------------------
+	Getters and Setters
+	----------------------*/
 
 	SDL_Window* getWindow() 
 	{

@@ -31,6 +31,7 @@ void GameObject::Init(const char* vert, const char* fragment)
 
 void GameObject::Update()
 {   
+	//Update object position based on its rigidbody
 	if (rigidBody)
 	{
 		btTransform currentTransform;
@@ -78,7 +79,7 @@ void GameObject::SetupPhysicsComponents(std::string colliderType, btScalar Mass)
 
 	else 
 	{
-		//error
+		//show error message
 	}
 }
 

@@ -1,3 +1,9 @@
+/**
+Game
+
+The main game class. This contains the main game loop and the intialisation and setup functions for game components.
+*/
+
 #pragma once
 
 #include <SDL.h>
@@ -30,6 +36,8 @@
 #include "PhysicsManager.h"
 #include "Skybox.h"
 
+#include "Lights.h"
+
 class Game
 {
 public:
@@ -57,6 +65,9 @@ public:
 	*/
 	void CreateObjects();
 
+	/**
+	Create game objects that have physics components.
+	*/
 	void CreatePhysicsObjects();
 
 	/**
@@ -74,6 +85,8 @@ public:
 
 	/**
 	Send across the uniform variables. This must be called after SetUniformLocations has been called.
+
+	@param object : The gameObject which is sending the uniforms.
 	*/
 	void SendUniforms(GameObject* object);
 
@@ -84,28 +97,58 @@ public:
 
 
 private:
+	//Manager classes
 	WindowManager* windowMain;
-	SDL_Window* window;
-
 	GLManager glManager;
 	PhysicsManager physics;
-
-	SDL_GLContext glContext;
-
 	ObjectBuilder objectBuilder;
 	MaterialPresets materialPresets;
 
+	SDL_GLContext glContext;
+	SDL_Window* window;
 	Skybox skybox;
 
 	//Delta time and the time last frame
 	float deltaTime;
 	float lastFrame;
 
-	GLuint programID;
-
+	//The camera being used to render the game
 	Camera* camera;
+
+	//
 	InputManager* input;
 	CharacterController controller;
+
+	GLuint programID;
+
+	//Vector of game objects
+	std::vector<GameObject*> objects;
+
+	//Vector of meshes
+	std::vector<MeshCollection*> meshes;
+
+	//Vector of textures
+	std::vector<GLuint*> textures;
+
+
+	/*----------------------------------------------
+	Lighting related uniforms.
+	Probably move these out to a lightingManager
+	----------------------------------------------*/
+
+	//Ambient
+	glm::vec4 ambientLightColour;
+	float ambientIntensity;
+
+	//Diffuse
+	glm::vec4 diffuseLightColour;
+	glm::vec3 lightDirection;
+
+	//Specular
+	glm::vec4 specularLightColour;
+	glm::vec3 cameraPosition;
+	float specularPower;
+	   
 
 	//Uniform locations
 	GLuint diffuseTextureLocation;
@@ -116,49 +159,18 @@ private:
 	GLuint projectionMatrixLocation;
 	GLuint MVPLocation;
 
-	/*----------------------------------------------
-	Lighting related uniforms.
-	Probably move these out to a lightingManager
-	----------------------------------------------*/
-
-	//Ambient
-	glm::vec4 ambientMaterialColour;
-	glm::vec4 ambientLightColour;
-	float ambientIntensity;
-
 	GLuint	ambientMaterialColourLocation;
 	GLuint ambientLightColourLocation;
 	GLuint ambientIntensityLocation;
-
-	//Diffuse
-	glm::vec4 diffuseMaterialColour;
-	glm::vec4 diffuseLightColour;
-	glm::vec3 lightDirection;
 
 	GLuint diffuseMaterialColourLocation;
 	GLuint diffuseLightColourLocation;
 	GLuint lightDirectionLocation;
 	GLuint diffuseIntensityLocation;
 
-	//Specular
-	glm::vec4 specularMaterialColour;
-	glm::vec4 specularLightColour;
-	glm::vec3 cameraPosition;
-	float specularPower;
-
 	GLuint specularMaterialColourLocation;
 	GLuint specularLightColourLocation;
 	GLuint cameraPositionLocation;
 	GLuint specularPowerLocation;
-
-
-	//Vector of game objects
-	std::vector<GameObject*> objects;
-
-	//Vector of meshes
-	std::vector<MeshCollection*> meshes;
-
-	//Vector of textures
-	std::vector<GLuint*> textures;
 };
 

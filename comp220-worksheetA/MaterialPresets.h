@@ -1,3 +1,10 @@
+/**
+MaterialPresets
+
+A collection of pre-constructed Material objects that cane be accessed via a getter function.
+Defining Materials here allows for a common library of Material types that can be used across the game.
+*/
+
 #pragma once
 #include "Material.h"
 
@@ -34,6 +41,11 @@ public:
 		return deepPurple;
 	}
 
+	Material GetStone() 
+	{
+		return stone;
+	}
+
 private:
 	//Material presets
 	Material plainGreen;
@@ -43,6 +55,7 @@ private:
 	Material deepPurple;
 
 	Material metal;
+	Material stone;
 
 };
 

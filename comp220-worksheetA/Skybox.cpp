@@ -20,8 +20,6 @@ void Skybox::Init(const char* vertexShader, const char* fragmentShader)
 
 	//Load the cubemap as a texture
 	cubemapTexture = LoadCubemap(skyboxFaces);
-
-
 }
 
 void Skybox::SetupBuffers()

@@ -1,3 +1,9 @@
+/**
+Camera
+
+Holds camera data including view and projection matricies. 
+*/
+
 #pragma once
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -177,6 +183,5 @@ private:
 
 	float pitchConstraintUp;
 	float pitchConstraintDown;
-	//float yawConstraint;
 };
 
