@@ -1,3 +1,10 @@
+/**
+PhysicsManager
+
+Handles the creation and deletion of a BulletPhysics dynamicsWorld. 
+This is used as the basis for the game's physics system.
+*/
+
 #pragma once
 #include <btBulletDynamicsCommon.h>
 
@@ -14,7 +21,13 @@ public:
 	*/
 	void Init(btVector3 Gravity= btVector3(0, -10, 0));
 
-	//Get the physics scene
+	void CleanUp();
+
+	/**
+	Get the physics scene
+	
+	@return dynamicsWorld : A physics scene that handles the physics of any rigidbodies that are added to it.
+	*/
 	btDiscreteDynamicsWorld* getDynamicsWorld() 
 	{
 		return dynamicsWorld;

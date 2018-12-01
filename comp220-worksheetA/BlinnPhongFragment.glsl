@@ -35,17 +35,16 @@ void main()
 	vec3 viewDirection = normalize(cameraPosition - worldSpaceVertex.xyz); //Normalize most things -> possibly -lightDirection as well.
 	vec3 halfWay = normalize(-lightDirection + viewDirection);
  
-	float specularIntensity = pow(clamp(dot(vertexNormalOut, halfWay), 0, 1), specularPower);
+	float specularIntensity = pow(clamp(dot(vertexNormalOut, halfWay), 0.0f, 1.0f), specularPower);
 
 	//Reverse light direction to get vector from surface back towards the light source
 	//Clamp to avoid visual errors
-	float diffuseIntensity = clamp(dot(vertexNormalOut, -lightDirection), 0, 1);
+	float diffuseIntensity = clamp(dot(vertexNormalOut, normalize(-lightDirection)), 0.0f, 1.0f); //Should this be -lightdirection or positive?
 
-	//int diffuseTextureColour = 1; 
 	vec4 diffuseTextureColour = texture(diffuseTexture, vertexTextureCoordsOut);
 	vec4 specularTextureColour = texture(specularTexture, vertexTextureCoordsOut);
 
-	colour = ((ambientLightColour * ambientMaterialColour) * ambientIntensity ) + 
-			  (diffuseLightColour * diffuseIntensity * diffuseMaterialColour * diffuseTextureColour) + 
-			  (specularLightColour * specularIntensity * specularMaterialColour * specularTextureColour);
+	colour = (ambientLightColour * ambientMaterialColour * ambientIntensity ) + 
+			 (diffuseLightColour * diffuseIntensity * diffuseMaterialColour * diffuseTextureColour) + 
+			 (specularLightColour * specularIntensity * specularMaterialColour * specularTextureColour);
 }

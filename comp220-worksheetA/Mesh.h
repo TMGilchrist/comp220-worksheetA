@@ -1,3 +1,13 @@
+/**
+Mesh
+
+A 3d mesh containting vertex data. Used to render complex models.
+
+MeshCollection
+
+A collection of meshes comprising a 3d model.
+*/
+
 #pragma once
 #include <GL/glew.h>
 #include <glm\glm.hpp>
@@ -16,8 +26,6 @@ public:
 	Mesh();
 	~Mesh();
 
-	//Mesh(Vertex VertexData[], int Indices[]);
-
 	/**
 	Set up buffer and vertex attribute array
 	*/
@@ -33,7 +41,9 @@ public:
 
 	*/
 	void FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices);
-		
+	
+	void CopyVertexData(const Vertex VertexData[]);
+
 	/**
 	Set the vertex attributes
 	*/
@@ -56,10 +66,17 @@ public:
 
 	/**
 	Load texture from filepath.
+
+	@param TextureFile : The filepath to the texture to be loaded.
 	*/
 	void setTextureID(std::string TextureFile) 
 	{
 		textureID = loadTextureFromFile(TextureFile);
+	}
+
+	std::vector<Vertex> GetVertexData()
+	{
+		return vertexData;
 	}
 
 private:
@@ -68,13 +85,18 @@ private:
 	GLuint elementBuffer;
 	GLuint vertexAttributes;
 
-	//Vertex and index data
-	static const Vertex vertexData[];
-	static unsigned int indices[];
-
 	//Number of vertices and indices
 	int numOfVertices;
 	int numOfIndices;
+
+	//Vertex and index data
+	//const Vertex vertexData[1];
+
+	std::vector<Vertex> vertexData;
+
+	static unsigned int indices[];
+
+
 
 	//Texture
 	GLuint textureID;
@@ -87,10 +109,23 @@ public:
 	MeshCollection();
 	~MeshCollection();
 
-	void addMesh(Mesh *mesh);
+	/**
+	Adds a new mesh to the meshCollection.
 
+	@param mesh : The mesh to be added to the collection.
+	*/
+	void addMesh(Mesh* mesh);
+
+	/**
+	Draw each mesh in the mesh collection
+	*/
 	void render();
+
+	/**
+	Delete the mesh collection, destroying each mesh in it.
+	*/
 	void destroy();
+
 private:
 	std::vector<Mesh*> meshes;
 };

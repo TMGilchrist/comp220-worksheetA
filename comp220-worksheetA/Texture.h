@@ -1,3 +1,9 @@
+/**
+Texture
+
+Contains tools to work with textures.
+*/
+
 #pragma once
 
 
@@ -7,4 +13,10 @@
 
 #include <string>
 
+/**
+Loads a texture from a given filepath and returns a textureID.
+
+@param filename : The filepath to the texture to be loaded.
+@param textureID : The textureID for the texture being loaded. Used to refer to the texture in OpenGL.
+*/
 GLuint loadTextureFromFile(const std::string& filename);

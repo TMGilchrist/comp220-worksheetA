@@ -1,3 +1,9 @@
+/**
+GLManager
+
+Handles the initialisation and setup of OpenGL and GLEW.
+*/
+
 #pragma once
 #include <SDL.h>
 #include <GL/glew.h>
@@ -8,7 +14,8 @@ class GLManager
 public:
 
 	/**
-	Default constructor for the GLManager. Doesn't set a window.*/
+	Default constructor for the GLManager. Doesn't set a window.
+	*/
 	GLManager();
 
 	/**
@@ -33,18 +40,11 @@ public:
 	Initialise GLEW
 	*/
 	int initGLEW();
-
-
-
+	   
 	/**
 	Set the version information for Open_GL
 	*/
 	void setGLVersion();
-
-	void setWindow(SDL_Window* Window) 
-	{
-		window = Window;
-	}
 
 	/**
 	Return the openGL context for the application

@@ -1,7 +1,6 @@
 #include "Game.h"
 
 
-
 Game::Game()
 {
 }
@@ -70,14 +69,22 @@ void Game::Setup()
 
 void Game::InitLighting() //Things here can probably be split up at some point into materials/lighting
 {
+	//Ambient, diffuse, direction
+	DirectionalLight moonLight = { 
+								   glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+								   glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 
+								   glm::vec3(-0.5f, 0.0f, -1.0f) 
+								 };
+
 	//Lighting
-	//ambientLightColour = glm::vec4(136.0f / 255.0f, 0.0f / 255.0f, 204.0f / 255.0f, 0.3f);
-	ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	//81.0f / 255.0f, 68.0f / 255.0f, 200.0f / 255.0f, 1.0f
+	//1.0f, 1.0f, 1.0f, 1.0f
+	ambientLightColour = glm::vec4(145.0f / 255.0f, 150.0f / 255.0f, 198.0f / 255.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	lightDirection = glm::vec3(0.0f, 0.0f, 1.0f);
-	ambientIntensity = 0.5f;
+	lightDirection = glm::vec3(-0.5f, 0.0f, -1.0f);
+	ambientIntensity = 1.0f;
 
 	cameraPosition = camera->getPosition();
 }
@@ -85,7 +92,7 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 void Game::CreateObjects()
 {
 	GameObject* tank1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0], objectBuilder.getSpecularTextures()[0],
+												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[3], objectBuilder.getSpecularTextures()[0],
 												materialPresets.GetMetal());
 
 	GameObject* tank2 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
@@ -101,12 +108,16 @@ void Game::CreateObjects()
 												  materialPresets.GetPlainRed(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
 	GameObject* tower = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
+													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[3], objectBuilder.getSpecularTextures()[0],
 													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600));
 	
 	GameObject* terrain = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 													objectBuilder.getMeshes()[5], objectBuilder.getDiffuseTextures()[2], objectBuilder.getSpecularTextures()[0],
-													materialPresets.GetPlainWhite(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
+													materialPresets.GetStone(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
+
+	GameObject* tree = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+												   objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+												   materialPresets.GetPlainWhite(), glm::vec3(0.0, 120.0, 200.0), glm::vec3(50.0, 50.0, 50.0));
 
 	terrain->SetRotation(glm::vec3(-1.5, 0.0, -1.5));
 	terrain->SetPosition(500, 100, 0);
@@ -121,6 +132,7 @@ void Game::CreateObjects()
 	//objects.push_back(teapot2);
 	objects.push_back(tower);
 	objects.push_back(terrain);
+	objects.push_back(tree);
 }
 
 void Game::CreatePhysicsObjects()
@@ -396,6 +408,7 @@ void Game::Cleanup()
 		}
 	}
 
+	physics.CleanUp();
 
 	objects.clear();
 	meshes.clear();

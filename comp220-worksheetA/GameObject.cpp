@@ -31,6 +31,7 @@ void GameObject::Init(const char* vert, const char* fragment)
 
 void GameObject::Update()
 {   
+	//Update object position based on its rigidbody
 	if (rigidBody)
 	{
 		btTransform currentTransform;
@@ -78,7 +79,7 @@ void GameObject::SetupPhysicsComponents(std::string colliderType, btScalar Mass)
 
 	else 
 	{
-		//error
+		//show error message
 	}
 }
 
@@ -125,6 +126,34 @@ void GameObject::CreateSphereCollider()
 	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
 	btRigidBody::btRigidBodyConstructionInfo sphereRbInfo(mass, motionState, sphereCollider, localInertia);
 	rigidBody = new btRigidBody(sphereRbInfo);
+}
+
+void GameObject::CreateConvexCollider()
+{
+	//Create the collision shape
+	btCollisionShape* convexCollider = new btConvexHullShape();//new btBoxShape(btVector3(btScalar(scale.x / 2), btScalar(scale.y / 2), btScalar(scale.z / 2)));
+	//convexCollider.add
+
+
+	//Transform (position, rotation, scale) of the object
+	btTransform transform;
+	transform.setIdentity();
+
+	//Objects position in the world. This should match the position of the object mesh being rendered.
+	transform.setOrigin(btVector3(position.x, position.y, position.z));
+
+	//Use this to rotate object. Takes in a quaternion.
+	//transform.setRotation();
+
+	//Calculate inertia.
+	btVector3 localInertia(0, 0, 0);
+	if (isDynamic)
+		convexCollider->calculateLocalInertia(mass, localInertia);
+
+	//Create the rigidbody
+	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, convexCollider, localInertia);
+	rigidBody = new btRigidBody(rbInfo);
 }
 
 void GameObject::AddToPhysicsWorld(btDiscreteDynamicsWorld* physicsWorld)

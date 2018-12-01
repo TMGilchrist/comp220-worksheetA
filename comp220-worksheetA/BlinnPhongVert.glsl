@@ -21,13 +21,14 @@ void main()
 	vertexColourOut = vertexColour;
 	vertexTextureCoordsOut = vertexTextureCoords;
 
-	worldSpaceVertex = modelMatrix * vec4(vertexPosition, 1);
+	worldSpaceVertex = modelMatrix * vec4(vertexPosition, 1.0f);
 
 	//Calculate MVP and position
 	mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
 	vec4 mvpPosition = MVP * vec4(vertexPosition, 1.0f);
 
-	vertexNormalOut = normalize((modelMatrix * vec4(vertexNormal, 0)).xyz);
+	vertexNormalOut = normalize((modelMatrix * vec4(vertexNormal, 0.0f)).xyz);
+	//view position?
 
 	gl_Position = mvpPosition;
 

@@ -1,3 +1,9 @@
+/**
+GeometryModels
+
+A collection of vertex definitions for primative shapes.
+*/
+
 #pragma once
 #include"Vertex.h"
 

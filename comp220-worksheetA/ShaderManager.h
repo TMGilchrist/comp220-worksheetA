@@ -1,3 +1,9 @@
+/**
+ShaderManager
+
+Currently unused class.
+*/
+
 #pragma once
 
 class ShaderManager
