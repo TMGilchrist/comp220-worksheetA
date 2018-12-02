@@ -12,11 +12,11 @@ BulletPhysics has been integrated to the project to provide the physics for the 
 ## Profiling
 One issue with the current interation of the prototype is that the tower model is untextured. I attemtped to apply textures to the tower only for it to appear blank each time. After testing several diffent textures - none of which worked - I used RenderDoc to see if the texture was being loaded correctly.
 
-![Textures loading] (ReadmeResources/towerTexture.PNG)
+![Textures loading](ReadmeResources/towerTexture.png)
 
 I could see that the texture was loaded correctly, however it was still not visible on the model itself. I used the mesh output viewer to look for the texture coordinates of the model, as I had a growing suspicion that the free model I was using to prototype the game did not come with texture coordinates. 
 
-![No texture coordinates] (ReadmeResources/towerTextureCoords.PNG)
+![No texture coordinates](ReadmeResources/towerTextureCoords.PNG)
 
 It was clear from looking at the vertex data that the texture coordiantes were all 0, which explained why the textures were not displaying properly. Knowing this prevented me from wasting further time looking at the code and allowed me to continue building the prototype. 
 
