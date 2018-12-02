@@ -79,6 +79,7 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 	//Lighting
 	//81.0f / 255.0f, 68.0f / 255.0f, 200.0f / 255.0f, 1.0f
 	//1.0f, 1.0f, 1.0f, 1.0f
+	//ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ambientLightColour = glm::vec4(145.0f / 255.0f, 150.0f / 255.0f, 198.0f / 255.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -117,22 +118,40 @@ void Game::CreateObjects()
 
 	GameObject* tree = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
 												   objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
-												   materialPresets.GetPlainWhite(), glm::vec3(0.0, 120.0, 200.0), glm::vec3(50.0, 50.0, 50.0));
+												   materialPresets.GetPlainWhite(), glm::vec3(400.0, -100.0, 300.0), glm::vec3(50.0, 50.0, 50.0));
 
-	terrain->SetRotation(glm::vec3(-1.5, 0.0, -1.5));
-	terrain->SetPosition(500, 100, 0);
+	GameObject* tree2 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+												 objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+												 materialPresets.GetPlainWhite(), glm::vec3(400.0, -80.0, 0.0), glm::vec3(40.0, 40.0, 40.0));
+
+	GameObject* tree3 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+												 objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+												 materialPresets.GetPlainWhite(), glm::vec3(0.0, -100.0, 450.0), glm::vec3(50.0, 50.0, 50.0));
+
+
+
+	/*
+	Note on positioning:
+	+X = left, -X = right.
+	+Y = Up, -Y = Down.	
+	+Z = Forwards, -Z = backwards.	
+	*/
+						
+
+	terrain->SetRotation(glm::vec3(-1.5, 0.0, -0.55));
+	terrain->SetPosition(400.0, 0.0, -1000.0);
 
 	tower->SetRotation(glm::vec3(-1.5, 0, 0));
-	tower->SetPosition(-150.0, -5.0, 600);
+	tower->SetPosition(1100.0, -5.0, 800);
 
 	//Add objects to vector of game objects
-	objects.push_back(tank1);
-	//objects.push_back(tank2);
-	//objects.push_back(teapot1);
-	//objects.push_back(teapot2);
+	//objects.push_back(tank1);
 	objects.push_back(tower);
 	objects.push_back(terrain);
+
 	objects.push_back(tree);
+	objects.push_back(tree2);
+	objects.push_back(tree3);
 }
 
 void Game::CreatePhysicsObjects()
@@ -154,8 +173,8 @@ void Game::CreatePhysicsObjects()
 	sphere->AddToPhysicsWorld(physics.getDynamicsWorld());
 
 	//Add objects to vector of game objects
-	objects.push_back(ground);
-	objects.push_back(sphere);
+	//objects.push_back(ground);
+	//objects.push_back(sphere);
 
 }
 
@@ -231,13 +250,13 @@ void Game::GameLoop()
 		controller.handleKeyboard(deltaTime);
 
 		//OpenGL rendering
-		//glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-		//glClearColor(37.0 / 255, 5.0 / 255, 43.0 / 255, 1.0f);
 		glClearColor(106.0f/255.0f, 9.0f/255.0f, 196.0f/255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 		
-		// draw skybox
+		/*--------------------- 
+		Draw skybox
+		---------------------*/
 		glDepthMask(GL_FALSE);
 		glUseProgram(skybox.GetProgramID());
 
