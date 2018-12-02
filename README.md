@@ -16,7 +16,7 @@ One issue with the current interation of the prototype is that the tower model i
 
 I could see that the texture was loaded correctly, however it was still not visible on the model itself. I used the mesh output viewer to look for the texture coordinates of the model, as I had a growing suspicion that the free model I was using to prototype the game did not come with texture coordinates. 
 
-![No texture coordinates](ReadmeResources/towerTextureCoords.PNG)
+![No texture coordinates](ReadmeResources/towerTextureCoords.png)
 
 It was clear from looking at the vertex data that the texture coordiantes were all 0, which explained why the textures were not displaying properly. Knowing this prevented me from wasting further time looking at the code and allowed me to continue building the prototype. 
 
