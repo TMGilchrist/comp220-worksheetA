@@ -88,7 +88,7 @@ public:
 		programID = LoadShaders(vert, fragment);
 	}
 
-	glm::mat4 getModelMatrix() 
+	glm::mat4& getModelMatrix() 
 	{
 		return modelMatrix;
 	}
@@ -128,7 +128,7 @@ public:
 		return material;
 	}
 
-	glm::vec3 GetRotation() 
+	glm::vec3& GetRotation() 
 	{
 		return rotation;		
 	}
@@ -148,7 +148,7 @@ public:
 		rigidBody = RigidBody;
 	}
 
-	glm::vec3 getPosition() 
+	glm::vec3& getPosition() 
 	{
 		return position;
 	}

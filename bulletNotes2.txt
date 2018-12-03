@@ -1,0 +1,65 @@
+debugDrawer
+debugDrawer.createShaders()
+dynamicWorld->setDebugDRawer(&debugDrawer)
+
+debugDrawer.setviewAndPRojectMatrix(view, proj)
+dynamicWorld->debugDrawWorld()
+
+
+dynamicsWorld step simulation
+int numManifolds = dymaicWorld.getDispatcher().getManifoldByIndexInternal
+
+for(int i=0; i < manifolds; i++)
+{
+	btPersistentManifold* currentManifold = dynamicWorld.getDispatcher().getManifoldByIndexInternal();
+
+	if (currentManifold.GetContacts() > 0) //Check contact points
+	{
+		const btCollisionOBbject* body0 = currentManifold.getBody0();
+		const btCollisionOBbject* body1 = currentManifold.getBody1();
+		
+		GameObject* gameObject0 = (GameObject*)body0.getUserPointer();
+		GameObject* gameObject1 = (GameObject*)body1.getUserPointer();
+		
+		if (gameObject0.getName() == "sphere")
+		{
+			//Do stuff			
+		}
+	}
+
+}
+
+
+
+
+//In create physics objects
+groundBody.setUserPointer(groundObject) //Pointer to any object, you would set this userPointer to the gameobject that owns it.
+sphere.SsetUserPointer()
+
+
+//GameObject.h
+
+
+
+/*----------------
+Raycasting
+----------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

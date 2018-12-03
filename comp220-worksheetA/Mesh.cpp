@@ -29,7 +29,7 @@ void Mesh::Init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 }
 
-void Mesh::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices)
+void Mesh::FillBufferData(Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, NumOfVertices * sizeof(Vertex), VertexData, GL_STATIC_DRAW);
@@ -47,14 +47,14 @@ void Mesh::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned
 	SetVertexAttributes();
 }
 
-void Mesh::CopyVertexData(const Vertex VertexData[])
+void Mesh::CopyVertexData(Vertex VertexData[])
 {
 	//vertexData = VertexData;
 
 	//Copy values into member variable
 	for (int i = 0; i < sizeof(VertexData); i++) 
 	{
-		//vertexData[i] = VertexData[i];
+		vertexData.push_back(VertexData[i]);
 	}
 }
 
@@ -151,6 +151,7 @@ MeshCollection::~MeshCollection()
 
 void MeshCollection::addMesh(Mesh * mesh)
 {
+
 	meshes.push_back(mesh);
 }
 

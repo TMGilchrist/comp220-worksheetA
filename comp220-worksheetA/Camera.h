@@ -90,27 +90,27 @@ public:
 	---------------------*/
 
 	//These mat4/mat3's should be returned by reference!
-	glm::mat4 getViewMatrix()
+	glm::mat4& getViewMatrix()
 	{
 		return viewMatrix;
 	}
 
-	glm::mat4 getProjectionMatrix()
+	glm::mat4& getProjectionMatrix()
 	{
 		return projectionMatrix;
 	}
 
-	glm::vec3 getPosition()
+	glm::vec3& getPosition()
 	{
 		return position;
 	}
 
-	glm::vec3 getTarget()
+	glm::vec3& getTarget()
 	{
 		return target;
 	}
 
-	glm::vec3 getUpVector()
+	glm::vec3& getUpVector()
 	{
 		return upVector;
 	}

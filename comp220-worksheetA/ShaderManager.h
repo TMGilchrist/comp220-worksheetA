@@ -1,23 +1,39 @@
-/**
-ShaderManager
-
-Currently unused class.
-*/
-
 #pragma once
 
-class ShaderManager
+#include <GL\glew.h>
+#include <SDL_opengl.h>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <map>
+#include <iostream>
+
+#include <stdio.h>
+
+
+class Shader
 {
 public:
-	ShaderManager();
-	~ShaderManager();
+	Shader();
+	~Shader();
 
-	//LoadShaders (load a shader pair - vert and frag)
-	//UseShaders (set currently active shaders)
+	void Use();
+
+	GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);
+	bool Load(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename);
 
 
+	GLint GetUniform(std::string name);
+
+	GLuint& GetShaderProgramID()
+	{
+		return ShaderProgramID;
+	}
 
 private:
-	//
-};
+	void InitialiseUniforms();
+	GLuint ShaderProgramID;
+	std::map<std::string, GLint> UniformMap;
 
+};

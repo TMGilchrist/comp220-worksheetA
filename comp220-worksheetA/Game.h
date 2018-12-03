@@ -37,6 +37,9 @@ The main game class. This contains the main game loop and the intialisation and 
 #include "Skybox.h"
 
 #include "Lights.h"
+#include "ShaderManager.h"
+#include "OpenGLBulletDebugDrawer.h"
+
 
 class Game
 {
@@ -103,6 +106,7 @@ private:
 	PhysicsManager physics;
 	ObjectBuilder objectBuilder;
 	MaterialPresets materialPresets;
+	OpenGLBulletDebugDrawer debugDrawer; //Turn on debug mode on keypress or var
 
 	SDL_GLContext glContext;
 	SDL_Window* window;
@@ -111,6 +115,8 @@ private:
 	//Delta time and the time last frame
 	float deltaTime;
 	float lastFrame;
+
+	bool debugDrawModeEnabled = false;
 
 	//The camera being used to render the game
 	Camera* camera;

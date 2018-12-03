@@ -86,7 +86,7 @@ void GameObject::SetupPhysicsComponents(std::string colliderType, btScalar Mass)
 void GameObject::CreateBoxCollider()
 {
 	//Create the collision shape
-	btCollisionShape* boxCollider = new btBoxShape(btVector3(btScalar(scale.x / 2), btScalar(scale.y / 2), btScalar(scale.z / 2)));
+	btCollisionShape* boxCollider = new btBoxShape(btVector3(btScalar(100.0 / 2.0), btScalar(1.0 / 2.0), btScalar(100.0 / 2.0)));
 
 	//Transform (position, rotation, scale) of the object
 	btTransform transform;

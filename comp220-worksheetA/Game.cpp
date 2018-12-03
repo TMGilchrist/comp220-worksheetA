@@ -34,6 +34,11 @@ void Game::Init()
 	physics = PhysicsManager();
 	physics.Init();
 
+	//Init DebugDrawer
+	debugDrawer = OpenGLBulletDebugDrawer();
+	debugDrawer.CreateShader();
+	physics.getDynamicsWorld()->setDebugDrawer(&debugDrawer);
+
 	//Mouse settings
 	SDL_ShowCursor(0);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -81,34 +86,35 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 	//1.0f, 1.0f, 1.0f, 1.0f
 	//ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ambientLightColour = glm::vec4(145.0f / 255.0f, 150.0f / 255.0f, 198.0f / 255.0f, 1.0f);
+	//ambientLightColour = glm::vec4(135.0f / 255.0f, 115.0f / 255.0f, 215.0f / 255.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	lightDirection = glm::vec3(-0.5f, 0.0f, -1.0f);
-	ambientIntensity = 1.0f;
+	ambientIntensity = 10.0f;
 
 	cameraPosition = camera->getPosition();
 }
 
 void Game::CreateObjects()
 {
-	GameObject* tank1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+	GameObject* tank1 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[3], objectBuilder.getSpecularTextures()[0],
 												materialPresets.GetMetal());
 
-	GameObject* tank2 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
+	GameObject* tank2 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0],
 												materialPresets.GetPlainGreen(), glm::vec3(10.0, 0.0, 0.0));
 
-	GameObject* teapot1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl", 
+	GameObject* teapot1 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
 												  materialPresets.GetPlainGreen(), glm::vec3(0, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
-	GameObject* teapot2 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",		
+	GameObject* teapot2 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1],
 												  materialPresets.GetPlainRed(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
 
-	GameObject* tower = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+	GameObject* tower = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[3], objectBuilder.getSpecularTextures()[0],
 													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600));
 	
@@ -116,15 +122,15 @@ void Game::CreateObjects()
 													objectBuilder.getMeshes()[5], objectBuilder.getDiffuseTextures()[2], objectBuilder.getSpecularTextures()[0],
 													materialPresets.GetStone(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
 
-	GameObject* tree = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+	GameObject* tree = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 												   objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
 												   materialPresets.GetPlainWhite(), glm::vec3(400.0, -100.0, 300.0), glm::vec3(50.0, 50.0, 50.0));
 
-	GameObject* tree2 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+	GameObject* tree2 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 												 objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
 												 materialPresets.GetPlainWhite(), glm::vec3(400.0, -80.0, 0.0), glm::vec3(40.0, 40.0, 40.0));
 
-	GameObject* tree3 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+	GameObject* tree3 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 												 objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
 												 materialPresets.GetPlainWhite(), glm::vec3(0.0, -100.0, 450.0), glm::vec3(50.0, 50.0, 50.0));
 
@@ -157,7 +163,7 @@ void Game::CreateObjects()
 void Game::CreatePhysicsObjects()
 {
 	//Create physics objects
-	GameObject* ground = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+	GameObject* ground = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 												 objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
 												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
@@ -165,7 +171,7 @@ void Game::CreatePhysicsObjects()
 	ground->AddToPhysicsWorld(physics.getDynamicsWorld());
 
 
-	GameObject* sphere = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+	GameObject* sphere = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 												   objectBuilder.getMeshes()[4], objectBuilder.getDiffuseTextures()[1],
 												   materialPresets.GetPlainGreen(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
 	
@@ -173,8 +179,8 @@ void Game::CreatePhysicsObjects()
 	sphere->AddToPhysicsWorld(physics.getDynamicsWorld());
 
 	//Add objects to vector of game objects
-	//objects.push_back(ground);
-	//objects.push_back(sphere);
+	objects.push_back(ground);
+	objects.push_back(sphere);
 
 }
 
@@ -221,6 +227,9 @@ void Game::GameLoop()
 					camera->setProjectionMatrix(windowMain->getWidth(), windowMain->getHeight());
 					break;
 
+				case SDLK_F1:
+					debugDrawModeEnabled = !debugDrawModeEnabled;
+					break;
 				}
 
 			case SDL_KEYUP:
@@ -253,7 +262,7 @@ void Game::GameLoop()
 		glClearColor(106.0f/255.0f, 9.0f/255.0f, 196.0f/255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-		
+				
 		/*--------------------- 
 		Draw skybox
 		---------------------*/
@@ -304,6 +313,15 @@ void Game::GameLoop()
 
 			//Update object
 			object->Update();
+		}
+
+		//Draw collision shape debug lines
+		if (debugDrawModeEnabled) 
+		{
+			glDisable(GL_DEPTH_TEST); 
+			debugDrawer.SetViewAndProjectMatrix(camera->getViewMatrix(), camera->getProjectionMatrix());
+			physics.getDynamicsWorld()->debugDrawWorld();
+			glEnable(GL_DEPTH_TEST);
 		}
 
 

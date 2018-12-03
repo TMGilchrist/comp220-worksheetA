@@ -40,9 +40,9 @@ public:
 	@param NumOfIndices : Number of indices in mesh
 
 	*/
-	void FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices);
+	void FillBufferData(Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices);
 	
-	void CopyVertexData(const Vertex VertexData[]);
+	void CopyVertexData(Vertex VertexData[]);
 
 	/**
 	Set the vertex attributes
@@ -76,7 +76,7 @@ public:
 
 	std::vector<Vertex> GetVertexData()
 	{
-		return vertexData;
+		//return vertexData;
 	}
 
 private:
