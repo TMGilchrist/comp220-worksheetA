@@ -40,19 +40,16 @@ void Mesh::FillBufferData(Vertex VertexData[], int NumOfVertices, unsigned int I
 	numOfIndices = NumOfIndices;
 	numOfVertices = NumOfVertices;
 
-	//CopyVertexData(VertexData);
+	CopyVertexData(VertexData, NumOfVertices);
 
 	//Is it necessary to save the vertex and index data?
 
 	SetVertexAttributes();
 }
 
-void Mesh::CopyVertexData(Vertex VertexData[])
+void Mesh::CopyVertexData(Vertex VertexData[], int NumOfVertices)
 {
-	//vertexData = VertexData;
-
-	//Copy values into member variable
-	for (int i = 0; i < sizeof(VertexData); i++) 
+	for (int i = 0; i < NumOfVertices; i++)
 	{
 		vertexData.push_back(VertexData[i]);
 	}
@@ -151,6 +148,17 @@ MeshCollection::~MeshCollection()
 
 void MeshCollection::addMesh(Mesh * mesh)
 {
+	std::vector<Vertex> VertexData = mesh->GetVertexData();
+
+	//Add each meshe's vertex data into the meshCollection
+	int numOfVertices = VertexData.size();
+	std::cout << "Size of VertexData : " << numOfVertices << "\n";
+
+	for (int i = 0; i < numOfVertices; i++)
+	{
+
+		vertexData.push_back(VertexData[i]);
+	}
 
 	meshes.push_back(mesh);
 }

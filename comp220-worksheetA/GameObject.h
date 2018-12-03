@@ -57,6 +57,8 @@ public:
 	*/
 	void CreateConvexCollider();
 
+	void CreateTerrainCollider();
+
 	/**
 	Add this gameobject's rigidbody to the specified phsyics world so it can interact with the physics system.
 	*/
