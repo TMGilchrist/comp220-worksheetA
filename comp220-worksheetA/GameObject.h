@@ -10,10 +10,12 @@ New instances of GameObject should be created using the ObjectBuilder class Make
 #pragma once
 #include <glm\glm.hpp>
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
 
 #include "shader.h"
 #include "Mesh.h"
 #include "Material.h"
+
 
 class GameObject
 {

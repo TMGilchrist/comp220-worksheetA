@@ -77,6 +77,11 @@ void GameObject::SetupPhysicsComponents(std::string colliderType, btScalar Mass)
 
 	}
 
+	else if ((colliderType == "terrainCollider") | (colliderType == "TerrainCollider")) 
+	{
+		CreateTerrainCollider();
+	}
+
 	else 
 	{
 		//show error message
@@ -130,6 +135,8 @@ void GameObject::CreateSphereCollider()
 
 void GameObject::CreateConvexCollider()
 {
+	//const btScalar* terrainData = mesh->GetVertexData();
+
 	//Create the collision shape
 	btCollisionShape* convexCollider = new btConvexHullShape();//new btBoxShape(btVector3(btScalar(scale.x / 2), btScalar(scale.y / 2), btScalar(scale.z / 2)));
 	//terrainCollider.add
@@ -158,10 +165,10 @@ void GameObject::CreateConvexCollider()
 
 void GameObject::CreateTerrainCollider()
 {
-	//Create the collision shape
-	btCollisionShape* terrainCollider = new btConvexHullShape();//new btBoxShape(btVector3(btScalar(scale.x / 2), btScalar(scale.y / 2), btScalar(scale.z / 2)));
-	//terrainCollider.add
+	const void* terrainData = &mesh->GetVertexData();
 
+	//Create the collision shape
+	btHeightfieldTerrainShape* terrainCollider = new btHeightfieldTerrainShape(50, 50, terrainData, btScalar(1.0), btScalar(1.0), btScalar(1.0), 1);
 
 	//Transform (position, rotation, scale) of the object
 	btTransform transform;

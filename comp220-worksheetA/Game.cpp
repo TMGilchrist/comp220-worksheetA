@@ -134,6 +134,9 @@ void Game::CreateObjects()
 												 objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
 												 materialPresets.GetPlainWhite(), glm::vec3(0.0, -100.0, 450.0), glm::vec3(50.0, 50.0, 50.0));
 
+	GameObject* treeScene = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
+													 objectBuilder.getMeshes()[7], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+													 materialPresets.GetPlainWhite(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(50.0, 50.0, 50.0));
 
 
 	/*
@@ -147,8 +150,13 @@ void Game::CreateObjects()
 	terrain->SetRotation(glm::vec3(-1.5, 0.0, -0.55));
 	terrain->SetPosition(400.0, 0.0, -1000.0);
 
+	terrain->SetupPhysicsComponents("TerrainCollider", 0.0f);
+	terrain->AddToPhysicsWorld(physics.getDynamicsWorld());
+
 	tower->SetRotation(glm::vec3(-1.5, 0, 0));
 	tower->SetPosition(1100.0, -5.0, 800);
+
+	tree->setScale(glm::vec3(100.0f, 100.0f, 100.0f));
 
 	//Add objects to vector of game objects
 	//objects.push_back(tank1);
@@ -158,6 +166,8 @@ void Game::CreateObjects()
 	objects.push_back(tree);
 	objects.push_back(tree2);
 	objects.push_back(tree3);
+
+	objects.push_back(treeScene);
 }
 
 void Game::CreatePhysicsObjects()
@@ -167,8 +177,8 @@ void Game::CreatePhysicsObjects()
 												 objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
 												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
-	ground->SetupPhysicsComponents("BoxCollider", 0.0f);
-	ground->AddToPhysicsWorld(physics.getDynamicsWorld());
+	//ground->SetupPhysicsComponents("BoxCollider", 0.0f);
+	//ground->AddToPhysicsWorld(physics.getDynamicsWorld());
 
 
 	GameObject* sphere = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
@@ -179,7 +189,7 @@ void Game::CreatePhysicsObjects()
 	sphere->AddToPhysicsWorld(physics.getDynamicsWorld());
 
 	//Add objects to vector of game objects
-	objects.push_back(ground);
+	//objects.push_back(ground);
 	objects.push_back(sphere);
 
 }

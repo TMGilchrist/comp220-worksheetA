@@ -99,6 +99,9 @@ void ObjectBuilder::LoadMeshes()
 	MeshCollection* treeMesh = new MeshCollection();
 	loadMeshFromFile("Resources/Models/Foliage/TreeType1.dae", treeMesh);
 
+	MeshCollection* treeScene = new MeshCollection();
+	loadMeshFromFile("Resources/Models/Foliage/treeSceneTest.fbx", treeScene);
+
 	//Add meshes to vector
 	meshes.push_back(tankMesh);
 	meshes.push_back(teaPotMesh);
@@ -107,6 +110,7 @@ void ObjectBuilder::LoadMeshes()
 	meshes.push_back(sphereMesh);
 	meshes.push_back(terrainMesh);
 	meshes.push_back(treeMesh);
+	meshes.push_back(treeScene);
 }
 
 void ObjectBuilder::LoadTextures()
