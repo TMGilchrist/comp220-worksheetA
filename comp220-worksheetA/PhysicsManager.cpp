@@ -36,22 +36,20 @@ btRigidBody* PhysicsManager::CreateCollisionShape(GameObject* object, collisionS
 {
 	btCollisionShape* collider;
 
+	//Create specific collider shape
 	if (shape == BoxCollider)
 	{
-		//CreateBoxCollider(object);
 		collider = new btBoxShape(btVector3(btScalar(object->getScale().x / 2.0), btScalar(object->getScale().y / 2.0), btScalar(object->getScale().z / 2.0)));
 	}
 
 	else if (shape == SphereCollider)
 	{
-		//CreateSphereCollider(object);
 		collider = new btSphereShape(btScalar(object->getScale().x));
 	}
 
 	else if (shape == ConvexHullCollider)
 	{
-		//CreateConvexCollider(object);
-		collider = new btConvexHullShape();
+		collider = CreateConvexCollider(object, object->getMesh());
 	}
 
 	else if (shape == TerrainCollider)
@@ -68,10 +66,28 @@ btRigidBody* PhysicsManager::CreateCollisionShape(GameObject* object, collisionS
 	return CreateRigidBody(object, collider);
 }
 
+btCollisionShape * PhysicsManager::CreateConvexCollider(GameObject * object, MeshCollection * mesh)
+{
+	//Convert the mesh vertices to Points
+	//std::vector<Point> points = VerticesToPoints(mesh->GetVertexData());
+	std::vector<btVector3> pointData = VerticesToBtVectors(mesh->GetVertexData());
+
+	btConvexHullShape* collider = new btConvexHullShape();
+
+	for (int i = 0; i < 10000; i++)
+	{
+		//collider->addPoint(pointData[i]);
+	}
+
+	return collider;
+}
+
 
 btCollisionShape* PhysicsManager::CreateTerrainCollider(GameObject* object, MeshCollection* mesh)
 {
 	const void* terrainData = &mesh->GetVertexData();
+
+	int heightStickWidth = (mesh->GetVertexData().size() / 2);
 
 	//Create the collision shape
 	btHeightfieldTerrainShape* collider = new btHeightfieldTerrainShape(50, 50, terrainData, btScalar(1.0), btScalar(1.0), btScalar(1.0), 1);

@@ -176,6 +176,7 @@ copy ..\Libraries\assimp-4.1.0\bin\x64\*.dll "$(OutDir)\*.dll"</Command>
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Utility.cpp" />
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +202,7 @@ copy ..\Libraries\assimp-4.1.0\bin\x64\*.dll "$(OutDir)\*.dll"</Command>
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Utility.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>

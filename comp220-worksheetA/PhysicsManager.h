@@ -3,6 +3,8 @@ PhysicsManager
 
 Handles the creation and deletion of a BulletPhysics dynamicsWorld. 
 This is used as the basis for the game's physics system.
+
+Also contains functions for the creation of rigidbodies and collision shapes for gameobjects.
 */
 
 #pragma once
@@ -11,6 +13,7 @@ This is used as the basis for the game's physics system.
 
 #include "GameObject.h"
 #include "Enums.h"
+#include "Utility.h"
 
 
 class PhysicsManager
@@ -40,10 +43,29 @@ public:
 		return dynamicsWorld;
 	}
 
+	/**
+	Create collisionShape and rigidbody for object. (Maybe rename to make it obvious that this does both).
+
+	@param object : The gameobject to create the collision shape and rigidbody for.
+	@param shape : The type of collision shape to create.
+	*/
 	btRigidBody* CreateCollisionShape(GameObject* object, collisionShapes shape);
 		
 	/**
-	Create a heightfieldTerrain
+	Create a convexHull collisionShape
+
+	@param object : The gameObject the shape is being created for.
+	@param mesh : The mesh the collision shape is build around.
+	@returns collider : A complex collision shape built around a mesh mesh.
+	*/
+	btCollisionShape* CreateConvexCollider(GameObject* object, MeshCollection* mesh);
+
+	/**
+	Create a heightfieldTerrain collisionShape
+
+	@param object : The gameObject the shape is being created for.
+	@param mesh : The mesh the collision shape is build around.
+	@returns collider : A complex collision shape built around a heightmap mesh.
 	*/
 	btCollisionShape* CreateTerrainCollider(GameObject* object, MeshCollection* mesh);
 

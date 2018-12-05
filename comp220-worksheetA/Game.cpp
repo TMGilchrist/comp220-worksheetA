@@ -151,7 +151,7 @@ void Game::CreateObjects()
 	terrain->SetPosition(400.0, 0.0, -1000.0);
 
 	terrain->setMass(0.0f);
-	terrain->SetupObjectPhysics(physics.CreateCollisionShape(terrain, TerrainCollider), physics.getDynamicsWorld());
+	terrain->SetupObjectPhysics(physics.CreateCollisionShape(terrain, ConvexHullCollider), physics.getDynamicsWorld());
 
 
 	tower->SetRotation(glm::vec3(-1.5, 0, 0));
@@ -179,7 +179,7 @@ void Game::CreatePhysicsObjects()
 												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
 	ground->setMass(0.0f); //This should be the default value!
-	ground->SetupObjectPhysics(physics.CreateCollisionShape(ground, BoxCollider), physics.getDynamicsWorld());
+	//ground->SetupObjectPhysics(physics.CreateCollisionShape(ground, BoxCollider), physics.getDynamicsWorld());
 
 
 	GameObject* sphere = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
@@ -191,7 +191,7 @@ void Game::CreatePhysicsObjects()
 
 
 	//Add objects to vector of game objects
-	objects.push_back(ground);
+	//objects.push_back(ground);
 	objects.push_back(sphere);
 }
 
