@@ -98,44 +98,28 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 
 void Game::CreateObjects()
 {
-	GameObject* tank1 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[3], objectBuilder.getSpecularTextures()[0],
-												materialPresets.GetMetal());
-
-	GameObject* tank2 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0],
-												materialPresets.GetPlainGreen(), glm::vec3(10.0, 0.0, 0.0));
-
-	GameObject* teapot1 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
-												  materialPresets.GetPlainGreen(), glm::vec3(0, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
-
-	GameObject* teapot2 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1],
-												  materialPresets.GetPlainRed(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
-
 	GameObject* tower = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[3], objectBuilder.getSpecularTextures()[0],
+													"Tower", "mediumBricks", "spotlightSpecMap",
 													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600));
 	
 	GameObject* terrain = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-													objectBuilder.getMeshes()[5], objectBuilder.getDiffuseTextures()[2], objectBuilder.getSpecularTextures()[0],
+													"landscapePrototype", "seamlessRock", "spotlightSpecMap",
 													materialPresets.GetStone(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
 
 	GameObject* tree = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-												   objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+												   "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
 												   materialPresets.GetPlainWhite(), glm::vec3(400.0, -100.0, 300.0), glm::vec3(50.0, 50.0, 50.0));
 
 	GameObject* tree2 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-												 objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+												 "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
 												 materialPresets.GetPlainWhite(), glm::vec3(400.0, -80.0, 0.0), glm::vec3(40.0, 40.0, 40.0));
 
 	GameObject* tree3 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-												 objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+												 "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
 												 materialPresets.GetPlainWhite(), glm::vec3(0.0, -100.0, 450.0), glm::vec3(50.0, 50.0, 50.0));
 
 	GameObject* treeScene = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-													 objectBuilder.getMeshes()[7], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+													 "treeSceneTest", "ColoursheetTreeNormal", "spotlightSpecMap",
 													 materialPresets.GetPlainWhite(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(50.0, 50.0, 50.0));
 
 
@@ -175,7 +159,7 @@ void Game::CreatePhysicsObjects()
 {
 	//Create physics objects
 	GameObject* ground = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-												 objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
+												 "cube", "checkerboard",
 												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
 	ground->setMass(0.0f); //This should be the default value!
@@ -183,7 +167,7 @@ void Game::CreatePhysicsObjects()
 
 
 	GameObject* sphere = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
-												   objectBuilder.getMeshes()[4], objectBuilder.getDiffuseTextures()[1],
+												   "sphere", "checkerboard",
 												   materialPresets.GetPlainGreen(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
 	
 	sphere->setMass(1.0f);
