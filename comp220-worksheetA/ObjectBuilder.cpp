@@ -79,13 +79,13 @@ void ObjectBuilder::LoadTextures()
 	textures.insert(std::make_pair("spotlightSpecMap", currentTexture));
 }
 
-GameObject * ObjectBuilder::MakeObject(const char * vertexShader, const char * fragmentShader, std::string meshName, std::string diffuseTextureName, Material material, glm::vec3 position, glm::vec3 scale)
+GameObject * ObjectBuilder::MakeObject(Shader shader, std::string meshName, std::string diffuseTextureName, Material material, glm::vec3 position, glm::vec3 scale)
 {
 	//Create new object
 	GameObject* object = new GameObject();
 
 	//Init object variables with the shaders to use
-	object->Init(vertexShader, fragmentShader);
+	object->Init(shader);
 
 	//Set diffuseTextures
 	object->setDiffuseTextureID(textures[diffuseTextureName]);
@@ -102,13 +102,13 @@ GameObject * ObjectBuilder::MakeObject(const char * vertexShader, const char * f
 	return object;
 }
 
-GameObject* ObjectBuilder::MakeObject(const char * vertexShader, const char * fragmentShader, std::string meshName, std::string diffuseTextureName, std::string specularTextureName, Material material, glm::vec3 position, glm::vec3 scale)
+GameObject* ObjectBuilder::MakeObject(Shader shader, std::string meshName, std::string diffuseTextureName, std::string specularTextureName, Material material, glm::vec3 position, glm::vec3 scale)
 {
 	//Create new object
 	GameObject* object = new GameObject();
 
 	//Init object variables with the shaders to use
-	object->Init(vertexShader, fragmentShader);
+	object->Init(shader);
 
 	//Set diffuseTextures
 	object->setDiffuseTextureID(textures[diffuseTextureName]);

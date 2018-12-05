@@ -33,7 +33,9 @@ public:
 
 private:
 	void InitialiseUniforms();
+
 	GLuint ShaderProgramID;
+
 	std::map<std::string, GLint> UniformMap;
 
 };

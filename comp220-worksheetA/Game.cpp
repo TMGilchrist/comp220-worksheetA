@@ -96,29 +96,37 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 	cameraPosition = camera->getPosition();
 }
 
+void Game::InitShaders()
+{
+	BlinnPhongDiffuseShader.Load("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl");
+	BlinnPhongShader.Load("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
+
+
+}
+
 void Game::CreateObjects()
 {
-	GameObject* tower = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
+	GameObject* tower = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
 													"Tower", "mediumBricks", "spotlightSpecMap",
 													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600));
 	
-	GameObject* terrain = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
+	GameObject* terrain = objectBuilder.MakeObject(BlinnPhongShader,
 													"landscapePrototype", "seamlessRock", "spotlightSpecMap",
 													materialPresets.GetStone(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
 
-	GameObject* tree = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
+	GameObject* tree = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
 												   "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
 												   materialPresets.GetPlainWhite(), glm::vec3(400.0, -100.0, 300.0), glm::vec3(50.0, 50.0, 50.0));
 
-	GameObject* tree2 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
+	GameObject* tree2 = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
 												 "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
 												 materialPresets.GetPlainWhite(), glm::vec3(400.0, -80.0, 0.0), glm::vec3(40.0, 40.0, 40.0));
 
-	GameObject* tree3 = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
+	GameObject* tree3 = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
 												 "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
 												 materialPresets.GetPlainWhite(), glm::vec3(0.0, -100.0, 450.0), glm::vec3(50.0, 50.0, 50.0));
 
-	GameObject* treeScene = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
+	GameObject* treeScene = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
 													 "treeSceneTest", "ColoursheetTreeNormal", "spotlightSpecMap",
 													 materialPresets.GetPlainWhite(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(50.0, 50.0, 50.0));
 
@@ -128,8 +136,7 @@ void Game::CreateObjects()
 	+X = left, -X = right.
 	+Y = Up, -Y = Down.	
 	+Z = Forwards, -Z = backwards.	
-	*/
-						
+	*/						
 
 	terrain->SetRotation(glm::vec3(-1.5, 0.0, -0.55));
 	terrain->SetPosition(400.0, 0.0, -1000.0);
@@ -144,7 +151,6 @@ void Game::CreateObjects()
 	tree->setScale(glm::vec3(100.0f, 100.0f, 100.0f));
 
 	//Add objects to vector of game objects
-	//objects.push_back(tank1);
 	objects.push_back(tower);
 	objects.push_back(terrain);
 
@@ -158,7 +164,7 @@ void Game::CreateObjects()
 void Game::CreatePhysicsObjects()
 {
 	//Create physics objects
-	GameObject* ground = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
+	GameObject* ground = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
 												 "cube", "checkerboard",
 												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
@@ -166,7 +172,7 @@ void Game::CreatePhysicsObjects()
 	//ground->SetupObjectPhysics(physics.CreateCollisionShape(ground, BoxCollider), physics.getDynamicsWorld());
 
 
-	GameObject* sphere = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
+	GameObject* sphere = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
 												   "sphere", "checkerboard",
 												   materialPresets.GetPlainGreen(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
 	
@@ -288,8 +294,10 @@ void Game::GameLoop()
 		for (GameObject* object : objects)
 		{
 			//Setup program and uniforms unique to object
-			glUseProgram(object->getProgramID());
+			//glUseProgram(object->getProgramID());
 			SetUniformLocations(object->getProgramID());
+
+			object->getShader().Use();
 
 			//Bind and send texture. I would like the texture uniform to be part of SendUniforms, but I'm not sure how that would work with multiple textures?
 			glActiveTexture(GL_TEXTURE0);

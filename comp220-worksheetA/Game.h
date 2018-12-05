@@ -64,6 +64,11 @@ public:
 	void InitLighting();
 
 	/**
+	Intialise shader programs.
+	*/
+	void InitShaders();
+
+	/**
 	Create game objects and add to the objects vector.
 	*/
 	void CreateObjects();
@@ -104,6 +109,7 @@ private:
 	WindowManager* windowMain;
 	GLManager glManager;
 	PhysicsManager physics;
+
 	ObjectBuilder objectBuilder;
 	MaterialPresets materialPresets;
 	OpenGLBulletDebugDrawer debugDrawer; //Turn on debug mode on keypress or var
@@ -111,6 +117,9 @@ private:
 	SDL_GLContext glContext;
 	SDL_Window* window;
 	Skybox skybox;
+
+	Shader BlinnPhongShader;
+	Shader BlinnPhongDiffuseShader;
 
 	//Delta time and the time last frame
 	float deltaTime;

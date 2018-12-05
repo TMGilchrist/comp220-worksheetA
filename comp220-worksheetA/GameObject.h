@@ -15,7 +15,7 @@ New instances of GameObject should be created using the ObjectBuilder class Make
 #include "shader.h"
 #include "Mesh.h"
 #include "Material.h"
-//#include "PhysicsManager.h"
+#include "ShaderManager.h"
 
 
 class GameObject
@@ -30,7 +30,7 @@ public:
 	/**
 	Initalise member variables
 	*/
-	void Init(const char* vert, const char* fragment);
+	void Init(Shader Shader);
 
 	/**
 	Update function. Calculates the model matrix. Should be called whenever the object changes in some way. 
@@ -166,6 +166,16 @@ public:
 		return mesh;
 	}
 
+	Shader getShader() 
+	{
+		return shader;
+	}
+
+	void setShader(Shader newShader) 
+	{
+		shader = newShader;
+	}
+
 private:
 	//Mesh collection for the object's model.
 	MeshCollection* mesh;
@@ -176,6 +186,7 @@ private:
 
 	//The shaders to use to render this object
 	GLuint programID;
+	Shader shader;
 
 	//The object's rigidbody
 	btRigidBody* rigidBody;
