@@ -32,6 +32,71 @@ void PhysicsManager::Init(btVector3 Gravity)
 	dynamicsWorld->setGravity(Gravity);
 }
 
+btRigidBody* PhysicsManager::CreateCollisionShape(GameObject* object, collisionShapes shape)
+{
+	btCollisionShape* collider;
+
+	if (shape == BoxCollider)
+	{
+		//CreateBoxCollider(object);
+		collider = new btBoxShape(btVector3(btScalar(object->getScale().x / 2.0), btScalar(object->getScale().y / 2.0), btScalar(object->getScale().z / 2.0)));
+	}
+
+	else if (shape == SphereCollider)
+	{
+		//CreateSphereCollider(object);
+		collider = new btSphereShape(btScalar(object->getScale().x));
+	}
+
+	else if (shape == ConvexHullCollider)
+	{
+		//CreateConvexCollider(object);
+		collider = new btConvexHullShape();
+	}
+
+	else if (shape == TerrainCollider)
+	{
+		collider = CreateTerrainCollider(object, object->getMesh());
+	}
+
+	else
+	{
+		//show error message
+		return nullptr;
+	}
+
+	return CreateRigidBody(object, collider);
+}
+
+
+btCollisionShape* PhysicsManager::CreateTerrainCollider(GameObject* object, MeshCollection* mesh)
+{
+	const void* terrainData = &mesh->GetVertexData();
+
+	//Create the collision shape
+	btHeightfieldTerrainShape* collider = new btHeightfieldTerrainShape(50, 50, terrainData, btScalar(1.0), btScalar(1.0), btScalar(1.0), 1);
+	return collider;
+}
+
+btRigidBody* PhysicsManager::CreateRigidBody(GameObject* object, btCollisionShape* collider)
+{
+	//Create transform
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(btVector3(object->getPosition().x, object->getPosition().y, object->getPosition().z));
+
+	//Calculate inertia.
+	btVector3 localInertia(0, 0, 0);
+	if (object->getIsDynamic())
+		collider->calculateLocalInertia(object->getMass(), localInertia);
+
+	//Create the rigidbody
+	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(object->getMass(), motionState, collider, localInertia);
+	return new btRigidBody(rbInfo);
+}
+
+
 void PhysicsManager::CleanUp()
 {
 	//delete dynamics world

@@ -150,8 +150,9 @@ void Game::CreateObjects()
 	terrain->SetRotation(glm::vec3(-1.5, 0.0, -0.55));
 	terrain->SetPosition(400.0, 0.0, -1000.0);
 
-	terrain->SetupPhysicsComponents("TerrainCollider", 0.0f);
-	terrain->AddToPhysicsWorld(physics.getDynamicsWorld());
+	terrain->setMass(0.0f);
+	terrain->SetupObjectPhysics(physics.CreateCollisionShape(terrain, TerrainCollider), physics.getDynamicsWorld());
+
 
 	tower->SetRotation(glm::vec3(-1.5, 0, 0));
 	tower->SetPosition(1100.0, -5.0, 800);
@@ -177,21 +178,21 @@ void Game::CreatePhysicsObjects()
 												 objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
 												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
-	//ground->SetupPhysicsComponents("BoxCollider", 0.0f);
-	//ground->AddToPhysicsWorld(physics.getDynamicsWorld());
+	ground->setMass(0.0f); //This should be the default value!
+	ground->SetupObjectPhysics(physics.CreateCollisionShape(ground, BoxCollider), physics.getDynamicsWorld());
 
 
 	GameObject* sphere = objectBuilder.MakeObject("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl",
 												   objectBuilder.getMeshes()[4], objectBuilder.getDiffuseTextures()[1],
 												   materialPresets.GetPlainGreen(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
 	
-	sphere->SetupPhysicsComponents("SphereCollider", 1.0f);
-	sphere->AddToPhysicsWorld(physics.getDynamicsWorld());
+	sphere->setMass(1.0f);
+	sphere->SetupObjectPhysics(physics.CreateCollisionShape(sphere, SphereCollider), physics.getDynamicsWorld());
+
 
 	//Add objects to vector of game objects
-	//objects.push_back(ground);
+	objects.push_back(ground);
 	objects.push_back(sphere);
-
 }
 
 void Game::GameLoop()

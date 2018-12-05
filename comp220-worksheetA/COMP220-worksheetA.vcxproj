@@ -181,6 +181,7 @@ copy ..\Libraries\assimp-4.1.0\bin\x64\*.dll "$(OutDir)\*.dll"</Command>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="characterController.h" />
+    <ClInclude Include="Enums.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GeometryModels.h" />

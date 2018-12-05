@@ -15,6 +15,7 @@ New instances of GameObject should be created using the ObjectBuilder class Make
 #include "shader.h"
 #include "Mesh.h"
 #include "Material.h"
+//#include "PhysicsManager.h"
 
 
 class GameObject
@@ -42,24 +43,7 @@ public:
 	@param colliderType : The type of collider that should be created.
 	@param mass : The mass of the object's rigidbody.
 	*/
-	void SetupPhysicsComponents(std::string colliderType, btScalar mass);
-
-	/**
-	Create a box collider and setup transform and rigidbody.
-	*/
-	void CreateBoxCollider();
-
-	/**
-	Create a sphere collider and setup transform and rigidbody.
-	*/
-	void CreateSphereCollider();
-
-	/**
-	Create a convex hull collider and setup transform and rigidbody.
-	*/
-	void CreateConvexCollider();
-
-	void CreateTerrainCollider();
+	void SetupObjectPhysics(btRigidBody* RigidBody, btDiscreteDynamicsWorld* physicsWorld);
 
 	/**
 	Add this gameobject's rigidbody to the specified phsyics world so it can interact with the physics system.
@@ -71,22 +55,21 @@ public:
 	Getters and Setters
 	----------------------*/
 
-	/**
-	Attach a meshCollection to the game object.
-	*/
 	void setMesh(MeshCollection* objectMesh) 
 	{
 		mesh = objectMesh;
 	}
 
-	/**
-	Set the object's scale. Use to resize object. 1.0 is the default size.
-	*/
 	void setScale(glm::vec3 Scale) 
 	{
 		scale = Scale;
 	}
 	
+	glm::vec3& getScale() 
+	{
+		return scale;
+	}
+
 	void setProgramID(const char* vert, const char* fragment) 
 	{
 		programID = LoadShaders(vert, fragment);
@@ -160,6 +143,27 @@ public:
 	void SetPosition(float x, float y, float z)
 	{
 		position = glm::vec3(x, y, z);
+	}
+
+	btScalar getMass()
+	{
+		return mass;
+	}
+
+	void setMass(btScalar Mass) 
+	{
+		mass = Mass;
+		isDynamic = (mass != 0.0f);
+	}
+
+	bool getIsDynamic() 
+	{
+		return isDynamic;
+	}
+
+	MeshCollection* getMesh() 
+	{
+		return mesh;
 	}
 
 private:
