@@ -98,6 +98,8 @@ public:
 	*/
 	void SendUniforms(GameObject* object);
 
+	void SendUniforms2(GameObject* object, Shader* shader);
+
 	/**
 	Cleanup components
 	*/
@@ -118,8 +120,8 @@ private:
 	SDL_Window* window;
 	Skybox skybox;
 
-	Shader BlinnPhongShader;
-	Shader BlinnPhongDiffuseShader;
+	Shader* BlinnPhongShader;
+	Shader* BlinnPhongDiffuseShader;
 
 	//Delta time and the time last frame
 	float deltaTime;

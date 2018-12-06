@@ -42,8 +42,6 @@ void Mesh::FillBufferData(Vertex VertexData[], int NumOfVertices, unsigned int I
 
 	CopyVertexData(VertexData, NumOfVertices);
 
-	//Is it necessary to save the vertex and index data?
-
 	SetVertexAttributes();
 }
 
@@ -152,7 +150,6 @@ void MeshCollection::addMesh(Mesh * mesh)
 
 	//Add each meshe's vertex data into the meshCollection
 	int numOfVertices = VertexData.size();
-	std::cout << "Size of VertexData : " << numOfVertices << "\n";
 
 	for (int i = 0; i < numOfVertices; i++)
 	{

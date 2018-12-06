@@ -22,6 +22,9 @@ void Game::Init()
 	glManager.Init();
 	glContext = glManager.getGLContext();
 
+	//Setup shaders
+	InitShaders();
+
 	//Init object builder.
 	objectBuilder = ObjectBuilder();
 	objectBuilder.Init();	
@@ -33,7 +36,7 @@ void Game::Init()
 	//Initialise Bullet Physics
 	physics = PhysicsManager();
 	physics.Init();
-
+		
 	//Init DebugDrawer
 	debugDrawer = OpenGLBulletDebugDrawer();
 	debugDrawer.CreateShader();
@@ -98,8 +101,21 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 
 void Game::InitShaders()
 {
-	BlinnPhongDiffuseShader.Load("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl");
-	BlinnPhongShader.Load("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
+	BlinnPhongDiffuseShader = new Shader();
+	//BlinnPhongDiffuseShader->Load("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl");
+
+	BlinnPhongShader = new Shader();
+	//BlinnPhongShader->Load("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
+
+	if (BlinnPhongDiffuseShader->Load("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl") == false) 
+	{
+		std::cout << "BlinnPhongDiffuseShader not loading";
+	}
+
+	if (BlinnPhongShader->Load("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl") == false) 
+	{
+		std::cout << "BlinnPhongShader not loading";
+	}
 
 
 }
@@ -295,9 +311,13 @@ void Game::GameLoop()
 		{
 			//Setup program and uniforms unique to object
 			//glUseProgram(object->getProgramID());
-			SetUniformLocations(object->getProgramID());
+			//SetUniformLocations(object->getProgramID());
 
-			object->getShader().Use();
+			object->getShader()->Use();
+
+			//Textures
+			diffuseTextureLocation = glGetUniformLocation(object->getProgramID(), "diffuseTexture");
+			specularTextureLocation = glGetUniformLocation(object->getProgramID(), "specularTexture");
 
 			//Bind and send texture. I would like the texture uniform to be part of SendUniforms, but I'm not sure how that would work with multiple textures?
 			glActiveTexture(GL_TEXTURE0);
@@ -312,7 +332,8 @@ void Game::GameLoop()
 			}
 
 			//Send uniforms
-			SendUniforms(object);
+			SendUniforms2(object, object->getShader());
+			//SendUniforms(object);
 
 			//Update object
 			object->Update();
@@ -385,6 +406,32 @@ void Game::SendUniforms(GameObject* object)
 	glUniform4fv(specularLightColourLocation, 1, value_ptr(specularLightColour));
 	glUniform3fv(cameraPositionLocation, 1, value_ptr(camera->getPosition()));
 }
+
+void Game::SendUniforms2(GameObject* object, Shader* shader)
+{
+	//Matrices
+	glUniformMatrix4fv(shader->GetUniform("viewMatrixLocation"), 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
+	glUniformMatrix4fv(shader->GetUniform("projectionMatrixLocation"), 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
+	glUniformMatrix4fv(shader->GetUniform("modelMatrixLocation"), 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
+
+	//Materials
+
+	glUniform4fv(shader->GetUniform("ambientMaterialColourLocation"), 1, value_ptr(object->GetMaterial().GetAmbientColour()));
+	glUniform4fv(shader->GetUniform("diffuseMaterialColourLocation"), 1, value_ptr(object->GetMaterial().GetDiffuseColour()));
+	glUniform4fv(shader->GetUniform("specularMaterialColourLocation"), 1, value_ptr(object->GetMaterial().GetSpecularColour()));
+	glUniform1f(shader->GetUniform("specularPowerLocation"), object->GetMaterial().GetSpecularPower());
+
+	//Lighting
+	glUniform3fv(shader->GetUniform("lightDirectionLocation"), 1, value_ptr(lightDirection));
+	glUniform4fv(shader->GetUniform("ambientLightColourLocation"), 1, value_ptr(ambientLightColour));
+	glUniform4fv(shader->GetUniform("diffuseLightColourLocation"), 1, value_ptr(diffuseLightColour));
+	glUniform1f(shader->GetUniform("ambientIntensityLocation"), ambientIntensity);
+
+	glUniform4fv(shader->GetUniform("specularLightColourLocation"), 1, value_ptr(specularLightColour));
+	glUniform3fv(shader->GetUniform("cameraPositionLocation"), 1, value_ptr(camera->getPosition()));
+}
+
+
 
 void Game::Cleanup()
 {

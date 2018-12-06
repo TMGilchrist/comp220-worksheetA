@@ -54,7 +54,7 @@ void ObjectBuilder::LoadMeshes()
 	meshes.insert(std::make_pair("TreeType1", currentMesh));
 
 	currentMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Models/Foliage/treeSceneTest.fbx", currentMesh);
+	loadMeshFromFile("Resources/Models/Foliage/treeSceneTest.FBX", currentMesh);
 	meshes.insert(std::make_pair("treeSceneTest", currentMesh));
 }
 
@@ -66,11 +66,11 @@ void ObjectBuilder::LoadTextures()
 	currentTexture = loadTextureFromFile("Resources/Textures/seamlessRock.jpg");
 	textures.insert(std::make_pair("seamlessRock", currentTexture));
 
-	currentTexture = loadTextureFromFile("Resources/Textures/ColorsheetTreeNormal.png");
+	currentTexture = loadTextureFromFile("Resources/Textures/ColorsheetTreeNormal.PNG");
 	textures.insert(std::make_pair("ColoursheetTreeNormal", currentTexture));
 	
-	currentTexture = loadTextureFromFile("Resources/Textures/Tower/tileable_bricks.jpg");
-	textures.insert(std::make_pair("tileableBricks", currentTexture));
+	//currentTexture = loadTextureFromFile("Resources/Textures/Tower/tileable_bricks.jpg");
+	//textures.insert(std::make_pair("tileableBricks", currentTexture));
 
 	currentTexture = loadTextureFromFile("Resources/Textures/Tower/medium_bricks.jpg");
 	textures.insert(std::make_pair("mediumBricks", currentTexture));
@@ -79,7 +79,7 @@ void ObjectBuilder::LoadTextures()
 	textures.insert(std::make_pair("spotlightSpecMap", currentTexture));
 }
 
-GameObject * ObjectBuilder::MakeObject(Shader shader, std::string meshName, std::string diffuseTextureName, Material material, glm::vec3 position, glm::vec3 scale)
+GameObject * ObjectBuilder::MakeObject(Shader* shader, std::string meshName, std::string diffuseTextureName, Material material, glm::vec3 position, glm::vec3 scale)
 {
 	//Create new object
 	GameObject* object = new GameObject();
@@ -102,7 +102,7 @@ GameObject * ObjectBuilder::MakeObject(Shader shader, std::string meshName, std:
 	return object;
 }
 
-GameObject* ObjectBuilder::MakeObject(Shader shader, std::string meshName, std::string diffuseTextureName, std::string specularTextureName, Material material, glm::vec3 position, glm::vec3 scale)
+GameObject* ObjectBuilder::MakeObject(Shader* shader, std::string meshName, std::string diffuseTextureName, std::string specularTextureName, Material material, glm::vec3 position, glm::vec3 scale)
 {
 	//Create new object
 	GameObject* object = new GameObject();

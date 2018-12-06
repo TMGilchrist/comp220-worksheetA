@@ -12,9 +12,10 @@ GameObject::~GameObject()
 {
 }
 
-void GameObject::Init(Shader Shader)
+void GameObject::Init(Shader* Shader)
 {
 	shader = Shader;
+	programID = shader->GetShaderProgramID();
 
 	//Translation and scale
 	position = glm::vec3(0.0f, 0.0f, 0.0f);

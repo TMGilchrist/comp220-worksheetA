@@ -37,13 +37,13 @@ public:
 	/**
 	Creates a new GameObject without a specular texture.
 	*/
-	GameObject* MakeObject(Shader shader, std::string meshName, std::string diffuseTextureName,
+	GameObject* MakeObject(Shader* shader, std::string meshName, std::string diffuseTextureName,
 						   Material material, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
 
 	/**
 	Creates a new GameObject with a specular texture.
 	*/
-	GameObject* MakeObject(Shader shader, std::string meshName, std::string diffuseTextureName, std::string specularTextureName,
+	GameObject* MakeObject(Shader* shader, std::string meshName, std::string diffuseTextureName, std::string specularTextureName,
 						   Material material, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
 	
 

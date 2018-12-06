@@ -30,7 +30,7 @@ public:
 	/**
 	Initalise member variables
 	*/
-	void Init(Shader Shader);
+	void Init(Shader* Shader);
 
 	/**
 	Update function. Calculates the model matrix. Should be called whenever the object changes in some way. 
@@ -166,12 +166,12 @@ public:
 		return mesh;
 	}
 
-	Shader getShader() 
+	Shader* getShader() 
 	{
 		return shader;
 	}
 
-	void setShader(Shader newShader) 
+	void setShader(Shader* newShader) 
 	{
 		shader = newShader;
 	}
@@ -186,7 +186,7 @@ private:
 
 	//The shaders to use to render this object
 	GLuint programID;
-	Shader shader;
+	Shader* shader;
 
 	//The object's rigidbody
 	btRigidBody* rigidBody;
