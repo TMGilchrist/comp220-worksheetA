@@ -102,11 +102,9 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 void Game::InitShaders()
 {
 	BlinnPhongDiffuseShader = new Shader();
-	//BlinnPhongDiffuseShader->Load("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl");
-
 	BlinnPhongShader = new Shader();
-	//BlinnPhongShader->Load("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl");
 
+	//Load shaders and check for errors
 	if (BlinnPhongDiffuseShader->Load("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl") == false) 
 	{
 		std::cout << "BlinnPhongDiffuseShader not loading";
@@ -154,12 +152,13 @@ void Game::CreateObjects()
 	+Z = Forwards, -Z = backwards.	
 	*/						
 
+	//Position objects
 	terrain->SetRotation(glm::vec3(-1.5, 0.0, -0.55));
 	terrain->SetPosition(400.0, 0.0, -1000.0);
 
+	//Setup terrain collider
 	terrain->setMass(0.0f);
 	terrain->SetupObjectPhysics(physics.CreateCollisionShape(terrain, ConvexHullCollider), physics.getDynamicsWorld());
-
 
 	tower->SetRotation(glm::vec3(-1.5, 0, 0));
 	tower->SetPosition(1100.0, -5.0, 800);
@@ -310,11 +309,12 @@ void Game::GameLoop()
 		for (GameObject* object : objects)
 		{
 			//Setup program and uniforms unique to object
-			//glUseProgram(object->getProgramID());
-			//SetUniformLocations(object->getProgramID());
+			glUseProgram(object->getProgramID());
+			SetUniformLocations(object->getProgramID());
 
-			object->getShader()->Use();
+			//object->getShader()->Use();
 
+			
 			//Textures
 			diffuseTextureLocation = glGetUniformLocation(object->getProgramID(), "diffuseTexture");
 			specularTextureLocation = glGetUniformLocation(object->getProgramID(), "specularTexture");
@@ -332,8 +332,8 @@ void Game::GameLoop()
 			}
 
 			//Send uniforms
-			SendUniforms2(object, object->getShader());
-			//SendUniforms(object);
+			//SendUniforms2(object, object->getShader());
+			SendUniforms(object);
 
 			//Update object
 			object->Update();
@@ -407,6 +407,7 @@ void Game::SendUniforms(GameObject* object)
 	glUniform3fv(cameraPositionLocation, 1, value_ptr(camera->getPosition()));
 }
 
+//Temporary function to test moving the uniform code towards using the shader class
 void Game::SendUniforms2(GameObject* object, Shader* shader)
 {
 	//Matrices
