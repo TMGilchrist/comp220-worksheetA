@@ -460,47 +460,11 @@ void Game::Cleanup()
 		}
 	}
 
-	//Destroy vector of meshes
-	auto iter2 = meshes.begin();
-	while (iter2 != meshes.end())
-	{
-		if (*iter2)
-		{
-			//(*iter)->CleanUp(); Call destructor/cleanup here
-			delete (*iter2);
-			(*iter2) = nullptr;
-			iter2 = meshes.erase(iter2);
-		}
-
-		else
-		{
-			iter2++;
-		}
-	}
-
-	//Destroy vector of textures
-	auto iter3 = textures.begin();
-	while (iter3 != textures.end())
-	{
-		if (*iter3)
-		{
-			//(*iter)->CleanUp(); Call destructor/cleanup here
-			delete (*iter3);
-			(*iter3) = nullptr;
-			iter3 = textures.erase(iter3);
-		}
-
-		else
-		{
-			iter3++;
-		}
-	}
-
-	physics.CleanUp();
-
+	//Clear object vector
 	objects.clear();
-	meshes.clear();
-	textures.clear();
+
+	//Remove physics components
+	physics.CleanUp();
 
 	//Delete context
 	SDL_GL_DeleteContext(glContext);

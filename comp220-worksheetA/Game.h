@@ -98,6 +98,9 @@ public:
 	*/
 	void SendUniforms(GameObject* object);
 
+	/**
+	Temporary function, identical to SendUniforms but using the object's shader to load uniforms. Not currently working.
+	*/
 	void SendUniforms2(GameObject* object, Shader* shader);
 
 	/**
@@ -127,12 +130,13 @@ private:
 	float deltaTime;
 	float lastFrame;
 
+	//Toggles the drawing of physics meshes
 	bool debugDrawModeEnabled = false;
 
 	//The camera being used to render the game
 	Camera* camera;
 
-	//
+	//Input and control handlers
 	InputManager* input;
 	CharacterController controller;
 
@@ -140,12 +144,6 @@ private:
 
 	//Vector of game objects
 	std::vector<GameObject*> objects;
-
-	//Vector of meshes
-	std::vector<MeshCollection*> meshes;
-
-	//Vector of textures
-	std::vector<GLuint*> textures;
 
 
 	/*----------------------------------------------
