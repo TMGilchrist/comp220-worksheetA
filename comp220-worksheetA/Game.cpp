@@ -94,7 +94,8 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	lightDirection = glm::vec3(-0.5f, 0.0f, -1.0f);
-	ambientIntensity = 10.0f;
+	//0 - no colour and 1 - full
+	ambientIntensity = 0.3f;
 
 	cameraPosition = camera->getPosition();
 }
@@ -173,7 +174,7 @@ void Game::CreateObjects()
 	objects.push_back(tree2);
 	objects.push_back(tree3);
 
-	objects.push_back(treeScene);
+	//objects.push_back(treeScene);
 }
 
 void Game::CreatePhysicsObjects()
@@ -197,7 +198,7 @@ void Game::CreatePhysicsObjects()
 
 	//Add objects to vector of game objects
 	//objects.push_back(ground);
-	objects.push_back(sphere);
+	//objects.push_back(sphere);
 }
 
 void Game::GameLoop()
@@ -308,32 +309,20 @@ void Game::GameLoop()
 
 		for (GameObject* object : objects)
 		{
-			//Setup program and uniforms unique to object
-			glUseProgram(object->getProgramID());
-			SetUniformLocations(object->getProgramID());
-
-			//object->getShader()->Use();
-
-			
-			//Textures
-			diffuseTextureLocation = glGetUniformLocation(object->getProgramID(), "diffuseTexture");
-			specularTextureLocation = glGetUniformLocation(object->getProgramID(), "specularTexture");
+			object->getShader()->Use();
 
 			//Bind and send texture. I would like the texture uniform to be part of SendUniforms, but I'm not sure how that would work with multiple textures?
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
-			glUniform1i(diffuseTextureLocation, 0);
 
 			if (object->getSpecularTextureID() > 100) 
 			{
 				glActiveTexture(GL_TEXTURE1);
 				glBindTexture(GL_TEXTURE_2D, object->getSpecularTextureID());
-				glUniform1i(specularTextureLocation, 1);
 			}
 
 			//Send uniforms
-			//SendUniforms2(object, object->getShader());
-			SendUniforms(object);
+			SendUniforms(object, object->getShader());
 
 			//Update object
 			object->Update();
@@ -354,82 +343,33 @@ void Game::GameLoop()
 	}
 }
 
-void Game::SetUniformLocations(GLuint programID)
-{
-	//Matrices
-	modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
-	viewMatrixLocation = glGetUniformLocation(programID, "viewMatrix");
-	projectionMatrixLocation = glGetUniformLocation(programID, "projectionMatrix");
-	MVPLocation = glGetUniformLocation(programID, "MVP");
-
-	//Materials
-	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
-	diffuseMaterialColourLocation = glGetUniformLocation(programID, "diffuseMaterialColour");
-	specularMaterialColourLocation = glGetUniformLocation(programID, "specularMaterialColour");
-	specularPowerLocation = glGetUniformLocation(programID, "specularPower");
-
-	//Lighting
-	cameraPositionLocation = glGetUniformLocation(programID, "cameraPosition");
-	lightDirectionLocation = glGetUniformLocation(programID, "lightDirection");
-
-	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
-	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
-	specularLightColourLocation = glGetUniformLocation(programID, "specularLightColour");
-
-	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
-
-	//Textures
-	diffuseTextureLocation = glGetUniformLocation(programID, "diffuseTexture");
-	specularTextureLocation = glGetUniformLocation(programID, "specularTexture");
-}
-
-void Game::SendUniforms(GameObject* object)
-{
-	//Matrices
-	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
-	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
-
-	//Materials
-
-	glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetAmbientColour()));
-	glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetDiffuseColour()));
-	glUniform4fv(specularMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetSpecularColour()));
-	glUniform1f(specularPowerLocation, object->GetMaterial().GetSpecularPower());
-
-	//Lighting
-	glUniform3fv(lightDirectionLocation, 1, value_ptr(lightDirection));
-	glUniform4fv(ambientLightColourLocation, 1, value_ptr(ambientLightColour));
-	glUniform4fv(diffuseLightColourLocation, 1, value_ptr(diffuseLightColour));
-	glUniform1f(ambientIntensityLocation, ambientIntensity);
-
-	glUniform4fv(specularLightColourLocation, 1, value_ptr(specularLightColour));
-	glUniform3fv(cameraPositionLocation, 1, value_ptr(camera->getPosition()));
-}
-
 //Temporary function to test moving the uniform code towards using the shader class
-void Game::SendUniforms2(GameObject* object, Shader* shader)
+void Game::SendUniforms(GameObject* object, Shader* shader)
 {
+	//textures
+	glUniform1i(shader->GetUniform("diffuseTexture"), 0);
+	glUniform1i(shader->GetUniform("specularTexture"), 1);
+
 	//Matrices
-	glUniformMatrix4fv(shader->GetUniform("viewMatrixLocation"), 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
-	glUniformMatrix4fv(shader->GetUniform("projectionMatrixLocation"), 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
-	glUniformMatrix4fv(shader->GetUniform("modelMatrixLocation"), 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
+	glUniformMatrix4fv(shader->GetUniform("viewMatrix"), 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
+	glUniformMatrix4fv(shader->GetUniform("projectionMatrix"), 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
+	glUniformMatrix4fv(shader->GetUniform("modelMatrix"), 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
 
 	//Materials
 
-	glUniform4fv(shader->GetUniform("ambientMaterialColourLocation"), 1, value_ptr(object->GetMaterial().GetAmbientColour()));
-	glUniform4fv(shader->GetUniform("diffuseMaterialColourLocation"), 1, value_ptr(object->GetMaterial().GetDiffuseColour()));
-	glUniform4fv(shader->GetUniform("specularMaterialColourLocation"), 1, value_ptr(object->GetMaterial().GetSpecularColour()));
-	glUniform1f(shader->GetUniform("specularPowerLocation"), object->GetMaterial().GetSpecularPower());
+	glUniform4fv(shader->GetUniform("ambientMaterialColour"), 1, value_ptr(object->GetMaterial().GetAmbientColour()));
+	glUniform4fv(shader->GetUniform("diffuseMaterialColour"), 1, value_ptr(object->GetMaterial().GetDiffuseColour()));
+	glUniform4fv(shader->GetUniform("specularMaterialColour"), 1, value_ptr(object->GetMaterial().GetSpecularColour()));
+	glUniform1f(shader->GetUniform("specularPower"), object->GetMaterial().GetSpecularPower());
 
 	//Lighting
-	glUniform3fv(shader->GetUniform("lightDirectionLocation"), 1, value_ptr(lightDirection));
-	glUniform4fv(shader->GetUniform("ambientLightColourLocation"), 1, value_ptr(ambientLightColour));
-	glUniform4fv(shader->GetUniform("diffuseLightColourLocation"), 1, value_ptr(diffuseLightColour));
-	glUniform1f(shader->GetUniform("ambientIntensityLocation"), ambientIntensity);
+	glUniform3fv(shader->GetUniform("lightDirection"), 1, value_ptr(lightDirection));
+	glUniform4fv(shader->GetUniform("ambientLightColour"), 1, value_ptr(ambientLightColour));
+	glUniform4fv(shader->GetUniform("diffuseLightColour"), 1, value_ptr(diffuseLightColour));
+	glUniform1f(shader->GetUniform("ambientIntensity"), ambientIntensity);
 
-	glUniform4fv(shader->GetUniform("specularLightColourLocation"), 1, value_ptr(specularLightColour));
-	glUniform3fv(shader->GetUniform("cameraPositionLocation"), 1, value_ptr(camera->getPosition()));
+	glUniform4fv(shader->GetUniform("specularLightColour"), 1, value_ptr(specularLightColour));
+	glUniform3fv(shader->GetUniform("cameraPosition"), 1, value_ptr(camera->getPosition()));
 }
 
 

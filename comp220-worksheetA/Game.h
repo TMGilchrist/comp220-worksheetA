@@ -84,24 +84,9 @@ public:
 	void GameLoop();
 
 	/**
-	Sets the uniform location variables for a certain program. 
-	This needs to be called every time the active program is changed. 
-
-	@param programID : The ID of the program being used.
-	*/
-	void SetUniformLocations(GLuint programID);
-
-	/**
-	Send across the uniform variables. This must be called after SetUniformLocations has been called.
-
-	@param object : The gameObject which is sending the uniforms.
-	*/
-	void SendUniforms(GameObject* object);
-
-	/**
 	Temporary function, identical to SendUniforms but using the object's shader to load uniforms. Not currently working.
 	*/
-	void SendUniforms2(GameObject* object, Shader* shader);
+	void SendUniforms(GameObject* object, Shader* shader);
 
 	/**
 	Cleanup components
