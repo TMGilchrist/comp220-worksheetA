@@ -25,7 +25,7 @@ uniform vec4 diffuseMaterialColour = vec4(0.8f, 0.0f, 0.0f, 1.0f);
 uniform vec3 cameraPosition; 
 uniform vec4 specularLightColour = vec4(1);
 uniform vec4 specularMaterialColour = vec4(1);
-uniform float specularPower = 25.0f;
+uniform float specularPower;
 
 out vec4 colour;
 

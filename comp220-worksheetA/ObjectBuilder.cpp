@@ -46,7 +46,7 @@ void ObjectBuilder::LoadMeshes()
 	meshes.insert(std::make_pair("sphere", currentMesh));
 
 	currentMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Models/reducedLandscape.FBX", currentMesh);
+	loadMeshFromFile("Resources/Models/landscapePrototype.FBX", currentMesh);
 	meshes.insert(std::make_pair("landscapePrototype", currentMesh));
 
 	currentMesh = new MeshCollection();

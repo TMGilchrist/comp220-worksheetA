@@ -65,3 +65,28 @@ GLuint loadTextureFromFile(const std::string& filename)
 
 	return textureID;
 }
+
+SDL_Surface* loadHeightMap(const std::string& filename)
+{
+	//Load image into surface
+	SDL_Surface * surface = IMG_Load(filename.c_str());
+	if (surface == nullptr)
+	{
+		printf("Could not load file %s", IMG_GetError());
+		return 0;
+	}
+
+	return surface;
+}
+
+Uint8* getPixelColour(SDL_Surface * image, int x, int y)
+{
+	Uint32* pixels = (Uint32*)image->pixels;
+	int offset = y * (image->pitch / sizeof(Uint32));
+
+	Uint32* pixel = (Uint32*)pixels[offset + x];
+	Uint8 * colour = (Uint8 *)pixel;
+	return colour;
+}
+
+

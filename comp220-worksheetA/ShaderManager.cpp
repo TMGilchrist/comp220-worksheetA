@@ -126,7 +126,7 @@ void Shader::InitialiseUniforms()
 	for (int i = 0; i < uniformCount; i++)
 	{
 		glGetActiveUniform(ShaderProgramID, i, 64, &nameLength, &uniformSize, &uniformType, nameBuffer);
-		std::cout << "Uniform " << i << " " << nameBuffer << std::endl;
+		//std::cout << "Uniform " << i << " " << nameBuffer << std::endl;
 		UniformMap.insert(std::pair<std::string, GLint>(nameBuffer, i));
 	}
 }

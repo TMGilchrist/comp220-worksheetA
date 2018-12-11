@@ -49,7 +49,7 @@ public:
 	@param object : The gameobject to create the collision shape and rigidbody for.
 	@param shape : The type of collision shape to create.
 	*/
-	btRigidBody* CreateCollisionShape(GameObject* object, collisionShapes shape);
+	btRigidBody* CreateCollisionShape(GameObject* object, collisionShapes shape, const std::string& heightmapFile = "");
 		
 	/**
 	Create a convexHull collisionShape
@@ -67,7 +67,7 @@ public:
 	@param mesh : The mesh the collision shape is build around.
 	@returns collider : A complex collision shape built around a heightmap mesh.
 	*/
-	btCollisionShape* CreateTerrainCollider(GameObject* object, MeshCollection* mesh);
+	btCollisionShape* CreateTerrainCollider(GameObject* object, MeshCollection* mesh, const std::string& heightmap);
 
 	/**
 	Return a new rigidbody. Creates required components including transform and inertia.

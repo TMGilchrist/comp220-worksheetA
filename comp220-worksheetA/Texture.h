@@ -20,3 +20,7 @@ Loads a texture from a given filepath and returns a textureID.
 @param textureID : The textureID for the texture being loaded. Used to refer to the texture in OpenGL.
 */
 GLuint loadTextureFromFile(const std::string& filename);
+
+SDL_Surface* loadHeightMap(const std::string& filename);
+
+Uint8* getPixelColour(SDL_Surface* image, int x, int y);

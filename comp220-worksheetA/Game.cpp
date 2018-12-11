@@ -95,7 +95,7 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 
 	lightDirection = glm::vec3(-0.5f, 0.0f, -1.0f);
 	//0 - no colour and 1 - full
-	ambientIntensity = 0.3f;
+	ambientIntensity = 0.4f;
 
 	cameraPosition = camera->getPosition();
 }
@@ -159,7 +159,7 @@ void Game::CreateObjects()
 
 	//Setup terrain collider
 	terrain->setMass(0.0f);
-	terrain->SetupObjectPhysics(physics.CreateCollisionShape(terrain, ConvexHullCollider), physics.getDynamicsWorld());
+	terrain->SetupObjectPhysics(physics.CreateCollisionShape(terrain, TerrainCollider, "Resources/Landscape/testHeightMap.png"), physics.getDynamicsWorld());
 
 	tower->SetRotation(glm::vec3(-1.5, 0, 0));
 	tower->SetPosition(1100.0, -5.0, 800);
@@ -315,11 +315,11 @@ void Game::GameLoop()
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
 
-			if (object->getSpecularTextureID() > 100) 
-			{
+			//if (object->getSpecularTextureID() > 100) 
+			//{
 				glActiveTexture(GL_TEXTURE1);
 				glBindTexture(GL_TEXTURE_2D, object->getSpecularTextureID());
-			}
+			//}
 
 			//Send uniforms
 			SendUniforms(object, object->getShader());
