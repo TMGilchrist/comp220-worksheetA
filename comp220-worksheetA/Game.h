@@ -108,8 +108,10 @@ private:
 	SDL_Window* window;
 	Skybox skybox;
 
+	//Shaders
 	Shader* BlinnPhongShader;
 	Shader* BlinnPhongDiffuseShader;
+	Shader* TerrainShader;
 
 	//Delta time and the time last frame
 	float deltaTime;

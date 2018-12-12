@@ -1,0 +1,35 @@
+#version 330 core
+
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec4 vertexColour;
+layout(location = 2) in vec2 vertexTextureCoords;
+layout(location = 3) in vec3 vertexNormal;
+
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+
+out vec4 vertexColourOut;
+out vec2 vertexTextureCoordsOut;
+out vec3 vertexNormalOut;
+
+out vec4 worldSpaceVertex;
+
+
+void main()
+{
+	vertexColourOut = vertexColour;
+	vertexTextureCoordsOut = vertexTextureCoords;
+
+	worldSpaceVertex = modelMatrix * vec4(vertexPosition, 1.0f);
+
+	//Calculate MVP and position
+	mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
+	vec4 mvpPosition = MVP * vec4(vertexPosition, 1.0f);
+
+	vertexNormalOut = normalize((modelMatrix * vec4(vertexNormal, 0.0f)).xyz);
+	//view position?
+
+	gl_Position = mvpPosition;
+
+}

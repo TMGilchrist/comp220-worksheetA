@@ -215,6 +215,8 @@ copy ..\Libraries\assimp-4.1.0\bin\x64\*.dll "$(OutDir)\*.dll"</Command>
     <None Include="fragmentTextured.glsl" />
     <None Include="skyboxFragmentShader.glsl" />
     <None Include="skyboxVertexShader.glsl" />
+    <None Include="TerrainFragment.glsl" />
+    <None Include="TerrainVertex.glsl" />
     <None Include="vertexShader.glsl" />
     <None Include="vertexTextured.glsl" />
   </ItemGroup>

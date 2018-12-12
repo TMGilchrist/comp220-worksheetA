@@ -104,6 +104,7 @@ void Game::InitShaders()
 {
 	BlinnPhongDiffuseShader = new Shader();
 	BlinnPhongShader = new Shader();
+	TerrainShader = new Shader();
 
 	//Load shaders and check for errors
 	if (BlinnPhongDiffuseShader->Load("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl") == false) 
@@ -116,7 +117,10 @@ void Game::InitShaders()
 		std::cout << "BlinnPhongShader not loading";
 	}
 
-
+	if (TerrainShader->Load("TerrainVertex.glsl", "TerrainFragment.glsl") == false)
+	{
+		std::cout << "BlinnPhongShader not loading";
+	}
 }
 
 void Game::CreateObjects()
@@ -125,7 +129,7 @@ void Game::CreateObjects()
 													"Tower", "mediumBricks", "spotlightSpecMap",
 													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600));
 	
-	GameObject* terrain = objectBuilder.MakeObject(BlinnPhongShader,
+	GameObject* terrain = objectBuilder.MakeObject(TerrainShader,
 													"landscapePrototype", "seamlessRock", "spotlightSpecMap",
 													materialPresets.GetStone(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
 
@@ -315,11 +319,9 @@ void Game::GameLoop()
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
 
-			//if (object->getSpecularTextureID() > 100) 
-			//{
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, object->getSpecularTextureID());
-			//}
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, object->getSpecularTextureID());
+
 
 			//Send uniforms
 			SendUniforms(object, object->getShader());
