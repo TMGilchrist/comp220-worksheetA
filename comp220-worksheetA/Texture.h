@@ -12,6 +12,8 @@ Contains tools to work with textures.
 #include <SDL_image.h>
 
 #include <string>
+#include <vector>
+#include <iostream>
 
 /**
 Loads a texture from a given filepath and returns a textureID.
@@ -24,3 +26,7 @@ GLuint loadTextureFromFile(const std::string& filename);
 SDL_Surface* loadHeightMap(const std::string& filename);
 
 Uint8* getPixelColour(SDL_Surface* image, int x, int y);
+
+Uint8 getPixelColourNoPointer(SDL_Surface* image, int x, int y);
+
+std::vector<std::vector<Uint8*>> createHeightMap(const std::string& filename);

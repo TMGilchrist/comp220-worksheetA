@@ -54,7 +54,7 @@ void ObjectBuilder::LoadMeshes()
 	meshes.insert(std::make_pair("TreeType1", currentMesh));
 
 	currentMesh = new MeshCollection();
-	loadMeshFromFile("Resources/Models/Foliage/treeSceneTest.FBX", currentMesh);
+	loadMeshFromFile("Resources/Models/Foliage/treeExportTest4.FBX", currentMesh);
 	meshes.insert(std::make_pair("treeSceneTest", currentMesh));
 }
 

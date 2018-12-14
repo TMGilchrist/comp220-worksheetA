@@ -131,7 +131,7 @@ void Game::CreateObjects()
 	
 	GameObject* terrain = objectBuilder.MakeObject(TerrainShader,
 													"landscapePrototype", "seamlessRock", "spotlightSpecMap",
-													materialPresets.GetStone(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
+													materialPresets.GetStone(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
 
 	GameObject* tree = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
 												   "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
@@ -147,7 +147,7 @@ void Game::CreateObjects()
 
 	GameObject* treeScene = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
 													 "treeSceneTest", "ColoursheetTreeNormal", "spotlightSpecMap",
-													 materialPresets.GetPlainWhite(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(50.0, 50.0, 50.0));
+													 materialPresets.GetPlainWhite(), glm::vec3(0.0, -100.0, 1000.0), glm::vec3(0.0, 0.0, 0.0));
 
 
 	/*

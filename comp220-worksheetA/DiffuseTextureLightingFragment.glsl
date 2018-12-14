@@ -46,5 +46,5 @@ void main()
 
 	colour = (ambientLightColour * ambientMaterialColour * diffuseTextureColour * ambientIntensity ) + 
 			 (diffuseLightColour * diffuseIntensity * diffuseMaterialColour * diffuseTextureColour) + 
-			 (specularLightColour * specularIntensity * specularMaterialColour * specularTextureColour);
+			 (specularLightColour * specularIntensity * specularMaterialColour); // * specularTextureColour
 }
