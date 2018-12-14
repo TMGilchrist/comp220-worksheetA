@@ -2,20 +2,16 @@
 
 layout(location = 0) in vec3 vertexPosition;
 layout(location = 1) in vec4 vertexColour;
-out vec4 testColour;
 
 uniform mat4 modelMatrix;
-uniform mat4 MVP;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 
 out vec4 vertexColourOut;
 
 void main()
 {
-	//gl_Position = vec4(vertexPosition, 1.0);
-	//gl_Position = modelMatrix * vec4(vertexPosition, 1.0f);
-
 	vertexColourOut = vertexColour;
-	gl_Position = MVP * vec4(vertexPosition, 1.0f);
-
-
+	mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
+	gl_Position= MVP * vec4(vertexPosition, 1.0f);
 }

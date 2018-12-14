@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{fc2f4356-ff23-4158-b1d0-5c67e06b5a75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -67,6 +70,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLBulletDebugDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,19 +149,55 @@
     <ClInclude Include="Lights.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGLBulletDebugDrawer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragmentShader.glsl" />
-    <None Include="vertexShader.glsl" />
-    <None Include="fragmentTextured.glsl" />
-    <None Include="vertexTextured.glsl" />
-    <None Include="BlinnPhongFragment.glsl" />
-    <None Include="BlinnPhongVert.glsl" />
-    <None Include="skyboxVertexShader.glsl">
-      <Filter>Source Files</Filter>
+    <None Include="BlinnPhongFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="BlinnPhongVert.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="DiffuseTextureLightingFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="DiffuseTextureLightingVert.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="fragmentShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="fragmentTextured.glsl">
+      <Filter>Shaders</Filter>
     </None>
     <None Include="skyboxFragmentShader.glsl">
-      <Filter>Source Files</Filter>
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="skyboxVertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="vertexShader.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="vertexTextured.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="TerrainFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="TerrainVertex.glsl">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

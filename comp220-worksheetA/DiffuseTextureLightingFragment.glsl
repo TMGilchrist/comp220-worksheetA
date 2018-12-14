@@ -44,10 +44,7 @@ void main()
 	vec4 diffuseTextureColour = texture(diffuseTexture, vertexTextureCoordsOut);
 	vec4 specularTextureColour = texture(specularTexture, vertexTextureCoordsOut);
 
-	
-	colour = (ambientLightColour * ambientMaterialColour * ambientIntensity ) + 
+	colour = (ambientLightColour * ambientMaterialColour * diffuseTextureColour * ambientIntensity ) + 
 			 (diffuseLightColour * diffuseIntensity * diffuseMaterialColour * diffuseTextureColour) + 
-			 (specularLightColour * specularIntensity * specularMaterialColour * specularTextureColour);
-			 
-	//colour = specularTextureColour;
+			 (specularLightColour * specularIntensity * specularMaterialColour); // * specularTextureColour
 }

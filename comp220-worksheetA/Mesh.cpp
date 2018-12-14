@@ -29,7 +29,7 @@ void Mesh::Init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
 }
 
-void Mesh::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices)
+void Mesh::FillBufferData(Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, NumOfVertices * sizeof(Vertex), VertexData, GL_STATIC_DRAW);
@@ -40,21 +40,16 @@ void Mesh::FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned
 	numOfIndices = NumOfIndices;
 	numOfVertices = NumOfVertices;
 
-	//CopyVertexData(VertexData);
-
-	//Is it necessary to save the vertex and index data?
+	CopyVertexData(VertexData, NumOfVertices);
 
 	SetVertexAttributes();
 }
 
-void Mesh::CopyVertexData(const Vertex VertexData[])
+void Mesh::CopyVertexData(Vertex VertexData[], int NumOfVertices)
 {
-	//vertexData = VertexData;
-
-	//Copy values into member variable
-	for (int i = 0; i < sizeof(VertexData); i++) 
+	for (int i = 0; i < NumOfVertices; i++)
 	{
-		//vertexData[i] = VertexData[i];
+		vertexData.push_back(VertexData[i]);
 	}
 }
 
@@ -151,6 +146,17 @@ MeshCollection::~MeshCollection()
 
 void MeshCollection::addMesh(Mesh * mesh)
 {
+	std::vector<Vertex> VertexData = mesh->GetVertexData();
+
+	//Add each meshe's vertex data into the meshCollection
+	int numOfVertices = VertexData.size();
+
+	for (int i = 0; i < numOfVertices; i++)
+	{
+
+		vertexData.push_back(VertexData[i]);
+	}
+
 	meshes.push_back(mesh);
 }
 

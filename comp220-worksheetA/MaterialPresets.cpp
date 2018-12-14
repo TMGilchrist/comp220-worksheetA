@@ -11,20 +11,20 @@ MaterialPresets::~MaterialPresets()
 void MaterialPresets::Init()
 {
 	plainGreen = Material();
-	plainGreen.Init(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.8f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 10);
+	plainGreen.Init(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.8f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 10.0f);
 
 	plainRed = Material();
-	plainRed.Init(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec4(0.8f, 0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 25);
+	plainRed.Init(glm::vec4(1.0f, 0.0f, 0.0f, 0.0f), glm::vec4(0.8f, 0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 25.0f);
 
 	plainWhite = Material();
-	plainWhite.Init(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f), glm::vec4(0.8f, 0.8f, 0.8f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 5);
+	plainWhite.Init(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f), glm::vec4(0.8f, 0.8f, 0.8f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 5.0f);
 
 	deepPurple = Material();
-	deepPurple.Init(glm::vec4(37.0 / 255, 5.0 /255, 43.0 / 255, 0.0f), glm::vec4(37.0 / 255, 5.0 / 255, 43.0 / 255, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 5);
+	deepPurple.Init(glm::vec4(37.0 / 255, 5.0 /255, 43.0 / 255, 0.0f), glm::vec4(37.0 / 255, 5.0 / 255, 43.0 / 255, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 100.0f);
 
 	metal = Material();
-	metal.Init(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f), glm::vec4(0.8f, 0.8f, 0.8f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 25);
+	metal.Init(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f), glm::vec4(0.8f, 0.8f, 0.8f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 25.0f);
 
 	stone = Material();
-	stone.Init(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f), glm::vec4(0.8f, 0.8f, 0.8f, 0.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 2);
+	stone.Init(glm::vec4(1.0f, 1.0f,1.0f, 1.0f), glm::vec4(0.8f, 0.8f, 0.8f, 1.0f), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 20.0f);
 }

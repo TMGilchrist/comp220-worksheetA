@@ -5,6 +5,7 @@ A single Vertex of a 3d mesh.
 */
 
 #pragma once
+#include <btBulletDynamicsCommon.h>
 
 /**
 Coordinates.
@@ -18,4 +19,9 @@ struct Vertex
 	float r, g, b, a;
 	float tu, tv;
 	float xNormal, yNormal, zNormal;
+};
+
+struct Point
+{
+	btScalar x, y, z;
 };

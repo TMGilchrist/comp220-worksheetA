@@ -65,3 +65,72 @@ GLuint loadTextureFromFile(const std::string& filename)
 
 	return textureID;
 }
+
+SDL_Surface* loadHeightMap(const std::string& filename)
+{
+	//Load image into surface
+	SDL_Surface * surface = IMG_Load(filename.c_str());
+	if (surface == nullptr)
+	{
+		printf("Could not load file %s", IMG_GetError());
+		return 0;
+	}
+
+	return surface;
+}
+
+Uint8* getPixelColour(SDL_Surface * image, int x, int y)
+{
+	Uint32* pixels = (Uint32*)image->pixels;
+	int offset = y * (image->pitch / sizeof(Uint32));
+
+	Uint32* pixel = (Uint32*)pixels[offset + x];
+
+	Uint8 * colour = (Uint8 *)pixel;
+
+	return colour;
+}
+
+Uint8 getPixelColourNoPointer(SDL_Surface * image, int x, int y)
+{
+	Uint32* pixels = (Uint32*)image->pixels;
+	int offset = y * (image->pitch / sizeof(Uint32));
+
+	Uint32* pixel = (Uint32*)pixels[offset + x];
+
+	Uint8 colour = (Uint8)pixel;
+	colour = colour;
+
+	return colour;
+}
+
+std::vector<std::vector<Uint8*>> createHeightMap(const std::string& filename)
+{
+	//int height, width;
+
+	//Load image into surface
+	SDL_Surface * surface = IMG_Load(filename.c_str());
+	if (surface == nullptr)
+	{
+		printf("Could not load file %s", IMG_GetError());
+	}
+
+	std::vector<std::vector<Uint8*>> heightmap;
+	heightmap.resize(surface->h, std::vector<Uint8*>(surface->w, 0));
+
+	//heightmap = new float[surface->w][];
+	for (int x = 0; x < surface->h; ++x)
+	{
+		for (int z = 0; z < surface->w; ++z)
+		{
+			heightmap[x][z] = getPixelColour(surface, x, z); //Also /255?
+			std::cout << static_cast<int>(getPixelColour, x, z);
+		}
+	}
+
+	return heightmap;
+
+}
+
+
+

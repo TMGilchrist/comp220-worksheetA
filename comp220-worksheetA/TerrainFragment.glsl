@@ -41,13 +41,10 @@ void main()
 	//Clamp to avoid visual errors
 	float diffuseIntensity = clamp(dot(vertexNormalOut, normalize(-lightDirection)), 0.0f, 1.0f); //Should this be -lightdirection or positive?
 
-	vec4 diffuseTextureColour = texture(diffuseTexture, vertexTextureCoordsOut);
+	vec4 diffuseTextureColour = texture(diffuseTexture, vertexTextureCoordsOut / 20); //Dividing increases tiled texture size
 	vec4 specularTextureColour = texture(specularTexture, vertexTextureCoordsOut);
 
-	
-	colour = (ambientLightColour * ambientMaterialColour * ambientIntensity ) + 
+	colour = (ambientLightColour * ambientMaterialColour * diffuseTextureColour * ambientIntensity ) + 
 			 (diffuseLightColour * diffuseIntensity * diffuseMaterialColour * diffuseTextureColour) + 
-			 (specularLightColour * specularIntensity * specularMaterialColour * specularTextureColour);
-			 
-	//colour = specularTextureColour;
+			 (specularLightColour * specularIntensity * specularMaterialColour ); //* specularTextureColour
 }

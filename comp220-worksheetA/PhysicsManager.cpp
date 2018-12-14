@@ -32,6 +32,101 @@ void PhysicsManager::Init(btVector3 Gravity)
 	dynamicsWorld->setGravity(Gravity);
 }
 
+btRigidBody* PhysicsManager::CreateCollisionShape(GameObject* object, collisionShapes shape, const std::string& heightmapFile)
+{
+	btCollisionShape* collider;
+
+	//Create specific collider shape
+	if (shape == BoxCollider)
+	{
+		collider = new btBoxShape(btVector3(btScalar(object->getScale().x / 2.0), btScalar(object->getScale().y / 2.0), btScalar(object->getScale().z / 2.0)));
+	}
+
+	else if (shape == SphereCollider)
+	{
+		collider = new btSphereShape(btScalar(object->getScale().x));
+	}
+
+	else if (shape == ConvexHullCollider)
+	{
+		collider = CreateConvexCollider(object, object->getMesh());
+	}
+
+	else if (shape == TerrainCollider)
+	{
+		collider = CreateTerrainCollider(object, object->getMesh(), heightmapFile);
+	}
+
+	else
+	{
+		//show error message
+		return nullptr;
+	}
+
+	return CreateRigidBody(object, collider);
+}
+
+btCollisionShape * PhysicsManager::CreateConvexCollider(GameObject * object, MeshCollection * mesh)
+{
+	//Convert the mesh vertices to Points
+	//std::vector<Point> points = VerticesToPoints(mesh->GetVertexData());
+	std::vector<btVector3> pointData = VerticesToBtVectors(mesh->GetVertexData());
+
+	btConvexHullShape* collider = new btConvexHullShape();
+
+	for (int i = 0; i < 100000; i++)
+	{
+		//collider->addPoint(pointData[i]);
+	}
+
+	return collider;
+}
+
+btCollisionShape* PhysicsManager::CreateTerrainCollider(GameObject* object, MeshCollection* mesh, const std::string& heightmapFile)
+{
+	/*
+	const void* terrainData = &mesh->GetVertexData();
+
+	int heightStickWidth = (mesh->GetVertexData().size() / 2);
+
+	//Create the collision shape
+	btHeightfieldTerrainShape* collider = new btHeightfieldTerrainShape(50, 50, terrainData, btScalar(1.0), btScalar(1.0), btScalar(0.0), 1);
+	return collider;*/
+
+	
+	SDL_Surface* heightMap = loadHeightMap(heightmapFile);
+	Uint32* pixels = (Uint32*)heightMap->pixels;
+
+	std::vector<std::vector<Uint8*>> heightMap2;
+	heightMap2 = createHeightMap(heightmapFile);
+
+	const void* data = &heightMap2;
+
+	//std::cout << pixels;
+
+	btHeightfieldTerrainShape* collider = new btHeightfieldTerrainShape(heightMap2[0].size(), heightMap2[1].size(), data, btScalar(1.0), btScalar(1.0), btScalar(1.0), 1);
+	return collider;
+}
+
+btRigidBody* PhysicsManager::CreateRigidBody(GameObject* object, btCollisionShape* collider)
+{
+	//Create transform
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(btVector3(object->getPosition().x, object->getPosition().y, object->getPosition().z));
+
+	//Calculate inertia.
+	btVector3 localInertia(0, 0, 0);
+	if (object->getIsDynamic())
+		collider->calculateLocalInertia(object->getMass(), localInertia);
+
+	//Create the rigidbody
+	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(object->getMass(), motionState, collider, localInertia);
+	return new btRigidBody(rbInfo);
+}
+
+
 void PhysicsManager::CleanUp()
 {
 	//delete dynamics world

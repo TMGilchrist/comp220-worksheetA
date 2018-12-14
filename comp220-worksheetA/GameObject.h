@@ -10,10 +10,13 @@ New instances of GameObject should be created using the ObjectBuilder class Make
 #pragma once
 #include <glm\glm.hpp>
 #include <btBulletDynamicsCommon.h>
+#include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
 
 #include "shader.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "ShaderManager.h"
+
 
 class GameObject
 {
@@ -27,7 +30,7 @@ public:
 	/**
 	Initalise member variables
 	*/
-	void Init(const char* vert, const char* fragment);
+	void Init(Shader* Shader);
 
 	/**
 	Update function. Calculates the model matrix. Should be called whenever the object changes in some way. 
@@ -40,22 +43,7 @@ public:
 	@param colliderType : The type of collider that should be created.
 	@param mass : The mass of the object's rigidbody.
 	*/
-	void SetupPhysicsComponents(std::string colliderType, btScalar mass);
-
-	/**
-	Create a box collider and setup transform and rigidbody.
-	*/
-	void CreateBoxCollider();
-
-	/**
-	Create a sphere collider and setup transform and rigidbody.
-	*/
-	void CreateSphereCollider();
-
-	/**
-	Create a convex hull collider and setup transform and rigidbody.
-	*/
-	void CreateConvexCollider();
+	void SetupObjectPhysics(btRigidBody* RigidBody, btDiscreteDynamicsWorld* physicsWorld);
 
 	/**
 	Add this gameobject's rigidbody to the specified phsyics world so it can interact with the physics system.
@@ -67,28 +55,27 @@ public:
 	Getters and Setters
 	----------------------*/
 
-	/**
-	Attach a meshCollection to the game object.
-	*/
 	void setMesh(MeshCollection* objectMesh) 
 	{
 		mesh = objectMesh;
 	}
 
-	/**
-	Set the object's scale. Use to resize object. 1.0 is the default size.
-	*/
 	void setScale(glm::vec3 Scale) 
 	{
 		scale = Scale;
 	}
 	
+	glm::vec3& getScale() 
+	{
+		return scale;
+	}
+
 	void setProgramID(const char* vert, const char* fragment) 
 	{
 		programID = LoadShaders(vert, fragment);
 	}
 
-	glm::mat4 getModelMatrix() 
+	glm::mat4& getModelMatrix() 
 	{
 		return modelMatrix;
 	}
@@ -128,7 +115,7 @@ public:
 		return material;
 	}
 
-	glm::vec3 GetRotation() 
+	glm::vec3& GetRotation() 
 	{
 		return rotation;		
 	}
@@ -148,7 +135,7 @@ public:
 		rigidBody = RigidBody;
 	}
 
-	glm::vec3 getPosition() 
+	glm::vec3& getPosition() 
 	{
 		return position;
 	}
@@ -156,6 +143,37 @@ public:
 	void SetPosition(float x, float y, float z)
 	{
 		position = glm::vec3(x, y, z);
+	}
+
+	btScalar getMass()
+	{
+		return mass;
+	}
+
+	void setMass(btScalar Mass) 
+	{
+		mass = Mass;
+		isDynamic = (mass != 0.0f);
+	}
+
+	bool getIsDynamic() 
+	{
+		return isDynamic;
+	}
+
+	MeshCollection* getMesh() 
+	{
+		return mesh;
+	}
+
+	Shader* getShader() 
+	{
+		return shader;
+	}
+
+	void setShader(Shader* newShader) 
+	{
+		shader = newShader;
 	}
 
 private:
@@ -168,6 +186,7 @@ private:
 
 	//The shaders to use to render this object
 	GLuint programID;
+	Shader* shader;
 
 	//The object's rigidbody
 	btRigidBody* rigidBody;

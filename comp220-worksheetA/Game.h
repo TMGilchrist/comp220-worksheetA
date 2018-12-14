@@ -37,6 +37,9 @@ The main game class. This contains the main game loop and the intialisation and 
 #include "Skybox.h"
 
 #include "Lights.h"
+#include "ShaderManager.h"
+#include "OpenGLBulletDebugDrawer.h"
+
 
 class Game
 {
@@ -61,6 +64,11 @@ public:
 	void InitLighting();
 
 	/**
+	Intialise shader programs.
+	*/
+	void InitShaders();
+
+	/**
 	Create game objects and add to the objects vector.
 	*/
 	void CreateObjects();
@@ -76,19 +84,9 @@ public:
 	void GameLoop();
 
 	/**
-	Sets the uniform location variables for a certain program. 
-	This needs to be called every time the active program is changed. 
-
-	@param programID : The ID of the program being used.
+	Temporary function, identical to SendUniforms but using the object's shader to load uniforms. Not currently working.
 	*/
-	void SetUniformLocations(GLuint programID);
-
-	/**
-	Send across the uniform variables. This must be called after SetUniformLocations has been called.
-
-	@param object : The gameObject which is sending the uniforms.
-	*/
-	void SendUniforms(GameObject* object);
+	void SendUniforms(GameObject* object, Shader* shader);
 
 	/**
 	Cleanup components
@@ -101,21 +99,31 @@ private:
 	WindowManager* windowMain;
 	GLManager glManager;
 	PhysicsManager physics;
+
 	ObjectBuilder objectBuilder;
 	MaterialPresets materialPresets;
+	OpenGLBulletDebugDrawer debugDrawer; //Turn on debug mode on keypress or var
 
 	SDL_GLContext glContext;
 	SDL_Window* window;
 	Skybox skybox;
 
+	//Shaders
+	Shader* BlinnPhongShader;
+	Shader* BlinnPhongDiffuseShader;
+	Shader* TerrainShader;
+
 	//Delta time and the time last frame
 	float deltaTime;
 	float lastFrame;
 
+	//Toggles the drawing of physics meshes
+	bool debugDrawModeEnabled = false;
+
 	//The camera being used to render the game
 	Camera* camera;
 
-	//
+	//Input and control handlers
 	InputManager* input;
 	CharacterController controller;
 
@@ -123,12 +131,6 @@ private:
 
 	//Vector of game objects
 	std::vector<GameObject*> objects;
-
-	//Vector of meshes
-	std::vector<MeshCollection*> meshes;
-
-	//Vector of textures
-	std::vector<GLuint*> textures;
 
 
 	/*----------------------------------------------

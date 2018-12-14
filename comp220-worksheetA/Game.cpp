@@ -22,6 +22,9 @@ void Game::Init()
 	glManager.Init();
 	glContext = glManager.getGLContext();
 
+	//Setup shaders
+	InitShaders();
+
 	//Init object builder.
 	objectBuilder = ObjectBuilder();
 	objectBuilder.Init();	
@@ -33,6 +36,11 @@ void Game::Init()
 	//Initialise Bullet Physics
 	physics = PhysicsManager();
 	physics.Init();
+		
+	//Init DebugDrawer
+	debugDrawer = OpenGLBulletDebugDrawer();
+	debugDrawer.CreateShader();
+	physics.getDynamicsWorld()->setDebugDrawer(&debugDrawer);
 
 	//Mouse settings
 	SDL_ShowCursor(0);
@@ -81,53 +89,65 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 	//1.0f, 1.0f, 1.0f, 1.0f
 	//ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ambientLightColour = glm::vec4(145.0f / 255.0f, 150.0f / 255.0f, 198.0f / 255.0f, 1.0f);
+	//ambientLightColour = glm::vec4(135.0f / 255.0f, 115.0f / 255.0f, 215.0f / 255.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	lightDirection = glm::vec3(-0.5f, 0.0f, -1.0f);
-	ambientIntensity = 1.0f;
+	//0 - no colour and 1 - full
+	ambientIntensity = 0.4f;
 
 	cameraPosition = camera->getPosition();
 }
 
+void Game::InitShaders()
+{
+	BlinnPhongDiffuseShader = new Shader();
+	BlinnPhongShader = new Shader();
+	TerrainShader = new Shader();
+
+	//Load shaders and check for errors
+	if (BlinnPhongDiffuseShader->Load("DiffuseTextureLightingVert.glsl", "DiffuseTextureLightingFragment.glsl") == false) 
+	{
+		std::cout << "BlinnPhongDiffuseShader not loading";
+	}
+
+	if (BlinnPhongShader->Load("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl") == false) 
+	{
+		std::cout << "BlinnPhongShader not loading";
+	}
+
+	if (TerrainShader->Load("TerrainVertex.glsl", "TerrainFragment.glsl") == false)
+	{
+		std::cout << "BlinnPhongShader not loading";
+	}
+}
+
 void Game::CreateObjects()
 {
-	GameObject* tank1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[3], objectBuilder.getSpecularTextures()[0],
-												materialPresets.GetMetal());
-
-	GameObject* tank2 = objectBuilder.MakeObject("vertexTextured.glsl", "fragmentTextured.glsl", 
-												objectBuilder.getMeshes()[0], objectBuilder.getDiffuseTextures()[0],
-												materialPresets.GetPlainGreen(), glm::vec3(10.0, 0.0, 0.0));
-
-	GameObject* teapot1 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl", 
-												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1], objectBuilder.getSpecularTextures()[0],
-												  materialPresets.GetPlainGreen(), glm::vec3(0, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
-
-	GameObject* teapot2 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",		
-												  objectBuilder.getMeshes()[1], objectBuilder.getDiffuseTextures()[1],
-												  materialPresets.GetPlainRed(), glm::vec3(20, 15.0, 5.0), glm::vec3(0.25, 0.25, 0.25));
-
-	GameObject* tower = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-													objectBuilder.getMeshes()[2], objectBuilder.getDiffuseTextures()[3], objectBuilder.getSpecularTextures()[0],
+	GameObject* tower = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
+													"Tower", "mediumBricks", "spotlightSpecMap",
 													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600));
 	
-	GameObject* terrain = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-													objectBuilder.getMeshes()[5], objectBuilder.getDiffuseTextures()[2], objectBuilder.getSpecularTextures()[0],
-													materialPresets.GetStone(), glm::vec3(0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
+	GameObject* terrain = objectBuilder.MakeObject(TerrainShader,
+													"landscapePrototype", "seamlessRock", "spotlightSpecMap",
+													materialPresets.GetStone(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
 
-	GameObject* tree = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-												   objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+	GameObject* tree = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
+												   "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
 												   materialPresets.GetPlainWhite(), glm::vec3(400.0, -100.0, 300.0), glm::vec3(50.0, 50.0, 50.0));
 
-	GameObject* tree2 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-												 objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+	GameObject* tree2 = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
+												 "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
 												 materialPresets.GetPlainWhite(), glm::vec3(400.0, -80.0, 0.0), glm::vec3(40.0, 40.0, 40.0));
 
-	GameObject* tree3 = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-												 objectBuilder.getMeshes()[6], objectBuilder.getDiffuseTextures()[4], objectBuilder.getSpecularTextures()[0],
+	GameObject* tree3 = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
+												 "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
 												 materialPresets.GetPlainWhite(), glm::vec3(0.0, -100.0, 450.0), glm::vec3(50.0, 50.0, 50.0));
 
+	GameObject* treeScene = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
+													 "treeSceneTest", "ColoursheetTreeNormal", "spotlightSpecMap",
+													 materialPresets.GetPlainWhite(), glm::vec3(0.0, -100.0, 1000.0), glm::vec3(0.0, 0.0, 0.0));
 
 
 	/*
@@ -135,47 +155,54 @@ void Game::CreateObjects()
 	+X = left, -X = right.
 	+Y = Up, -Y = Down.	
 	+Z = Forwards, -Z = backwards.	
-	*/
-						
+	*/						
 
+	//Position objects
 	terrain->SetRotation(glm::vec3(-1.5, 0.0, -0.55));
 	terrain->SetPosition(400.0, 0.0, -1000.0);
+
+	//Setup terrain collider
+	terrain->setMass(0.0f);
+	terrain->SetupObjectPhysics(physics.CreateCollisionShape(terrain, TerrainCollider, "Resources/Landscape/testHeightMap.png"), physics.getDynamicsWorld());
 
 	tower->SetRotation(glm::vec3(-1.5, 0, 0));
 	tower->SetPosition(1100.0, -5.0, 800);
 
+	tree->setScale(glm::vec3(100.0f, 100.0f, 100.0f));
+
 	//Add objects to vector of game objects
-	//objects.push_back(tank1);
 	objects.push_back(tower);
 	objects.push_back(terrain);
 
 	objects.push_back(tree);
 	objects.push_back(tree2);
 	objects.push_back(tree3);
+
+	//objects.push_back(treeScene);
 }
 
 void Game::CreatePhysicsObjects()
 {
 	//Create physics objects
-	GameObject* ground = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-												 objectBuilder.getMeshes()[3], objectBuilder.getDiffuseTextures()[1],
+	GameObject* ground = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
+												 "cube", "checkerboard",
 												 materialPresets.GetPlainRed(), glm::vec3(0, -10.0, 0.0), glm::vec3(100.0, 1.0, 100.0));
 
-	ground->SetupPhysicsComponents("BoxCollider", 0.0f);
-	ground->AddToPhysicsWorld(physics.getDynamicsWorld());
+	ground->setMass(0.0f); //This should be the default value!
+	//ground->SetupObjectPhysics(physics.CreateCollisionShape(ground, BoxCollider), physics.getDynamicsWorld());
 
 
-	GameObject* sphere = objectBuilder.MakeObject("BlinnPhongVert.glsl", "BlinnPhongFragment.glsl",
-												   objectBuilder.getMeshes()[4], objectBuilder.getDiffuseTextures()[1],
+	GameObject* sphere = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
+												   "sphere", "checkerboard",
 												   materialPresets.GetPlainGreen(), glm::vec3(0, 20, 10.0), glm::vec3(5.0, 5.0, 5.0));
 	
-	sphere->SetupPhysicsComponents("SphereCollider", 1.0f);
-	sphere->AddToPhysicsWorld(physics.getDynamicsWorld());
+	sphere->setMass(1.0f);
+	sphere->SetupObjectPhysics(physics.CreateCollisionShape(sphere, SphereCollider), physics.getDynamicsWorld());
+
 
 	//Add objects to vector of game objects
 	//objects.push_back(ground);
 	//objects.push_back(sphere);
-
 }
 
 void Game::GameLoop()
@@ -221,6 +248,9 @@ void Game::GameLoop()
 					camera->setProjectionMatrix(windowMain->getWidth(), windowMain->getHeight());
 					break;
 
+				case SDLK_F1:
+					debugDrawModeEnabled = !debugDrawModeEnabled;
+					break;
 				}
 
 			case SDL_KEYUP:
@@ -253,7 +283,7 @@ void Game::GameLoop()
 		glClearColor(106.0f/255.0f, 9.0f/255.0f, 196.0f/255.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-		
+				
 		/*--------------------- 
 		Draw skybox
 		---------------------*/
@@ -283,27 +313,30 @@ void Game::GameLoop()
 
 		for (GameObject* object : objects)
 		{
-			//Setup program and uniforms unique to object
-			glUseProgram(object->getProgramID());
-			SetUniformLocations(object->getProgramID());
+			object->getShader()->Use();
 
 			//Bind and send texture. I would like the texture uniform to be part of SendUniforms, but I'm not sure how that would work with multiple textures?
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, object->getDiffuseTextureID());
-			glUniform1i(diffuseTextureLocation, 0);
 
-			if (object->getSpecularTextureID() > 100) 
-			{
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, object->getSpecularTextureID());
-				glUniform1i(specularTextureLocation, 1);
-			}
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, object->getSpecularTextureID());
+
 
 			//Send uniforms
-			SendUniforms(object);
+			SendUniforms(object, object->getShader());
 
 			//Update object
 			object->Update();
+		}
+
+		//Draw collision shape debug lines
+		if (debugDrawModeEnabled) 
+		{
+			glDisable(GL_DEPTH_TEST); 
+			debugDrawer.SetViewAndProjectMatrix(camera->getViewMatrix(), camera->getProjectionMatrix());
+			physics.getDynamicsWorld()->debugDrawWorld();
+			glEnable(GL_DEPTH_TEST);
 		}
 
 
@@ -312,58 +345,36 @@ void Game::GameLoop()
 	}
 }
 
-void Game::SetUniformLocations(GLuint programID)
+//Temporary function to test moving the uniform code towards using the shader class
+void Game::SendUniforms(GameObject* object, Shader* shader)
 {
+	//textures
+	glUniform1i(shader->GetUniform("diffuseTexture"), 0);
+	glUniform1i(shader->GetUniform("specularTexture"), 1);
+
 	//Matrices
-	modelMatrixLocation = glGetUniformLocation(programID, "modelMatrix");
-	viewMatrixLocation = glGetUniformLocation(programID, "viewMatrix");
-	projectionMatrixLocation = glGetUniformLocation(programID, "projectionMatrix");
-	MVPLocation = glGetUniformLocation(programID, "MVP");
-
-	//Materials
-	ambientMaterialColourLocation = glGetUniformLocation(programID, "ambientMaterialColour");
-	diffuseMaterialColourLocation = glGetUniformLocation(programID, "diffuseMaterialColour");
-	specularMaterialColourLocation = glGetUniformLocation(programID, "specularMaterialColour");
-	specularPowerLocation = glGetUniformLocation(programID, "specularPower");
-
-	//Lighting
-	cameraPositionLocation = glGetUniformLocation(programID, "cameraPosition");
-	lightDirectionLocation = glGetUniformLocation(programID, "lightDirection");
-
-	ambientLightColourLocation = glGetUniformLocation(programID, "ambientLightColour");
-	diffuseLightColourLocation = glGetUniformLocation(programID, "diffuseLightColour");
-	specularLightColourLocation = glGetUniformLocation(programID, "specularLightColour");
-
-	ambientIntensity = glGetUniformLocation(programID, "ambientIntensity");
-
-	//Textures
-	diffuseTextureLocation = glGetUniformLocation(programID, "diffuseTexture");
-	specularTextureLocation = glGetUniformLocation(programID, "specularTexture");
-}
-
-void Game::SendUniforms(GameObject* object)
-{
-	//Matrices
-	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
-	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
+	glUniformMatrix4fv(shader->GetUniform("viewMatrix"), 1, GL_FALSE, glm::value_ptr(camera->getViewMatrix()));
+	glUniformMatrix4fv(shader->GetUniform("projectionMatrix"), 1, GL_FALSE, glm::value_ptr(camera->getProjectionMatrix()));
+	glUniformMatrix4fv(shader->GetUniform("modelMatrix"), 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
 
 	//Materials
 
-	glUniform4fv(ambientMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetAmbientColour()));
-	glUniform4fv(diffuseMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetDiffuseColour()));
-	glUniform4fv(specularMaterialColourLocation, 1, value_ptr(object->GetMaterial().GetSpecularColour()));
-	glUniform1f(specularPowerLocation, object->GetMaterial().GetSpecularPower());
+	glUniform4fv(shader->GetUniform("ambientMaterialColour"), 1, value_ptr(object->GetMaterial().GetAmbientColour()));
+	glUniform4fv(shader->GetUniform("diffuseMaterialColour"), 1, value_ptr(object->GetMaterial().GetDiffuseColour()));
+	glUniform4fv(shader->GetUniform("specularMaterialColour"), 1, value_ptr(object->GetMaterial().GetSpecularColour()));
+	glUniform1f(shader->GetUniform("specularPower"), object->GetMaterial().GetSpecularPower());
 
 	//Lighting
-	glUniform3fv(lightDirectionLocation, 1, value_ptr(lightDirection));
-	glUniform4fv(ambientLightColourLocation, 1, value_ptr(ambientLightColour));
-	glUniform4fv(diffuseLightColourLocation, 1, value_ptr(diffuseLightColour));
-	glUniform1f(ambientIntensityLocation, ambientIntensity);
+	glUniform3fv(shader->GetUniform("lightDirection"), 1, value_ptr(lightDirection));
+	glUniform4fv(shader->GetUniform("ambientLightColour"), 1, value_ptr(ambientLightColour));
+	glUniform4fv(shader->GetUniform("diffuseLightColour"), 1, value_ptr(diffuseLightColour));
+	glUniform1f(shader->GetUniform("ambientIntensity"), ambientIntensity);
 
-	glUniform4fv(specularLightColourLocation, 1, value_ptr(specularLightColour));
-	glUniform3fv(cameraPositionLocation, 1, value_ptr(camera->getPosition()));
+	glUniform4fv(shader->GetUniform("specularLightColour"), 1, value_ptr(specularLightColour));
+	glUniform3fv(shader->GetUniform("cameraPosition"), 1, value_ptr(camera->getPosition()));
 }
+
+
 
 void Game::Cleanup()
 {
@@ -391,47 +402,11 @@ void Game::Cleanup()
 		}
 	}
 
-	//Destroy vector of meshes
-	auto iter2 = meshes.begin();
-	while (iter2 != meshes.end())
-	{
-		if (*iter2)
-		{
-			//(*iter)->CleanUp(); Call destructor/cleanup here
-			delete (*iter2);
-			(*iter2) = nullptr;
-			iter2 = meshes.erase(iter2);
-		}
-
-		else
-		{
-			iter2++;
-		}
-	}
-
-	//Destroy vector of textures
-	auto iter3 = textures.begin();
-	while (iter3 != textures.end())
-	{
-		if (*iter3)
-		{
-			//(*iter)->CleanUp(); Call destructor/cleanup here
-			delete (*iter3);
-			(*iter3) = nullptr;
-			iter3 = textures.erase(iter3);
-		}
-
-		else
-		{
-			iter3++;
-		}
-	}
-
-	physics.CleanUp();
-
+	//Clear object vector
 	objects.clear();
-	meshes.clear();
-	textures.clear();
+
+	//Remove physics components
+	physics.CleanUp();
 
 	//Delete context
 	SDL_GL_DeleteContext(glContext);

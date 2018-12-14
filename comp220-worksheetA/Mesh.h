@@ -19,6 +19,8 @@ A collection of meshes comprising a 3d model.
 #include "Vertex.h"
 #include "Texture.h"
 
+#include <iostream>
+
 
 class Mesh
 {
@@ -40,9 +42,9 @@ public:
 	@param NumOfIndices : Number of indices in mesh
 
 	*/
-	void FillBufferData(const Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices);
+	void FillBufferData(Vertex VertexData[], int NumOfVertices, unsigned int Indices[], int NumOfIndices);
 	
-	void CopyVertexData(const Vertex VertexData[]);
+	void CopyVertexData(Vertex VertexData[], int NumOfVertices);
 
 	/**
 	Set the vertex attributes
@@ -89,9 +91,6 @@ private:
 	int numOfVertices;
 	int numOfIndices;
 
-	//Vertex and index data
-	//const Vertex vertexData[1];
-
 	std::vector<Vertex> vertexData;
 
 	static unsigned int indices[];
@@ -126,6 +125,13 @@ public:
 	*/
 	void destroy();
 
+	std::vector<Vertex> GetVertexData()
+	{
+		return vertexData;
+	}
+
 private:
 	std::vector<Mesh*> meshes;
+
+	std::vector<Vertex> vertexData;
 };
