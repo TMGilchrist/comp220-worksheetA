@@ -84,16 +84,12 @@ void Game::InitLighting() //Things here can probably be split up at some point i
 								   glm::vec3(-0.5f, 0.0f, -1.0f) 
 								 };
 
-	//Lighting
-	//81.0f / 255.0f, 68.0f / 255.0f, 200.0f / 255.0f, 1.0f
-	//1.0f, 1.0f, 1.0f, 1.0f
-	//ambientLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	ambientLightColour = glm::vec4(145.0f / 255.0f, 150.0f / 255.0f, 198.0f / 255.0f, 1.0f);
-	//ambientLightColour = glm::vec4(135.0f / 255.0f, 115.0f / 255.0f, 215.0f / 255.0f, 1.0f);
 	diffuseLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	specularLightColour = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	lightDirection = glm::vec3(-0.5f, 0.0f, -1.0f);
+
 	//0 - no colour and 1 - full
 	ambientIntensity = 0.4f;
 
@@ -127,27 +123,25 @@ void Game::CreateObjects()
 {
 	GameObject* tower = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
 													"Tower", "mediumBricks", "spotlightSpecMap",
-													materialPresets.GetDeepPurple(), glm::vec3(0.0, -10.0, 0.0), glm::vec3(200, 200, 600));
+													materialPresets.GetDeepPurple(), glm::vec3(1100.0, -5.0, 800), glm::vec3(200, 200, 600), glm::vec3(-1.5, 0.0, 0.0));
 	
 	GameObject* terrain = objectBuilder.MakeObject(TerrainShader,
 													"landscapePrototype", "seamlessRock", "spotlightSpecMap",
-													materialPresets.GetStone(), glm::vec3(0.0, 0.0, 0.0), glm::vec3(10.0, 10.0, 10.0));
+													materialPresets.GetStone(), glm::vec3(400.0, 0.0, -1000.0), glm::vec3(10.0, 10.0, 10.0), glm::vec3(-1.5, 0.0, -0.55));
 
-	GameObject* tree = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
-												   "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
-												   materialPresets.GetPlainWhite(), glm::vec3(400.0, -100.0, 300.0), glm::vec3(50.0, 50.0, 50.0));
 
-	GameObject* tree2 = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
-												 "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
-												 materialPresets.GetPlainWhite(), glm::vec3(400.0, -80.0, 0.0), glm::vec3(40.0, 40.0, 40.0));
+	//Crazy code duplication for tree creation. 
+	GameObject* tree = objectBuilder.MakePineTree1(BlinnPhongDiffuseShader, glm::vec3(400.0, -100.0, 300.0), glm::vec3(100.0, 100.0, 100.0), glm::vec3(0.0, 1.5, 0.0));
 
-	GameObject* tree3 = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
-												 "TreeType1", "ColoursheetTreeNormal", "spotlightSpecMap",
-												 materialPresets.GetPlainWhite(), glm::vec3(0.0, -100.0, 450.0), glm::vec3(50.0, 50.0, 50.0));
+	GameObject* tree2 = objectBuilder.MakePineTree1(BlinnPhongDiffuseShader, glm::vec3(400.0, -80.0, 0.0), glm::vec3(70.0, 70.0, 70.0), glm::vec3(0.0, 3.2, 0.0));
 
-	GameObject* treeScene = objectBuilder.MakeObject(BlinnPhongDiffuseShader,
-													 "treeSceneTest", "ColoursheetTreeNormal", "spotlightSpecMap",
-													 materialPresets.GetPlainWhite(), glm::vec3(0.0, -100.0, 1000.0), glm::vec3(0.0, 0.0, 0.0));
+	GameObject* tree3 = objectBuilder.MakePineTree1(BlinnPhongDiffuseShader, glm::vec3(0.0, -100.0, 450.0), glm::vec3(80.0, 80.0, 80.0), glm::vec3(0.0, 0.6, 0.0));
+
+	GameObject* tree4 = objectBuilder.MakePineTree1(BlinnPhongDiffuseShader, glm::vec3(250.0, -50.0, -300.0), glm::vec3(60.0, 60.0, 60.0), glm::vec3(0.0, 4.2, 0.0));
+
+	GameObject* tree5 = objectBuilder.MakePineTree1(BlinnPhongDiffuseShader, glm::vec3(600.0, -60.0, 1000.0), glm::vec3(100.0, 100.0, 100.0), glm::vec3(0.0, 2.6, 0.0));
+
+	GameObject* tree6 = objectBuilder.MakePineTree1(BlinnPhongDiffuseShader, glm::vec3(900.0, 50.0, 350.0), glm::vec3(90.0, 90.0, 90.0), glm::vec3(0.0, 5.0, 0.0));
 
 
 	/*
@@ -157,18 +151,9 @@ void Game::CreateObjects()
 	+Z = Forwards, -Z = backwards.	
 	*/						
 
-	//Position objects
-	terrain->SetRotation(glm::vec3(-1.5, 0.0, -0.55));
-	terrain->SetPosition(400.0, 0.0, -1000.0);
-
 	//Setup terrain collider
 	terrain->setMass(0.0f);
 	terrain->SetupObjectPhysics(physics.CreateCollisionShape(terrain, TerrainCollider, "Resources/Landscape/testHeightMap.png"), physics.getDynamicsWorld());
-
-	tower->SetRotation(glm::vec3(-1.5, 0, 0));
-	tower->SetPosition(1100.0, -5.0, 800);
-
-	tree->setScale(glm::vec3(100.0f, 100.0f, 100.0f));
 
 	//Add objects to vector of game objects
 	objects.push_back(tower);
@@ -177,8 +162,9 @@ void Game::CreateObjects()
 	objects.push_back(tree);
 	objects.push_back(tree2);
 	objects.push_back(tree3);
-
-	//objects.push_back(treeScene);
+	objects.push_back(tree4);
+	objects.push_back(tree5);
+	objects.push_back(tree6);
 }
 
 void Game::CreatePhysicsObjects()
@@ -358,7 +344,6 @@ void Game::SendUniforms(GameObject* object, Shader* shader)
 	glUniformMatrix4fv(shader->GetUniform("modelMatrix"), 1, GL_FALSE, glm::value_ptr(object->getModelMatrix()));
 
 	//Materials
-
 	glUniform4fv(shader->GetUniform("ambientMaterialColour"), 1, value_ptr(object->GetMaterial().GetAmbientColour()));
 	glUniform4fv(shader->GetUniform("diffuseMaterialColour"), 1, value_ptr(object->GetMaterial().GetDiffuseColour()));
 	glUniform4fv(shader->GetUniform("specularMaterialColour"), 1, value_ptr(object->GetMaterial().GetSpecularColour()));

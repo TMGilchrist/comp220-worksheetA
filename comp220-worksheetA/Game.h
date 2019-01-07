@@ -84,7 +84,10 @@ public:
 	void GameLoop();
 
 	/**
-	Temporary function, identical to SendUniforms but using the object's shader to load uniforms. Not currently working.
+	Send uniform values.
+
+	@param object : The object who's uniforms are being sent.
+	@param shader : The shader being used for the object.
 	*/
 	void SendUniforms(GameObject* object, Shader* shader);
 
